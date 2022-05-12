@@ -1,7 +1,7 @@
 export default function PortalIndexPage() {
   return (
     <div>
-      <p>Portal Here</p>
+      <p>Dashboard</p>
     </div>
   );
 }

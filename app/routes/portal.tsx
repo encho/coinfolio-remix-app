@@ -1,4 +1,5 @@
 import { Link, Outlet } from "@remix-run/react";
+import NewLayout from "~/components/NewLayout";
 
 function PortalHeader() {
   return (
@@ -47,9 +48,9 @@ export default function Dashboard() {
   // const user = useOptionalUser();
   return (
     <div>
-      <PortalHeader />
+      {/* <PortalHeader /> */}
 
-      <div className="encho-bg">
+      {/* <div className="encho-bg">
         <div>
           <Link to="strategies" className="text-blue-500 underline">
             Strategies
@@ -60,15 +61,21 @@ export default function Dashboard() {
             Cryptocurrencies
           </Link>
         </div>
-      </div>
+      </div> */}
 
-      <Outlet />
-      <PortalFooter />
+      {/* <Outlet /> */}
+      {/* <PortalFooter /> */}
+
+      <NewLayout />
 
       {/* <MigrateOutlet /> */}
     </div>
   );
 }
+
+// function NewLayout() {
+//   return <div>hello</div>;
+// }
 
 function MigrateOutlet() {
   return (
