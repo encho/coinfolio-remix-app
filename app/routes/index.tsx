@@ -131,6 +131,13 @@ export default function Index() {
               </a>
             ))}
           </div>
+          <div>
+            <h1 className="text-center text-6xl font-extrabold tracking-tight sm:text-8xl lg:text-9xl">
+              <span className="text-giorno-encho block uppercase drop-shadow-md">
+                Indie Stack
+              </span>
+            </h1>
+          </div>
         </div>
       </div>
     </main>
