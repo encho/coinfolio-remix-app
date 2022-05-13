@@ -1,9 +1,9 @@
 import { Heading1 } from "~/components/Typography";
 
-export default function PortalIndexPage() {
+export default function PortalStrategiesPage() {
   return (
     <div>
-      <Heading1>Portfolio</Heading1>
+      <Heading1>Crypto Indices</Heading1>
     </div>
   );
 }

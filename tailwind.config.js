@@ -1,5 +1,6 @@
 const colors = require("tailwindcss/colors");
 const withTheme = require("./theme/withTheme");
+const { fontFamily, fontWeight } = require("./theme/typography");
 
 const themeColors = withTheme({
   ...colors,
@@ -17,6 +18,8 @@ module.exports = {
   theme: {
     extend: {},
     colors: themeColors,
+    fontFamily: fontFamily,
+    fontWeight: fontWeight,
   },
   plugins: [],
 };
