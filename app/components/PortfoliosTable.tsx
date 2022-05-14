@@ -1,3 +1,5 @@
+import { Link } from "@remix-run/react";
+
 // TODO export from better, more generic file
 
 type TCurrencyValue = {
@@ -14,6 +16,7 @@ export type TPortfolioInfo = {
     metric: "VaR";
     value: number;
   };
+  slug: string;
 };
 
 type TPortfoliosTable = {
@@ -26,7 +29,7 @@ function classNames(...classes: string[]) {
 
 export default function PortfoliosTable({ data }: TPortfoliosTable) {
   return (
-    <div className="-mx-4 mt-10 ring-1 ring-gray-300 sm:-mx-6 md:mx-0 md:rounded">
+    <div className="-mx-4 mt-0 ring-1 ring-gray-300 sm:-mx-6 md:mx-0 md:rounded">
       <table className="min-w-full divide-y divide-gray-300">
         <thead>
           <tr>
@@ -114,13 +117,14 @@ export default function PortfoliosTable({ data }: TPortfoliosTable) {
                   "relative py-3.5 pl-3 pr-4 text-right text-sm font-medium sm:pr-6"
                 )}
               >
-                <button
-                  type="button"
+                <Link
+                  to={`./portfolios/${portfolioItem.slug}`}
+                  prefetch="intent"
                   className="inline-flex items-center rounded-md border border-gray-300 bg-white px-3 py-2 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30"
-                  // disabled={portfolioItem.isCurrent}
                 >
-                  Select<span className="sr-only">, {portfolioItem.name}</span>
-                </button>
+                  Select
+                </Link>
+
                 {portfolioItemIdx !== 0 ? (
                   <div className="absolute right-6 left-0 -top-px h-px bg-gray-200" />
                 ) : null}

@@ -2,7 +2,7 @@ import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 
-import { Heading1, Heading2 } from "~/components/Typography";
+import { PageTitle, SectionTitle } from "~/components/Typography";
 import {
   default as PortfoliosTable,
   TPortfolioInfo,
@@ -27,6 +27,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     portfolios: [
       {
         name: "G10 Momentum",
+        slug: "g10-momentum",
         value: { amount: 10000, currency: "EUR" },
         performance: 0.05,
         riskLevel: {
@@ -37,6 +38,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       },
       {
         name: "DeFi",
+        slug: "defi",
         value: { amount: 10000, currency: "EUR" },
         performance: 0.05,
         riskLevel: {
@@ -47,6 +49,7 @@ export const loader: LoaderFunction = async ({ request }) => {
       },
       {
         name: "Bitcoin",
+        slug: "bitcoin",
         value: { amount: 10000, currency: "EUR" },
         performance: 0.05,
         riskLevel: {
@@ -74,13 +77,13 @@ export default function PortalIndexPage() {
 
   return (
     <div>
-      <Heading1>Portfolio</Heading1>
-      <div className="mb-8 mt-16">
-        <Heading2>Your Performance</Heading2>
+      <PageTitle>Portfolio</PageTitle>
+      {/* <div className="mb-8 mt-16">
+        <SectionTitle>Your Performance</SectionTitle>
         <div>{JSON.stringify(data.performance, undefined, 2)}</div>
-      </div>
+      </div> */}
       <div>
-        <Heading2>Your Portfolios</Heading2>
+        <SectionTitle>Your Portfolios</SectionTitle>
         <PortfoliosTable data={data.portfolios} />
       </div>
     </div>
