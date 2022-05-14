@@ -11,7 +11,7 @@ type TCurrencyValue = {
 export type TPortfolioInfo = {
   name: string;
   value: TCurrencyValue;
-  performance: number;
+  performance: TCurrencyValue;
   riskLevel: {
     name: string;
     metric: "VaR";
@@ -106,11 +106,7 @@ export default function PortfoliosTable({ data }: TPortfoliosTable) {
                   "hidden px-3 py-3.5 text-right text-sm text-gray-500 lg:table-cell"
                 )}
               >
-                {/* TODO performance should be absolute number! */}
-                <PerformanceCell
-                  value={portfolioItem.performance}
-                  decimals={2}
-                />
+                <PerformanceCell {...portfolioItem.performance} />
               </td>
               <td
                 className={classNames(
@@ -153,20 +149,6 @@ function RiskLevelCell({ name, value, metric }: TRiskLevelCell) {
   );
 }
 
-type TPerformanceCell = {
-  value: number;
-  decimals: 0 | 1 | 2 | 3 | 4;
-};
-
-function PerformanceCell({ value, decimals }: TPerformanceCell) {
-  const formatStrings = ["0%", "0.0%", "0.00%", "0.000%", "0.0000%"];
-  const formatString = formatStrings[decimals];
-
-  const formattedValue = numeral(value).format(formatString);
-
-  return <div>{formattedValue}</div>;
-}
-
 type TCurrencyValueCell = {
   amount: number;
   currency: "EUR";
@@ -183,6 +165,29 @@ function CurrencyValueCell({ amount, currency }: TCurrencyValueCell) {
   return (
     <div>
       {formattedAmount} {currencySymbol}
+    </div>
+  );
+}
+
+type TPerformanceCell = {
+  amount: number;
+  currency: "EUR";
+};
+
+function PerformanceCell({ amount, currency }: TPerformanceCell) {
+  const formattedAbsoluteAmount = numeral(Math.abs(amount)).format("0,0.00");
+  const currencySymbols = {
+    EUR: "€",
+  };
+
+  const currencySymbol = currencySymbols[currency];
+
+  const sign = amount === 0 ? "" : amount < 0 ? "-" : "+";
+
+  return (
+    <div>
+      {sign}
+      {formattedAbsoluteAmount} {currencySymbol}
     </div>
   );
 }

@@ -26,8 +26,8 @@ export const loader: LoaderFunction = async ({ request }) => {
       {
         name: "G10 Momentum",
         slug: "g10-momentum",
-        value: { amount: 10000, currency: "EUR" },
-        performance: 0.03,
+        value: { amount: 23129.84, currency: "EUR" },
+        performance: { amount: -900.14, currency: "EUR" },
         riskLevel: {
           name: "Medium",
           metric: "VaR",
@@ -38,7 +38,7 @@ export const loader: LoaderFunction = async ({ request }) => {
         name: "DeFi",
         slug: "defi",
         value: { amount: 10000, currency: "EUR" },
-        performance: 0.05,
+        performance: { amount: 0, currency: "EUR" },
         riskLevel: {
           name: "Low",
           metric: "VaR",
@@ -48,8 +48,8 @@ export const loader: LoaderFunction = async ({ request }) => {
       {
         name: "Bitcoin",
         slug: "bitcoin",
-        value: { amount: 10000, currency: "EUR" },
-        performance: 0.05,
+        value: { amount: 574.86, currency: "EUR" },
+        performance: { amount: 123.34, currency: "EUR" },
         riskLevel: {
           name: "High",
           metric: "VaR",
