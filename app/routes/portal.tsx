@@ -4,26 +4,24 @@ import { NavLink, Outlet } from "@remix-run/react";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
-  FolderIcon,
-  HomeIcon,
   MenuIcon,
-  UsersIcon,
   XIcon,
+  DocumentReportIcon,
+  LibraryIcon,
+  ChartPieIcon,
 } from "@heroicons/react/outline";
 
 const navigation = [
-  { name: "Portfolio", href: ".", icon: HomeIcon, current: true },
+  { name: "Portfolios", href: ".", icon: ChartPieIcon },
   {
-    name: "Crypto Indices",
-    href: "./cryptoIndices",
-    icon: UsersIcon,
-    current: false,
+    name: "Strategies",
+    href: "./strategies",
+    icon: DocumentReportIcon,
   },
   {
     name: "Account",
     href: "./account",
-    icon: FolderIcon,
-    current: false,
+    icon: LibraryIcon,
   },
 ];
 

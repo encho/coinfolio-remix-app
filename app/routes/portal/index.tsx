@@ -75,7 +75,7 @@ export default function PortalIndexPage() {
 
   return (
     <div>
-      <PageTitle>Portfolio</PageTitle>
+      <PageTitle>Portfolios</PageTitle>
       {/* <div className="mb-8 mt-16">
         <SectionTitle>Your Performance</SectionTitle>
         <div>{JSON.stringify(data.performance, undefined, 2)}</div>

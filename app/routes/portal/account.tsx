@@ -1,9 +1,9 @@
-import { Heading1 } from "~/components/Typography";
+import { PageTitle } from "~/components/Typography";
 
-export default function PortalCryptocurrenciesPage() {
+export default function PortalAccountPage() {
   return (
     <div>
-      <Heading1>Account</Heading1>
+      <PageTitle>Account</PageTitle>
     </div>
   );
 }

@@ -1,9 +1,9 @@
-import { Heading1 } from "~/components/Typography";
+import { PageTitle } from "~/components/Typography";
 
 export default function PortalStrategiesPage() {
   return (
     <div>
-      <Heading1>Strategies</Heading1>
+      <PageTitle>Strategies</PageTitle>
     </div>
   );
 }
