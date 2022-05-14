@@ -1,74 +1,57 @@
-import type { ActionFunction, LoaderFunction } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { Form, useCatch, useLoaderData } from "@remix-run/react";
+import type { LoaderFunction } from "@remix-run/node";
+import { json } from "@remix-run/node";
+import { useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-// import type { Note } from "~/models/note.server";
-// import { deleteNote } from "~/models/note.server";
-// import { getNote } from "~/models/note.server";
-// import { requireUserId } from "~/session.server";
+import { getPortfolioInfoFromSlug } from "~/models/portfolio.server";
+import { requireUserId } from "~/session.server";
+
+import { PageTitle, SectionTitle } from "~/components/Typography";
 
 type LoaderData = {
-  portfolioSlug: string;
+  portfolio: {
+    slug: string;
+    name: string;
+  };
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  // const userId = await requireUserId(request);
+  const userId = await requireUserId(request);
   invariant(params.portfolioSlug, "portfolioSlug not found");
 
-  // const note = await getNote({ userId, id: params.noteId });
-  //   if (!note) {
-  //     throw new Response("Not Found", { status: 404 });
-  //   }
-  //   return json<LoaderData>({ note });
-  // };
-
-  const portfolioSlug = params.portfolioSlug;
-
-  return json<LoaderData>({ portfolioSlug });
+  const portfolio = await getPortfolioInfoFromSlug({
+    userId,
+    slug: params.portfolioSlug,
+  });
+  if (!portfolio) {
+    throw new Response("Not Found", { status: 404 });
+  }
+  return json<LoaderData>({ portfolio });
 };
-
-// export const action: ActionFunction = async ({ request, params }) => {
-//   const userId = await requireUserId(request);
-//   invariant(params.noteId, "noteId not found");
-
-//   await deleteNote({ userId, id: params.noteId });
-
-//   return redirect("/notes");
-// };
 
 export default function PortfolioDetailsPage() {
   const data = useLoaderData() as LoaderData;
 
   return (
     <div>
-      <h3 className="text-2xl font-bold">{data.portfolioSlug}</h3>
-      {/* <p className="py-6">{data.note.body}</p>
-      <hr className="my-4" /> */}
-      {/* <Form method="post">
-        <button
-          type="submit"
-          className="rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
-        >
-          Delete
-        </button>
-      </Form> */}
+      <PageTitle>{data.portfolio.name}</PageTitle>
+      <h3 className="text-gray-500">slug: {data.portfolio.slug}</h3>
     </div>
   );
 }
 
-// export function ErrorBoundary({ error }: { error: Error }) {
-//   console.error(error);
+export function ErrorBoundary({ error }: { error: Error }) {
+  console.error(error);
 
-//   return <div>An unexpected error occurred: {error.message}</div>;
-// }
+  return <div>An unexpected error occurred: {error.message}</div>;
+}
 
-// export function CatchBoundary() {
-//   const caught = useCatch();
+export function CatchBoundary() {
+  const caught = useCatch();
 
-//   if (caught.status === 404) {
-//     return <div>Note not found</div>;
-//   }
+  if (caught.status === 404) {
+    return <div>Portfolio not found</div>;
+  }
 
-//   throw new Error(`Unexpected caught response with status: ${caught.status}`);
-// }
+  throw new Error(`Unexpected caught response with status: ${caught.status}`);
+}

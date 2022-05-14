@@ -29,8 +29,8 @@ function classNames(...classes: string[]) {
 
 export default function PortfoliosTable({ data }: TPortfoliosTable) {
   return (
-    <div className="-mx-4 mt-0 ring-1 ring-gray-300 sm:-mx-6 md:mx-0 md:rounded">
-      <table className="min-w-full divide-y divide-gray-300">
+    <div className="-mx-4 mt-0 ring-1 ring-gray-200 sm:-mx-6 md:mx-0 md:rounded">
+      <table className="min-w-full divide-y divide-gray-200">
         <thead>
           <tr>
             <th

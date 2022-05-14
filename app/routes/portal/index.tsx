@@ -7,8 +7,6 @@ import {
   default as PortfoliosTable,
   TPortfolioInfo,
 } from "~/components/PortfoliosTable";
-// TODO deprecate
-// import { Card } from "~/components/Card";
 
 type PerformanceOverviewData = {
   data: Array<{ date: Date; value: number }>;

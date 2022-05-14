@@ -10,7 +10,7 @@ export function PageTitle({ children }: { children: ReactNode }) {
 
 export function SectionTitle({ children }: { children: ReactNode }) {
   return (
-    <div className="mt-0 mb-2">
+    <div className="mt-0 mb-3">
       <Heading2>{children}</Heading2>
     </div>
   );
