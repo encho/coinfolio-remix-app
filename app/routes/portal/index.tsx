@@ -27,11 +27,11 @@ export const loader: LoaderFunction = async ({ request }) => {
         name: "G10 Momentum",
         slug: "g10-momentum",
         value: { amount: 10000, currency: "EUR" },
-        performance: 0.05,
+        performance: 0.03,
         riskLevel: {
-          name: "Low",
+          name: "Medium",
           metric: "VaR",
-          value: 0.1,
+          value: 0.3,
         },
       },
       {
@@ -51,9 +51,9 @@ export const loader: LoaderFunction = async ({ request }) => {
         value: { amount: 10000, currency: "EUR" },
         performance: 0.05,
         riskLevel: {
-          name: "Low",
+          name: "High",
           metric: "VaR",
-          value: 0.1,
+          value: 0.5,
         },
       },
     ],

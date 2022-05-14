@@ -6,7 +6,7 @@ import invariant from "tiny-invariant";
 import { getPortfolioInfoFromSlug } from "~/models/portfolio.server";
 import { requireUserId } from "~/session.server";
 
-import { PageTitle, SectionTitle } from "~/components/Typography";
+import { PageTitle } from "~/components/Typography";
 
 type LoaderData = {
   portfolio: {

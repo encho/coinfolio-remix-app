@@ -1,4 +1,5 @@
 import { Link } from "@remix-run/react";
+import numeral from "numeral";
 
 // TODO export from better, more generic file
 
@@ -43,19 +44,19 @@ export default function PortfoliosTable({ data }: TPortfoliosTable) {
               scope="col"
               className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
             >
+              Risk Level
+            </th>
+            <th
+              scope="col"
+              className="hidden px-3 py-3.5 text-right text-sm font-semibold text-gray-900 lg:table-cell"
+            >
               Value
             </th>
             <th
               scope="col"
-              className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
+              className="hidden px-3 py-3.5 text-right text-sm font-semibold text-gray-900 lg:table-cell"
             >
               Performance
-            </th>
-            <th
-              scope="col"
-              className="hidden px-3 py-3.5 text-left text-sm font-semibold text-gray-900 lg:table-cell"
-            >
-              Risk Level
             </th>
             <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
               <span className="sr-only">Select</span>
@@ -89,27 +90,27 @@ export default function PortfoliosTable({ data }: TPortfoliosTable) {
                   "hidden px-3 py-3.5 text-sm text-gray-500 lg:table-cell"
                 )}
               >
-                {/* TODO make CurrencyValueCell component */}
-                {portfolioItem.value.amount} {portfolioItem.value.currency}
+                <RiskLevelCell {...portfolioItem.riskLevel} />
               </td>
               <td
                 className={classNames(
                   portfolioItemIdx === 0 ? "" : "border-t border-gray-200",
-                  "hidden px-3 py-3.5 text-sm text-gray-500 lg:table-cell"
+                  "hidden px-3 py-3.5 text-right text-sm text-gray-500 lg:table-cell"
                 )}
               >
-                {/* TODO make PercentagePerformanceCell component */}
-                {portfolioItem.performance}
+                <CurrencyValueCell {...portfolioItem.value} />
               </td>
               <td
                 className={classNames(
                   portfolioItemIdx === 0 ? "" : "border-t border-gray-200",
-                  "hidden px-3 py-3.5 text-sm text-gray-500 lg:table-cell"
+                  "hidden px-3 py-3.5 text-right text-sm text-gray-500 lg:table-cell"
                 )}
               >
-                {/* TODO RiskLevelCell component */}
-                {portfolioItem.riskLevel.metric} -{" "}
-                {portfolioItem.riskLevel.name} - {portfolioItem.riskLevel.value}
+                {/* TODO performance should be absolute number! */}
+                <PerformanceCell
+                  value={portfolioItem.performance}
+                  decimals={2}
+                />
               </td>
               <td
                 className={classNames(
@@ -133,6 +134,55 @@ export default function PortfoliosTable({ data }: TPortfoliosTable) {
           ))}
         </tbody>
       </table>
+    </div>
+  );
+}
+
+type TRiskLevelCell = {
+  name: string;
+  value: number;
+  metric: "VaR";
+};
+
+function RiskLevelCell({ name, value, metric }: TRiskLevelCell) {
+  const formattedValue = numeral(value).format("0%");
+  return (
+    <div>
+      {name} ({formattedValue} {metric})
+    </div>
+  );
+}
+
+type TPerformanceCell = {
+  value: number;
+  decimals: 0 | 1 | 2 | 3 | 4;
+};
+
+function PerformanceCell({ value, decimals }: TPerformanceCell) {
+  const formatStrings = ["0%", "0.0%", "0.00%", "0.000%", "0.0000%"];
+  const formatString = formatStrings[decimals];
+
+  const formattedValue = numeral(value).format(formatString);
+
+  return <div>{formattedValue}</div>;
+}
+
+type TCurrencyValueCell = {
+  amount: number;
+  currency: "EUR";
+};
+
+function CurrencyValueCell({ amount, currency }: TCurrencyValueCell) {
+  const formattedAmount = numeral(amount).format("0,0.00");
+  const currencySymbols = {
+    EUR: "€",
+  };
+
+  const currencySymbol = currencySymbols[currency];
+
+  return (
+    <div>
+      {formattedAmount} {currencySymbol}
     </div>
   );
 }

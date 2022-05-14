@@ -18,7 +18,7 @@ export function SectionTitle({ children }: { children: ReactNode }) {
 
 export function Heading1({ children }: { children: ReactNode }) {
   return (
-    <h1 className="my-0 font-heading text-3xl font-semibold leading-8 tracking-wide text-neue-header dark:text-neuedark-header lg:text-4xl">
+    <h1 className="my-0 font-heading text-3xl font-bold leading-8 tracking-wide text-neue-header dark:text-neuedark-header lg:text-4xl">
       {children}
     </h1>
   );
