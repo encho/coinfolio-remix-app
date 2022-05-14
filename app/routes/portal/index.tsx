@@ -1,17 +1,21 @@
-import type { LinksFunction, LoaderFunction } from "@remix-run/node";
-import { Outlet, Link, Form, useLoaderData } from "@remix-run/react";
+import type { LoaderFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 
 import { Heading1, Heading2 } from "~/components/Typography";
+import {
+  default as PortfoliosTable,
+  TPortfolioInfo,
+} from "~/components/PortfoliosTable";
+// TODO deprecate
+// import { Card } from "~/components/Card";
 
 type PerformanceOverviewData = {
   data: Array<{ date: Date; value: number }>;
 };
 
 type LoaderData = {
-  // user: Awaited<ReturnType<typeof getUser>>;
-  // jokeListItems: Array<{ id: string; name: string }>;
-  portfolios: Array<{ name: string }>;
+  portfolios: Array<TPortfolioInfo>;
   performance: {
     "1M": PerformanceOverviewData;
     YTD: PerformanceOverviewData;
@@ -19,20 +23,38 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
-  // const jokeListItems = await db.joke.findMany({
-  //   take: 5,
-  //   select: { id: true, name: true },
-  //   orderBy: { createdAt: "desc" },
-  // });
-
-  // const user = await getUser(request);
-
   const data: LoaderData = {
-    // jokeListItems,
     portfolios: [
-      { name: "G10 Momentum" },
-      { name: "DeFi" },
-      { name: "Bitcoin" },
+      {
+        name: "G10 Momentum",
+        value: { amount: 10000, currency: "EUR" },
+        performance: 0.05,
+        riskLevel: {
+          name: "Low",
+          metric: "VaR",
+          value: 0.1,
+        },
+      },
+      {
+        name: "DeFi",
+        value: { amount: 10000, currency: "EUR" },
+        performance: 0.05,
+        riskLevel: {
+          name: "Low",
+          metric: "VaR",
+          value: 0.1,
+        },
+      },
+      {
+        name: "Bitcoin",
+        value: { amount: 10000, currency: "EUR" },
+        performance: 0.05,
+        riskLevel: {
+          name: "Low",
+          metric: "VaR",
+          value: 0.1,
+        },
+      },
     ],
     performance: {
       "1M": {
@@ -53,10 +75,14 @@ export default function PortalIndexPage() {
   return (
     <div>
       <Heading1>Portfolio</Heading1>
-      <Heading2>Your Performance</Heading2>
-      <div>{JSON.stringify(data.performance, undefined, 2)}</div>
-      <Heading2>Your Portfolios</Heading2>
-      <div>{JSON.stringify(data.portfolios, undefined, 2)}</div>
+      <div className="mb-8 mt-16">
+        <Heading2>Your Performance</Heading2>
+        <div>{JSON.stringify(data.performance, undefined, 2)}</div>
+      </div>
+      <div>
+        <Heading2>Your Portfolios</Heading2>
+        <PortfoliosTable data={data.portfolios} />
+      </div>
     </div>
   );
 }
