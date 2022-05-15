@@ -4,26 +4,24 @@ import { NavLink, Outlet } from "@remix-run/react";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
-  FolderIcon,
-  HomeIcon,
   MenuIcon,
-  UsersIcon,
   XIcon,
+  DocumentReportIcon,
+  LibraryIcon,
+  ChartPieIcon,
 } from "@heroicons/react/outline";
 
 const navigation = [
-  { name: "Portfolio", href: ".", icon: HomeIcon, current: true },
+  { name: "Portfolios", href: ".", icon: ChartPieIcon },
   {
-    name: "Crypto Indices",
-    href: "./cryptoIndices",
-    icon: UsersIcon,
-    current: false,
+    name: "Strategies",
+    href: "./strategies",
+    icon: DocumentReportIcon,
   },
   {
     name: "Account",
     href: "./account",
-    icon: FolderIcon,
-    current: false,
+    icon: LibraryIcon,
   },
 ];
 
@@ -91,35 +89,44 @@ export default function Example() {
                   </Transition.Child>
                   <div className="h-0 flex-1 overflow-y-auto pt-5 pb-4">
                     <div className="flex flex-shrink-0 items-center px-4">
+                      <span className="sr-only">Coinfolio Capital</span>
                       <img
-                        className="h-8 w-auto"
-                        src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"
-                        alt="Workflow"
+                        className="h-[24px] w-auto"
+                        src="https://coinfolio.s3.eu-central-1.amazonaws.com/logos/coinfolio-capital-logo-cockpit.svg"
+                        alt="Coinfolio Capital"
                       />
                     </div>
                     <nav className="mt-5 space-y-1 px-2">
                       {navigation.map((item) => (
-                        <a
+                        <NavLink
+                          end
                           key={item.name}
-                          href={item.href}
-                          className={classNames(
-                            item.current
-                              ? "bg-gray-100 text-gray-900"
-                              : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                            "group flex items-center rounded-md px-2 py-2 text-base font-medium"
-                          )}
+                          to={item.href}
+                          onClick={() => setSidebarOpen(false)}
+                          className={({ isActive }) =>
+                            classNames(
+                              isActive
+                                ? "bg-gray-100 text-gray-900"
+                                : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                              "group flex items-center rounded-md px-2 py-2 text-base font-medium"
+                            )
+                          }
                         >
-                          <item.icon
-                            className={classNames(
-                              item.current
-                                ? "text-gray-500"
-                                : "text-gray-400 group-hover:text-gray-500",
-                              "mr-4 h-6 w-6 flex-shrink-0"
-                            )}
-                            aria-hidden="true"
-                          />
-                          {item.name}
-                        </a>
+                          {({ isActive }) => (
+                            <Fragment>
+                              <item.icon
+                                className={classNames(
+                                  isActive
+                                    ? "text-gray-500"
+                                    : "text-gray-400 group-hover:text-gray-500",
+                                  "mr-4 h-6 w-6 flex-shrink-0"
+                                )}
+                                aria-hidden="true"
+                              />
+                              {item.name}
+                            </Fragment>
+                          )}
+                        </NavLink>
                       ))}
                     </nav>
                   </div>

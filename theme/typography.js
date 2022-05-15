@@ -69,8 +69,6 @@ const fontWeight = {
   bold: "700",
   extrabold: "800",
   black: "900",
-  heading: "800",
-  secondaryHeading: "500",
 };
 
 module.exports = { fontFamily, fontWeight };
