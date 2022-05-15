@@ -1,27 +1,10 @@
 import { Link } from "@remix-run/react";
 import numeral from "numeral";
 
-// TODO export from better, more generic file
-
-type TCurrencyValue = {
-  currency: "EUR";
-  amount: number;
-};
-
-export type TPortfolioInfo = {
-  name: string;
-  value: TCurrencyValue;
-  performance: TCurrencyValue;
-  riskLevel: {
-    name: string;
-    metric: "VaR";
-    value: number;
-  };
-  slug: string;
-};
+import type { TPortfolioOverview } from "~/models/portfolio.server";
 
 type TPortfoliosTable = {
-  data: Array<TPortfolioInfo>;
+  data: Array<TPortfolioOverview>;
 };
 
 function classNames(...classes: string[]) {
@@ -98,7 +81,7 @@ export default function PortfoliosTable({ data }: TPortfoliosTable) {
                   "hidden px-3 py-3.5 text-right text-sm text-gray-500 lg:table-cell"
                 )}
               >
-                <CurrencyValueCell {...portfolioItem.value} />
+                <CurrencyValueCell {...portfolioItem.markToMarketValue} />
               </td>
               <td
                 className={classNames(
@@ -106,7 +89,7 @@ export default function PortfoliosTable({ data }: TPortfoliosTable) {
                   "hidden px-3 py-3.5 text-right text-sm text-gray-500 lg:table-cell"
                 )}
               >
-                <PerformanceCell {...portfolioItem.performance} />
+                <PerformanceCell {...portfolioItem.performance.monetaryValue} />
               </td>
               <td
                 className={classNames(
