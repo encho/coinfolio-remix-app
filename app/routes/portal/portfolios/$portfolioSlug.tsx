@@ -3,7 +3,7 @@ import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import { getPortfolioInfoFromSlug } from "~/models/portfolio.server";
+import { getUserPortfolioInfoFromSlug } from "~/models/portfolio.server";
 import { requireUserId } from "~/session.server";
 
 import { PageTitle } from "~/components/Typography";
@@ -19,7 +19,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const userId = await requireUserId(request);
   invariant(params.portfolioSlug, "portfolioSlug not found");
 
-  const portfolio = await getPortfolioInfoFromSlug({
+  const portfolio = await getUserPortfolioInfoFromSlug({
     userId,
     slug: params.portfolioSlug,
   });
