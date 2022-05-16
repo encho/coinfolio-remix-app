@@ -7,6 +7,7 @@ import { requireUserId } from "~/session.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PortfoliosTable from "~/components/PortfoliosTable";
 import { MonetaryValueLarge, MonetaryValueSmall } from "~/components/Money";
+import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
 
 import type { TPortfolioOverview } from "~/models/portfolio.server";
 
@@ -62,8 +63,7 @@ export default function PortalIndexPage() {
           </div>
           <div className="flex items-center gap-4">
             <div className="h-28 w-60 overflow-hidden bg-gray-100">
-              <div>[Chart here]</div>
-              <div>{JSON.stringify(data.performanceSeries, undefined, 2)}</div>
+              <SmallPerformanceChart data={data.performanceSeries} />
             </div>
             <div className="h-20 w-40 bg-gray-100">
               <MonetaryValueSmall currency="EUR" amount={23.11} />
