@@ -2,6 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
+
+:root {
+    @apply font-body;
+  
+    /* light charts */
+    --color_page_header: var(--color-neue-page-header);
+    /* stylelint-disable-next-line */
+    --color_charts_axis: var(--color-neue-charts-axis);
+    --color_charts_grid: var(--color-neue-charts-grid);
+    --color_charts_zeroline: var(--color-neue-charts-zero-line);
+    --color_charts_text: var(--color-neue-charts-text);
+    --color_charts_positive_text: var(--color-neue-charts-positive-text);
+    /* stylelint-disable-next-line */
+    --color_charts_positive_text_soft: var(
+      --color-neue-charts-positive-text_soft
+    );
+    --color_charts_negative_text: var(--color-neue-charts-negative-text);
+    /* stylelint-disable-next-line */
+    --color_charts_negative_text_soft: var(
+      --color-neue-charts-negative-text_soft
+    );
+    --color_charts_bar_rail: var(--color-neue-charts-bar-rail);
+    --color_charts_bar_positive: var(--color-neue-charts-bar-positive);
+    --color_charts_bar_negative: var(--color-neue-charts-bar-negative);
+    /* stylelint-disable-next-line */
+    --color_charts_candlestick_up_fill: var(
+      --color-neue-charts-candlestick-up-fill
+    );
+    /* stylelint-disable-next-line */
+    --color_charts_candlestick_up_border: var(
+      --color-neue-charts-candlestick-up-border
+    );
+    /* stylelint-disable-next-line */
+    --color_charts_candlestick_down_fill: var(
+      --color-neue-charts-candlestick-down-fill
+    );
+    /* stylelint-disable-next-line */
+    --color_charts_candlestick_down_border: var(
+      --color-neue-charts-candlestick-down-border
+    );
+  
+    /* data */
+    --color_charts_data_volume: var(--color-neue-charts-data-volume);
+    --color_charts_data_1of1: var(--color-neue-charts-data-1of1);
+    --color_charts_data_1of2: var(--color-neue-charts-data-1of2);
+    --color_charts_data_2of2: var(--color-neue-charts-data-2of2);
+  
+    /* light performance */
+    --color_performance_total: var(--color-neue-performance-total);
+    --color_performance_fees: var(--color-neue-performance-fees);
+    --color_performance_unrealized: var(--color-neue-performance-unrealized);
+    --color_performance_realized: var(--color-neue-performance-realized);
+    --color_performance_position: var(--color-neue-performance-position);
+    --color_performance_funding: var(--color-neue-performance-funding);
+  
+    /* clock */
+    --color_clock_dial: var(--color-neue-clock-dial);
+    --color_clock_marks: var(--color-neue-clock-marks);
+    --color_clock_hour: var(--color-neue-clock-hour);
+    --color_clock_minute: var(--color-neue-clock-minute);
+    --color_clock_second: var(--color-neue-clock-second);
+  }
+  
+
+
+
 .encho-bg {
     @apply bg-neuedark-background;
 }
+

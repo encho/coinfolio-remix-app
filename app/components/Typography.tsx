@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 export function PageTitle({ children }: { children: ReactNode }) {
   return (
-    <div className="mt-4 mb-12">
+    <div className="mt-4 mb-14">
       <Heading1>{children}</Heading1>
     </div>
   );
@@ -26,7 +26,7 @@ export function Heading1({ children }: { children: ReactNode }) {
 
 export function Heading2({ children }: { children: ReactNode }) {
   return (
-    <h2 className="my-0 font-heading text-xl font-semibold leading-8 tracking-wide text-neue-header dark:text-neuedark-header lg:text-xl">
+    <h2 className="my-0 font-heading text-lg font-semibold leading-8 tracking-wide text-neue-header dark:text-neuedark-header lg:text-lg">
       {children}
     </h2>
   );

@@ -1,6 +1,7 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
+import numeral from "numeral";
 
 import { getUserPortfoliosOverview } from "~/models/portfolio.server";
 import { requireUserId } from "~/session.server";
@@ -62,17 +63,16 @@ export default function PortalIndexPage() {
           </div>
         </div>
         <div className="">
-          <div className="mb-4 text-right">
+          <div className="mb-6 text-right">
             <PeriodPicker />
           </div>
-          <div className="flex items-center gap-4">
-            <div className="h-28 w-60 overflow-hidden bg-gray-100">
-              {/* <SmallPerformanceChart data={data.performanceSeries} /> */}
+          <div className="flex items-center gap-8">
+            {/* <div className="h-28 w-60 overflow-visible"> */}
+            <div className="h-[200px] w-[400px] overflow-visible">
               <SmallPerformanceChart data={parsedPerformanceSeries} />
             </div>
-            <div className="h-20 w-40 bg-gray-100">
-              <MonetaryValueSmall currency="EUR" amount={23.11} />
-              Absolute Return
+            <div>
+              <PortfolioAbsoluteReturn currency="EUR" amount={23.11} />
             </div>
           </div>
         </div>
@@ -91,28 +91,64 @@ function PeriodPicker() {
     <span className="relative z-0 inline-flex rounded shadow-sm">
       <button
         type="button"
-        className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
       >
         1 D
       </button>
       <button
         type="button"
-        className="relative -ml-px inline-flex items-center border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className="relative -ml-px inline-flex items-center border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
       >
         1 W
       </button>
       <button
         type="button"
-        className="relative -ml-px inline-flex items-center border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className="relative -ml-px inline-flex items-center border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
       >
         1 M
       </button>
       <button
         type="button"
-        className="relative -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        className="relative -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
       >
         1 Y
       </button>
     </span>
+  );
+}
+
+type TPortfolioAbsoluteReturnProps = {
+  currency: "EUR";
+  amount: number;
+};
+
+function PortfolioAbsoluteReturn({
+  currency,
+  amount,
+}: TPortfolioAbsoluteReturnProps) {
+  const formattedAbsoluteAmount = numeral(Math.abs(amount)).format("0,0.00");
+  const currencySymbols = {
+    EUR: "€",
+  };
+
+  const currencySymbol = currencySymbols[currency];
+
+  const sign = amount === 0 ? "" : amount < 0 ? "-" : "+";
+  // const colorClass =
+  //   amount === 0
+  //     ? "text-neue-charts-neutral-text"
+  //     : amount < 0
+  //     ? "text-neue-charts-negative-text"
+  //     : "text-neue-charts-positive-text";
+
+  return (
+    <div>
+      {/* <div className={`text-xl font-bold leading-none ${colorClass}`}> */}
+      <div className={"mb-1 text-xl font-bold leading-none"}>
+        {sign}
+        {formattedAbsoluteAmount} {currencySymbol}
+      </div>
+      <div>Absolute Return</div>
+    </div>
   );
 }

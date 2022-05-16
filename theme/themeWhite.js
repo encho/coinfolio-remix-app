@@ -230,6 +230,10 @@ const withTheme = function (colors) {
         text: colors.red["500"],
         text_soft: colors.red["600"],
       },
+      neutral: {
+        text: colors.yellow["500"],
+        text_soft: colors.yellow["400"],
+      },
       axis: colors.gray["300"],
       zeroLine: colors.gray["400"],
       legend: {

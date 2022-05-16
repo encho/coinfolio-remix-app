@@ -87,25 +87,25 @@ export default function PortfoliosTable({ data }: TPortfoliosTable) {
               <tr>
                 <th
                   scope="col"
-                  className="py-3 pl-4 pr-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400 sm:pl-6"
+                  className="py-3 pl-4 pr-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 sm:pl-6"
                 >
                   Name
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-400"
+                  className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500"
                 >
                   Risk Level
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-400"
+                  className="px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500"
                 >
                   Position Value
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-400"
+                  className="px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500"
                 >
                   Performance
                 </th>
