@@ -29,6 +29,9 @@ const withTheme = function (colors) {
       default: {
         text: colors.blue["500"],
       },
+      hover: {
+        text: colors.blue["600"],
+      },
     },
     badge: {
       neutral: {
