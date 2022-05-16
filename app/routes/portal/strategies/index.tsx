@@ -1,9 +1,10 @@
+import { Link } from "@remix-run/react";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 
 export default function PortalStrategiesPage() {
   return (
     <div>
-      <PageTitle>CoinFolios</PageTitle>
+      <PageTitle>CoinFolios Library</PageTitle>
       <div className="flex flex-col gap-8">
         <div className="">
           <SectionTitle>Single Coin Indices</SectionTitle>
@@ -108,7 +109,12 @@ function StrategyTile({
         <img className="h-10 w-10 rounded-full" src={person.imageUrl} alt="" />
       </div> */}
       <div className="min-w-0 flex-1">
-        <a href="#" className="focus:outline-none">
+        <Link
+          to={"./bitcoin"}
+          prefetch="intent"
+          //   className="hover:text-neue-link-hover-text text-neue-link-default-text"
+          className="focus:outline-none"
+        >
           <div className="flex h-full flex-col justify-between">
             <div className="mb-2">
               <span className="absolute inset-0" aria-hidden="true" />
@@ -121,7 +127,10 @@ function StrategyTile({
               <p className="h-20 w-full bg-gray-100"></p>
             </div>
           </div>
-        </a>
+        </Link>
+
+        {/* <a href="#" className="focus:outline-none">
+        </a> */}
       </div>
     </div>
   );

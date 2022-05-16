@@ -11,7 +11,6 @@ import { MonetaryValueLarge, MonetaryValueSmall } from "~/components/Money";
 import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
 
 import type { TPortfolioOverview } from "~/models/portfolio.server";
-import { parse } from "path";
 
 type LoaderData = {
   portfoliosOverview: Array<TPortfolioOverview>;
@@ -66,9 +65,9 @@ export default function PortalIndexPage() {
           <div className="mb-6 text-right">
             <PeriodPicker />
           </div>
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-10">
             {/* <div className="h-28 w-60 overflow-visible"> */}
-            <div className="h-[200px] w-[400px] overflow-visible">
+            <div className="h-[200px] w-[600px] overflow-visible">
               <SmallPerformanceChart data={parsedPerformanceSeries} />
             </div>
             <div>
