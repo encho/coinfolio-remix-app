@@ -78,7 +78,7 @@ export default function PortalIndexPage() {
         </div>
       </div>
       <div className="mt-12">
-        <SectionTitle>Portfolio</SectionTitle>
+        <SectionTitle>My CoinFolios</SectionTitle>
         <PortfoliosTable data={data.portfoliosOverview} />
       </div>
     </div>
