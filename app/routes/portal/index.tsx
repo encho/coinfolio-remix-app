@@ -10,6 +10,7 @@ import { MonetaryValueLarge, MonetaryValueSmall } from "~/components/Money";
 import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
 
 import type { TPortfolioOverview } from "~/models/portfolio.server";
+import { parse } from "path";
 
 type LoaderData = {
   portfoliosOverview: Array<TPortfolioOverview>;
@@ -22,16 +23,13 @@ export const loader: LoaderFunction = async ({ request }) => {
   const portfoliosOverview = await getUserPortfoliosOverview({ userId });
 
   const performanceSeries = [
-    { date: new Date(), value: 100 },
-    { date: new Date(), value: 120 },
-    { date: new Date(), value: 130 },
-    { date: new Date(), value: 140 },
-    { date: new Date(), value: 150 },
-    { date: new Date(), value: 160 },
-    { date: new Date(), value: 120 },
-    { date: new Date(), value: 100 },
-    { date: new Date(), value: 120 },
-    { date: new Date(), value: 140 },
+    { date: new Date("2022-01-01"), value: 100 },
+    { date: new Date("2022-01-02"), value: 110 },
+    { date: new Date("2022-01-03"), value: 105 },
+    { date: new Date("2022-01-04"), value: 120 },
+    { date: new Date("2022-01-05"), value: 110 },
+    { date: new Date("2022-01-06"), value: 130 },
+    { date: new Date("2022-01-07"), value: 120 },
   ];
 
   if (!portfoliosOverview) {
@@ -45,6 +43,12 @@ export const loader: LoaderFunction = async ({ request }) => {
 
 export default function PortalIndexPage() {
   const data = useLoaderData<LoaderData>();
+
+  // data.forEach(it => {...it, date: new Date(it.date)})
+  const parsedPerformanceSeries = data.performanceSeries.map((it) => ({
+    ...it,
+    date: new Date(it.date),
+  }));
 
   return (
     <div>
@@ -63,7 +67,8 @@ export default function PortalIndexPage() {
           </div>
           <div className="flex items-center gap-4">
             <div className="h-28 w-60 overflow-hidden bg-gray-100">
-              <SmallPerformanceChart data={data.performanceSeries} />
+              {/* <SmallPerformanceChart data={data.performanceSeries} /> */}
+              <SmallPerformanceChart data={parsedPerformanceSeries} />
             </div>
             <div className="h-20 w-40 bg-gray-100">
               <MonetaryValueSmall currency="EUR" amount={23.11} />
