@@ -12,11 +12,15 @@ import {
 } from "@heroicons/react/outline";
 
 const navigation = [
-  { name: "Portfolios", href: ".", icon: ChartPieIcon },
+  {
+    name: "Dashboard",
+    href: ".",
+    icon: DocumentReportIcon,
+  },
   {
     name: "Strategies",
     href: "./strategies",
-    icon: DocumentReportIcon,
+    icon: ChartPieIcon,
   },
   {
     name: "Account",
