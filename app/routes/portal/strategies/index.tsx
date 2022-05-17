@@ -1,6 +1,13 @@
 import { Link } from "@remix-run/react";
+import type { LoaderFunction } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
+import { json } from "@remix-run/node";
+
+import { getStrategies } from "~/models/strategy.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import { SparklineChart } from "~/components/SparklineChart";
+
+import type { TStrategy } from "~/models/strategy.server";
 
 const performanceSeries = [
   { date: new Date("2022-01-01"), value: 100 },
@@ -12,11 +19,62 @@ const performanceSeries = [
   { date: new Date("2022-01-07"), value: 120 },
 ];
 
+type TStrategyOverview = TStrategy & {
+  performanceSeries: Array<{ date: Date; value: number }>;
+};
+
+type LoaderData = {
+  strategiesOverview: Array<TStrategyOverview>;
+};
+
+export const loader: LoaderFunction = async ({ request }) => {
+  const strategies = await getStrategies();
+
+  const performanceSeriesFixture = [
+    { date: new Date("2022-01-01"), value: 100 },
+    { date: new Date("2022-01-02"), value: 110 },
+    { date: new Date("2022-01-03"), value: 105 },
+    { date: new Date("2022-01-04"), value: 120 },
+    { date: new Date("2022-01-05"), value: 110 },
+    { date: new Date("2022-01-06"), value: 130 },
+    { date: new Date("2022-01-07"), value: 120 },
+  ];
+
+  if (!strategies) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
+  const strategiesOverview = strategies.map((strategy) => ({
+    ...strategy,
+    performanceSeries: performanceSeriesFixture,
+  }));
+
+  return json<LoaderData>({
+    strategiesOverview,
+  });
+};
+
 export default function PortalStrategiesPage() {
+  const data = useLoaderData<LoaderData>();
+
+  const parsedStrategiesOverview = data.strategiesOverview.map(
+    (strategyOverview) => ({
+      ...strategyOverview,
+      performanceSeries: strategyOverview.performanceSeries.map((it) => ({
+        ...it,
+        date: new Date(it.date),
+      })),
+    })
+  );
+
   return (
     <div>
       <PageTitle>CoinFolios Library</PageTitle>
       <div className="flex flex-col gap-8">
+        <div className="">
+          <SectionTitle>From Server</SectionTitle>
+          <StrategyTiles data={parsedStrategiesOverview} />
+        </div>
         <div className="">
           <SectionTitle>Single Coin Indices</SectionTitle>
           <StrategyTiles
@@ -86,12 +144,12 @@ export default function PortalStrategiesPage() {
 }
 
 /* This example requires Tailwind CSS v2.0+ */
-type TStrategyOverview = {
-  name: string;
-  description: string;
-  performanceSeries: Array<{ date: Date; value: number }>;
-  slug: string;
-};
+// type TStrategyOverview = {
+//   name: string;
+//   description: string;
+//   performanceSeries: Array<{ date: Date; value: number }>;
+//   slug: string;
+// };
 
 type TStrategyTilesProps = {
   data: Array<TStrategyOverview>;
