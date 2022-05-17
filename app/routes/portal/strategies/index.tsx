@@ -127,7 +127,10 @@ function StrategyTiles({ data }: TStrategyTilesProps) {
   );
 }
 
-type TStrategyTileProps = TStrategyOverview;
+type TStrategyTileProps = Pick<
+  TStrategyOverview,
+  "name" | "category" | "description" | "performanceSeries" | "slug"
+>;
 
 function StrategyTile({
   name,

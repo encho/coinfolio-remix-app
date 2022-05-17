@@ -6,16 +6,15 @@ import {
 } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-// import { getUserPortfolioInfoFromSlug } from "~/models/portfolio.server";
+import { getStrategyFromSlug } from "~/models/strategy.server";
 // import { requireUserId } from "~/session.server";
 
 import { PageTitle } from "~/components/Typography";
 
+import type { TStrategy } from "~/models/strategy.server";
+
 type LoaderData = {
-  strategy: {
-    slug: string;
-    name: string;
-  };
+  strategy: TStrategy;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -23,21 +22,13 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   invariant(params.strategySlug, "strategySlug not found");
   const slug = params.strategySlug;
 
-  // const portfolio = await getUserPortfolioInfoFromSlug({
-  //   userId,
-  //   slug: params.portfolioSlug,
-  // });
-
-  // if (!portfolio) {
-  //   throw new Response("Not Found", { status: 404 });
-  // }
-  // return json<LoaderData>({ portfolio });
-
-  const strategy = {
-    name: `${slug} ${slug} ${slug}`,
+  const strategy = await getStrategyFromSlug({
     slug,
-  };
+  });
 
+  if (!strategy) {
+    throw new Response("Not Found", { status: 404 });
+  }
   return json<LoaderData>({ strategy });
 };
 
@@ -47,7 +38,12 @@ export default function PortfolioDetailsPage() {
   return (
     <div>
       <PageTitle>{data.strategy.name}</PageTitle>
-      <h3 className="text-gray-500">slug: {data.strategy.slug}</h3>
+      {/* <h3 className="text-gray-500">
+        description: {data.strategy.description}
+      </h3> */}
+      <h3 className="max-w-xl text-gray-900">
+        {data.strategy.longDescription}
+      </h3>
     </div>
   );
 }
