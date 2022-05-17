@@ -24,7 +24,10 @@ type TStrategyOverview = TStrategy & {
 };
 
 type LoaderData = {
-  strategiesOverview: Array<TStrategyOverview>;
+  strategies: {
+    SINGLE_COIN: Array<TStrategyOverview>;
+    CRYPTO_MARKET_BETA: Array<TStrategyOverview>;
+  };
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -49,15 +52,25 @@ export const loader: LoaderFunction = async ({ request }) => {
     performanceSeries: performanceSeriesFixture,
   }));
 
+  const singleCoinStrategies = strategiesOverview.filter(
+    (it) => it.category === "SINGLE_COIN"
+  );
+  const cryptoMarketBetaStrategies = strategiesOverview.filter(
+    (it) => it.category === "CRYPTO_MARKET_BETA"
+  );
+
   return json<LoaderData>({
-    strategiesOverview,
+    strategies: {
+      SINGLE_COIN: singleCoinStrategies,
+      CRYPTO_MARKET_BETA: cryptoMarketBetaStrategies,
+    },
   });
 };
 
 export default function PortalStrategiesPage() {
   const data = useLoaderData<LoaderData>();
 
-  const parsedStrategiesOverview = data.strategiesOverview.map(
+  const singleCoinStrategiesOverview = data.strategies.SINGLE_COIN.map(
     (strategyOverview) => ({
       ...strategyOverview,
       performanceSeries: strategyOverview.performanceSeries.map((it) => ({
@@ -67,89 +80,31 @@ export default function PortalStrategiesPage() {
     })
   );
 
+  const cryptoMarketBetaStrategiesOverview =
+    data.strategies.CRYPTO_MARKET_BETA.map((strategyOverview) => ({
+      ...strategyOverview,
+      performanceSeries: strategyOverview.performanceSeries.map((it) => ({
+        ...it,
+        date: new Date(it.date),
+      })),
+    }));
+
   return (
     <div>
       <PageTitle>CoinFolios Library</PageTitle>
       <div className="flex flex-col gap-8">
         <div className="">
-          <SectionTitle>From Server</SectionTitle>
-          <StrategyTiles data={parsedStrategiesOverview} />
-        </div>
-        <div className="">
           <SectionTitle>Single Coin Indices</SectionTitle>
-          <StrategyTiles
-            data={[
-              {
-                name: "Bitcoin",
-                description:
-                  "The worlds first digital currency. Bitcoin is tamperproof and openly traded.",
-                performanceSeries,
-                slug: "bitcoin",
-              },
-              {
-                name: "Ethereum",
-                description:
-                  "Ethereum is a global virtual machine powered by blockchain technology.",
-                performanceSeries,
-                slug: "ethereum",
-              },
-              {
-                name: "Ripple",
-                description:
-                  "Ripple is both a cryptocurrency and a digital payment network for financial transactions.",
-                performanceSeries,
-                slug: "ripple",
-              },
-              {
-                name: "Cardano",
-                description:
-                  "Cardano is a blockchain and smart contracts platform with a cryptocurrency called ada.",
-                performanceSeries,
-                slug: "cardano",
-              },
-              {
-                name: "Solana",
-                description:
-                  "Solana is a blockchain platform designed to host decentralized applications.",
-                performanceSeries,
-                slug: "solana",
-              },
-            ]}
-          />
+          <StrategyTiles data={singleCoinStrategiesOverview} />
         </div>
         <div className="">
           <SectionTitle>Broad Market Indices</SectionTitle>
-          <StrategyTiles
-            data={[
-              {
-                name: "G5 Equally Weighted Index",
-                description:
-                  "Our equally weighted Cryptocurrency Index composed of the 5 largest cryptocurrencies.",
-                performanceSeries,
-                slug: "G5-equally-weighted",
-              },
-              {
-                name: "G5 Volatility Weighted Index",
-                description:
-                  "Our volatility weighted Cryptocurrency Index composed of the 5 largest cryptocurrencies.",
-                performanceSeries,
-                slug: "G5-vola-weighted",
-              },
-            ]}
-          />
+          <StrategyTiles data={cryptoMarketBetaStrategiesOverview} />
         </div>
       </div>
     </div>
   );
 }
-
-/* This example requires Tailwind CSS v2.0+ */
-// type TStrategyOverview = {
-//   name: string;
-//   description: string;
-//   performanceSeries: Array<{ date: Date; value: number }>;
-//   slug: string;
-// };
 
 type TStrategyTilesProps = {
   data: Array<TStrategyOverview>;
@@ -162,6 +117,7 @@ function StrategyTiles({ data }: TStrategyTilesProps) {
         <StrategyTile
           key={strategy.name}
           name={strategy.name}
+          category={strategy.category}
           description={strategy.description}
           performanceSeries={strategy.performanceSeries}
           slug={strategy.slug}
@@ -182,7 +138,7 @@ function StrategyTile({
   return (
     <div
       key={name}
-      className="items-centerxxxx relative flex space-x-3 rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350"
+      className="relative flex space-x-3 rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350"
     >
       <div className="min-w-0 flex-1">
         <Link to={`./${slug}`} prefetch="intent" className="focus:outline-none">
