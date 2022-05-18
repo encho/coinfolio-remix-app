@@ -2,6 +2,9 @@ import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { Fragment, useState } from "react";
+/* This example requires Tailwind CSS v2.0+ */
+// import { PlusSmIcon as PlusSmIconSolid } from "@heroicons/react/solid";
+// import { PlusSmIcon as PlusSmIconOutline } from "@heroicons/react/outline";
 
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
@@ -94,14 +97,14 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   const riskLevelsOverviewFixture = [
     {
       id: "001",
-      name: "Low",
+      name: "Low Risk",
       description: "10% VaR",
       performanceSeries: lowRiskPerformanceSeriesFixture,
       assetAllocation: lowRiskAssetAllocationFixture,
     },
     {
       id: "002",
-      name: "Med",
+      name: "Medium Risk",
       description: "30% VaR",
       performanceSeries: lowRiskPerformanceSeriesFixture.map((it) => ({
         ...it,
@@ -111,7 +114,7 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     },
     {
       id: "003",
-      name: "High",
+      name: "High Risk",
       description: "50% VaR",
       performanceSeries: lowRiskPerformanceSeriesFixture.map((it) => ({
         ...it,
@@ -148,6 +151,22 @@ export default function PortfolioDetailsPage() {
           </h3>
         </div>
         <div>
+          <div className="fixed bottom-10 right-10">
+            <button
+              type="button"
+              className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              Trade this Strategy
+            </button>
+
+            {/* <button
+              type="button"
+              className="inline-flex items-center rounded-full border border-transparent bg-blue-600 p-3 text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            >
+              <PlusSmIconOutline className="h-6 w-6" aria-hidden="true" />
+            </button> */}
+          </div>
+
           <SectionTitle>Risk Level</SectionTitle>
           <p className="mb-2">Select the target risk level for the strategy.</p>
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
