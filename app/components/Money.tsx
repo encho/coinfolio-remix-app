@@ -34,18 +34,4 @@ export function MonetaryValueLarge({ amount, currency }: TMonetaryValue) {
       {formattedAmount} {currencySymbol}
     </div>
   );
-
-  //     <h3 className={"#{colors} #{typography} #{margins} #{class}"}>
-  // <div className={"flex #{unit_flex_gap}"}>
-  //   <span className={"#{unit_font_size} self-end text-neue-txt-metricUnit dark:text-neuedark-txt-metricUnit font-light"}><%= if unit == nil, do: "", else: unit %></span>
-  //   <div className={"flex #{number_flex_gap}"}>
-  //     <div className="">
-  //       <%= whole_number_string %>
-  //     </div>
-  //     <div className={"#{decimal_number_font_size} font-medium"}>
-  //       .<%= decimal_number_string %>
-  //     </div>
-  //   </div>
-  // </div>
-  // </h3>
 }

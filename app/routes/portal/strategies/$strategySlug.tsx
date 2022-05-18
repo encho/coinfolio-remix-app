@@ -3,14 +3,10 @@ import { json } from "@remix-run/node";
 import { Link } from "@remix-run/react";
 import { Fragment, useState } from "react";
 
-import {
-  // useCatch,
-  useLoaderData,
-} from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
 import { getStrategyFromSlug } from "~/models/strategy.server";
-// import { requireUserId } from "~/session.server";
 
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PeriodPicker from "~/components/PeriodPicker";
@@ -22,6 +18,14 @@ import type { TStrategy } from "~/models/strategy.server";
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
+
+// TODOS:
+
+//               {/* TODO multiline chart */}
+//               {/* TODO parse dates before */}
+//               {/* TODO plot area color from theme */}
+//               {/* TODO fix button layout */}
+//               {/* TODO add add strategy button */}
 
 type TStrategyRiskLevelOverview = {
   id: string;
@@ -43,7 +47,6 @@ type LoaderData = {
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
-  // const userId = await requireUserId(request);
   invariant(params.strategySlug, "strategySlug not found");
   const slug = params.strategySlug;
 
@@ -167,11 +170,6 @@ export default function PortfolioDetailsPage() {
               <PeriodPicker />
             </div>
             <div className="h-[400px] w-full bg-gray-50">
-              {/* TODO multiline chart */}
-              {/* TODO parse dates before */}
-              {/* TODO plot are color from theme */}
-              {/* TODO fix button layout */}
-              {/* TODO add add strategy button */}
               <SmallPerformanceChart
                 data={data.riskLevelsOverview[0].performanceSeries.map(
                   (it) => ({ ...it, date: new Date(it.date) })
@@ -223,7 +221,6 @@ function RiskLevelButton({
   return (
     <div
       key={name}
-      // className="relative flex space-x-3 rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350"
       className={classNames(
         isActive ? "bg-blue-500" : "bg-white",
         "relative flex space-x-3 rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350"
@@ -250,11 +247,6 @@ function RiskLevelButton({
               >
                 {description}
               </p>
-            </div>
-            <div>
-              {/* <div className="h-16 w-full">
-                <SparklineChart data={performanceSeries} />
-              </div> */}
             </div>
           </div>
         </button>

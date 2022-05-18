@@ -1,18 +1,10 @@
 import { useMemo } from "react";
-import {
-  // AreaClosed, Line,
-  LinePath,
-  // Bar
-} from "@visx/shape";
+import { LinePath } from "@visx/shape";
 import { scaleTime, scaleLinear } from "@visx/scale";
 import { max, min, extent, bisector } from "d3-array";
 import { GridRows, GridColumns } from "@visx/grid";
 import { curveMonotoneX } from "@visx/curve";
-// import { ParentSize } from "@visx/responsive";
-
-// import wrapComponent from "./utils/wrapComponent";
 import wrapComponent from "./wrapComponent";
-// import { TThemeColors } from "./utils/themeColors";
 
 type TDataItem = {
   date: Date;
@@ -92,10 +84,8 @@ export const SparklineChart = wrapComponent(
           cx={dateScale(getDate(lastItem))}
           cy={valueScale(getValue(lastItem))}
           r={6}
-          // fill={"#ff0000"}
           fill={"var(--color_charts_data_1of1)"}
           fillOpacity={0.3}
-          // fill="rgba(0,100,255,0.2)"
           stroke="transparent"
         />
         <circle

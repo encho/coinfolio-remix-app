@@ -45,7 +45,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function PortalIndexPage() {
   const data = useLoaderData<LoaderData>();
 
-  // data.forEach(it => {...it, date: new Date(it.date)})
   const parsedPerformanceSeries = data.performanceSeries.map((it) => ({
     ...it,
     date: new Date(it.date),

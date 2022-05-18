@@ -1,15 +1,4 @@
-// import { Link } from "@remix-run/react";
 import numeral from "numeral";
-
-// import type { TPortfolioOverview } from "~/models/portfolio.server";
-
-// type TPortfoliosTable = {
-//   data: Array<TPortfolioOverview>;
-// };
-
-// function classNames(...classes: string[]) {
-//   return classes.filter(Boolean).join(" ");
-// }
 
 type TPercentageWeightCell = {
   weight: number;
@@ -83,9 +72,6 @@ export default function PortfoliosTable({
                 >
                   Performance
                 </th>
-                {/* <th scope="col" className="relative py-3 pl-3 pr-4 sm:pr-6">
-                  <span className="sr-only">Edit</span>
-                </th> */}
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
@@ -105,15 +91,6 @@ export default function PortfoliosTable({
                       performance={assetAllocationItem.performance}
                     />
                   </td>
-                  {/* <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                    <Link
-                      to={`./portfolios/${assetAllocationItem.slug}`}
-                      prefetch="intent"
-                      className="hover:text-neue-link-hover-text text-neue-link-default-text"
-                    >
-                      Select
-                    </Link>
-                  </td> */}
                 </tr>
               ))}
             </tbody>

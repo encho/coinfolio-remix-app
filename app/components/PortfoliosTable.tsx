@@ -11,14 +11,6 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-// export default function PortfoliosTable({ data }: TPortfoliosTable) {
-//   return (
-//     <div>
-//       <Example data={data} />
-//     </div>
-//   );
-// }
-
 type TRiskLevelCell = {
   name: string;
   value: number;

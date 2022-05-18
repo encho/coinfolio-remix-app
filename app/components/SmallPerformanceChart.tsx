@@ -1,18 +1,10 @@
 import { useMemo } from "react";
-import {
-  // AreaClosed, Line,
-  LinePath,
-  // Bar
-} from "@visx/shape";
+import { LinePath } from "@visx/shape";
 import { scaleTime, scaleLinear } from "@visx/scale";
 import { max, min, extent, bisector } from "d3-array";
 import { GridRows, GridColumns } from "@visx/grid";
 import { curveMonotoneX } from "@visx/curve";
-// import { ParentSize } from "@visx/responsive";
-
-// import wrapComponent from "./utils/wrapComponent";
 import wrapComponent from "./wrapComponent";
-// import { TThemeColors } from "./utils/themeColors";
 
 type TDataItem = {
   date: Date;
