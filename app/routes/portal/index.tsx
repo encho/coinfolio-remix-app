@@ -67,7 +67,7 @@ export default function PortalIndexPage() {
             <PeriodPicker />
           </div>
           <div className="flex items-center gap-10">
-            <div className="h-[200px] w-[600px] overflow-visible">
+            <div className="h-[200px] w-[600px] overflow-visible bg-gray-50">
               <SmallPerformanceChart data={parsedPerformanceSeries} />
             </div>
             <div>

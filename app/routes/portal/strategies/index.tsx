@@ -152,7 +152,7 @@ function StrategyTile({
               <p className="text-sm text-gray-900">{description}</p>
             </div>
             <div>
-              <div className="h-16 w-full">
+              <div className="h-16 w-full bg-gray-50">
                 <SparklineChart data={performanceSeries} />
               </div>
             </div>

@@ -14,6 +14,8 @@ import { getStrategyFromSlug } from "~/models/strategy.server";
 
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PeriodPicker from "~/components/PeriodPicker";
+import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
+import StrategyAssetAllocationTable from "~/components/StrategyAssetAllocationTable";
 
 import type { TStrategy } from "~/models/strategy.server";
 
@@ -25,6 +27,14 @@ type TStrategyRiskLevelOverview = {
   id: string;
   name: string;
   description: string;
+  // TODO the following are dependent on the active period (1d | 1w | 1m | 1y...)
+  performanceSeries: Array<{ date: Date; value: number }>;
+  assetAllocation: Array<{
+    ticker: string;
+    name: string;
+    weight: number;
+    performance: number;
+  }>;
 };
 
 type LoaderData = {
@@ -41,10 +51,71 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     slug,
   });
 
+  const lowRiskPerformanceSeriesFixture = [
+    { date: new Date("2022-01-01"), value: 100 },
+    { date: new Date("2022-01-02"), value: 110 },
+    { date: new Date("2022-01-03"), value: 105 },
+    { date: new Date("2022-01-04"), value: 120 },
+    { date: new Date("2022-01-05"), value: 110 },
+    { date: new Date("2022-01-06"), value: 130 },
+    { date: new Date("2022-01-07"), value: 120 },
+  ];
+
+  const lowRiskAssetAllocationFixture = [
+    {
+      ticker: "AAA",
+      name: "hello coin",
+      weight: 0.2,
+      performance: 0.03,
+    },
+    {
+      ticker: "QQQ",
+      name: "bitcoin",
+      weight: 0.1,
+      performance: 0.01,
+    },
+    {
+      ticker: "DJX",
+      name: "Ethereum",
+      weight: 0.1,
+      performance: -0.03,
+    },
+    {
+      ticker: "USDT",
+      name: "USD Theter",
+      weight: 0.6,
+      performance: 0.01,
+    },
+  ];
+
   const riskLevelsOverviewFixture = [
-    { id: "001", name: "Low", description: "10% VaR" },
-    { id: "002", name: "Med", description: "30% VaR" },
-    { id: "003", name: "High", description: "50% VaR" },
+    {
+      id: "001",
+      name: "Low",
+      description: "10% VaR",
+      performanceSeries: lowRiskPerformanceSeriesFixture,
+      assetAllocation: lowRiskAssetAllocationFixture,
+    },
+    {
+      id: "002",
+      name: "Med",
+      description: "30% VaR",
+      performanceSeries: lowRiskPerformanceSeriesFixture.map((it) => ({
+        ...it,
+        value: it.value * 2,
+      })),
+      assetAllocation: lowRiskAssetAllocationFixture,
+    },
+    {
+      id: "003",
+      name: "High",
+      description: "50% VaR",
+      performanceSeries: lowRiskPerformanceSeriesFixture.map((it) => ({
+        ...it,
+        value: it.value * 3,
+      })),
+      assetAllocation: lowRiskAssetAllocationFixture,
+    },
   ];
 
   if (!strategy) {
@@ -95,8 +166,25 @@ export default function PortfolioDetailsPage() {
             <div className="mb-3 text-right">
               <PeriodPicker />
             </div>
-            <div className="h-[400px] w-full bg-gray-100"></div>
+            <div className="h-[400px] w-full bg-gray-50">
+              {/* TODO multiline chart */}
+              {/* TODO parse dates before */}
+              {/* TODO plot are color from theme */}
+              {/* TODO fix button layout */}
+              {/* TODO add add strategy button */}
+              <SmallPerformanceChart
+                data={data.riskLevelsOverview[0].performanceSeries.map(
+                  (it) => ({ ...it, date: new Date(it.date) })
+                )}
+              />
+            </div>
           </div>
+        </div>
+        <div>
+          <SectionTitle>Asset Allocation</SectionTitle>
+          <StrategyAssetAllocationTable
+            data={data.riskLevelsOverview[0].assetAllocation}
+          />
         </div>
       </div>
     </div>
@@ -137,7 +225,7 @@ function RiskLevelButton({
       key={name}
       // className="relative flex space-x-3 rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350"
       className={classNames(
-        isActive ? "bg-blue-100" : "bg-white",
+        isActive ? "bg-blue-500" : "bg-white",
         "relative flex space-x-3 rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350"
       )}
     >
@@ -146,8 +234,22 @@ function RiskLevelButton({
           <div className="flex h-full flex-col justify-between gap-4">
             <div className="">
               <span className="absolute inset-0" aria-hidden="true" />
-              <p className="text-sm font-bold text-gray-900">{name}</p>
-              <p className="text-sm text-gray-900">{description}</p>
+              <p
+                className={classNames(
+                  isActive ? "text-white" : "text-gray-900",
+                  "text-sm font-bold"
+                )}
+              >
+                {name}
+              </p>
+              <p
+                className={classNames(
+                  isActive ? "text-white" : "text-gray-900",
+                  "text-sm"
+                )}
+              >
+                {description}
+              </p>
             </div>
             <div>
               {/* <div className="h-16 w-full">
