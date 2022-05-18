@@ -148,7 +148,7 @@ function StrategyTile({
           <div className="flex h-full flex-col justify-between gap-4">
             <div className="">
               <span className="absolute inset-0" aria-hidden="true" />
-              <p className="text-sm font-bold text-gray-900">{name}</p>
+              <p className="mb-1 text-base font-bold text-gray-900">{name}</p>
               <p className="text-sm text-gray-900">{description}</p>
             </div>
             <div>
