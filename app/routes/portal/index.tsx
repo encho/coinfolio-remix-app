@@ -7,11 +7,11 @@ import { getUserPortfoliosOverview } from "~/models/portfolio.server";
 import { requireUserId } from "~/session.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PortfoliosTable from "~/components/PortfoliosTable";
+import PeriodPicker from "~/components/PeriodPicker";
 import { MonetaryValueLarge, MonetaryValueSmall } from "~/components/Money";
 import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
 
 import type { TPortfolioOverview } from "~/models/portfolio.server";
-import { parse } from "path";
 
 type LoaderData = {
   portfoliosOverview: Array<TPortfolioOverview>;
@@ -45,7 +45,6 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function PortalIndexPage() {
   const data = useLoaderData<LoaderData>();
 
-  // data.forEach(it => {...it, date: new Date(it.date)})
   const parsedPerformanceSeries = data.performanceSeries.map((it) => ({
     ...it,
     date: new Date(it.date),
@@ -66,9 +65,8 @@ export default function PortalIndexPage() {
           <div className="mb-6 text-right">
             <PeriodPicker />
           </div>
-          <div className="flex items-center gap-8">
-            {/* <div className="h-28 w-60 overflow-visible"> */}
-            <div className="h-[200px] w-[400px] overflow-visible">
+          <div className="flex items-center gap-10">
+            <div className="h-[200px] w-[600px] overflow-visible bg-gray-50">
               <SmallPerformanceChart data={parsedPerformanceSeries} />
             </div>
             <div>
@@ -78,45 +76,12 @@ export default function PortalIndexPage() {
         </div>
       </div>
       <div className="mt-12">
-        <SectionTitle>Portfolio</SectionTitle>
+        <SectionTitle>My CoinFolios</SectionTitle>
         <PortfoliosTable data={data.portfoliosOverview} />
       </div>
     </div>
   );
 }
-
-/* This example requires Tailwind CSS v2.0+ */
-function PeriodPicker() {
-  return (
-    <span className="relative z-0 inline-flex rounded shadow-sm">
-      <button
-        type="button"
-        className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      >
-        1 D
-      </button>
-      <button
-        type="button"
-        className="relative -ml-px inline-flex items-center border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      >
-        1 W
-      </button>
-      <button
-        type="button"
-        className="relative -ml-px inline-flex items-center border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      >
-        1 M
-      </button>
-      <button
-        type="button"
-        className="relative -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      >
-        1 Y
-      </button>
-    </span>
-  );
-}
-
 type TPortfolioAbsoluteReturnProps = {
   currency: "EUR";
   amount: number;

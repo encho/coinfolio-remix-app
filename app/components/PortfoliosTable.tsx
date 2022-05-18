@@ -11,14 +11,6 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-// export default function PortfoliosTable({ data }: TPortfoliosTable) {
-//   return (
-//     <div>
-//       <Example data={data} />
-//     </div>
-//   );
-// }
-
 type TRiskLevelCell = {
   name: string;
   value: number;
@@ -87,25 +79,25 @@ export default function PortfoliosTable({ data }: TPortfoliosTable) {
               <tr>
                 <th
                   scope="col"
-                  className="py-3 pl-4 pr-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500 sm:pl-6"
+                  className="py-3 pl-4 pr-3 text-left text-xs font-medium uppercase tracking-wide text-gray-900 sm:pl-6"
                 >
                   Name
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-500"
+                  className="px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-gray-900"
                 >
                   Risk Level
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500"
+                  className="px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-900"
                 >
                   Position Value
                 </th>
                 <th
                   scope="col"
-                  className="px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-500"
+                  className="px-3 py-3 text-right text-xs font-medium uppercase tracking-wide text-gray-900"
                 >
                   Performance
                 </th>
