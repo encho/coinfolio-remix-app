@@ -7,6 +7,7 @@ import { getUserPortfoliosOverview } from "~/models/portfolio.server";
 import { requireUserId } from "~/session.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PortfoliosTable from "~/components/PortfoliosTable";
+import PeriodPicker from "~/components/PeriodPicker";
 import { MonetaryValueLarge, MonetaryValueSmall } from "~/components/Money";
 import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
 
@@ -66,7 +67,6 @@ export default function PortalIndexPage() {
             <PeriodPicker />
           </div>
           <div className="flex items-center gap-10">
-            {/* <div className="h-28 w-60 overflow-visible"> */}
             <div className="h-[200px] w-[600px] overflow-visible">
               <SmallPerformanceChart data={parsedPerformanceSeries} />
             </div>
@@ -83,39 +83,6 @@ export default function PortalIndexPage() {
     </div>
   );
 }
-
-/* This example requires Tailwind CSS v2.0+ */
-function PeriodPicker() {
-  return (
-    <span className="relative z-0 inline-flex rounded shadow-sm">
-      <button
-        type="button"
-        className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      >
-        1 D
-      </button>
-      <button
-        type="button"
-        className="relative -ml-px inline-flex items-center border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      >
-        1 W
-      </button>
-      <button
-        type="button"
-        className="relative -ml-px inline-flex items-center border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      >
-        1 M
-      </button>
-      <button
-        type="button"
-        className="relative -ml-px inline-flex items-center rounded-r-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
-      >
-        1 Y
-      </button>
-    </span>
-  );
-}
-
 type TPortfolioAbsoluteReturnProps = {
   currency: "EUR";
   amount: number;
