@@ -219,6 +219,51 @@ function RiskLevelButton({
   onClick: (id: string) => void;
 }) {
   return (
+    <button
+      key={name}
+      onClick={() => onClick(id)}
+      className={classNames(
+        isActive ? "bg-blue-500" : "bg-white",
+        "relative flex rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350 focus:outline-none"
+      )}
+    >
+      <div className="text-left">
+        <span className="absolute inset-0" aria-hidden="true" />
+        <p
+          className={classNames(
+            isActive ? "text-white" : "text-gray-900",
+            "text-sm font-bold"
+          )}
+        >
+          {name}
+        </p>
+        <p
+          className={classNames(
+            isActive ? "text-white" : "text-gray-900",
+            "text-sm"
+          )}
+        >
+          {description}
+        </p>
+      </div>
+    </button>
+  );
+}
+
+function RiskLevelButtonOLD({
+  id,
+  name,
+  description,
+  onClick,
+  isActive,
+}: {
+  id: string;
+  name: string;
+  description: string;
+  isActive: boolean;
+  onClick: (id: string) => void;
+}) {
+  return (
     <div
       key={name}
       className={classNames(
