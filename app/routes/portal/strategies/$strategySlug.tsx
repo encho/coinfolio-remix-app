@@ -1,6 +1,8 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Link } from "@remix-run/react";
+import { Fragment, useState } from "react";
+
 import {
   // useCatch,
   useLoaderData,
@@ -15,8 +17,19 @@ import PeriodPicker from "~/components/PeriodPicker";
 
 import type { TStrategy } from "~/models/strategy.server";
 
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
+type TStrategyRiskLevelOverview = {
+  id: string;
+  name: string;
+  description: string;
+};
+
 type LoaderData = {
   strategy: TStrategy;
+  riskLevelsOverview: Array<TStrategyRiskLevelOverview>;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -28,14 +41,27 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     slug,
   });
 
+  const riskLevelsOverviewFixture = [
+    { id: "001", name: "Low", description: "10% VaR" },
+    { id: "002", name: "Med", description: "30% VaR" },
+    { id: "003", name: "High", description: "50% VaR" },
+  ];
+
   if (!strategy) {
     throw new Response("Not Found", { status: 404 });
   }
-  return json<LoaderData>({ strategy });
+  return json<LoaderData>({
+    strategy,
+    riskLevelsOverview: riskLevelsOverviewFixture,
+  });
 };
 
 export default function PortfolioDetailsPage() {
   const data = useLoaderData() as LoaderData;
+
+  const [currentRiskLevel, setCurrentRiskLevel] = useState(
+    data.riskLevelsOverview[0].id
+  );
 
   return (
     <div>
@@ -51,9 +77,16 @@ export default function PortfolioDetailsPage() {
           <SectionTitle>Risk Level</SectionTitle>
           <p className="mb-2">Select the target risk level for the strategy.</p>
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
-            <RiskLevelButton name="Low" description="20% VaR" />
-            <RiskLevelButton name="Medium" description="40% VaR" />
-            <RiskLevelButton name="High" description="60% VaR" />
+            {data.riskLevelsOverview.map((riskLevelOverview) => (
+              <RiskLevelButton
+                key={riskLevelOverview.id}
+                id={riskLevelOverview.id}
+                name={riskLevelOverview.name}
+                description={riskLevelOverview.description}
+                onClick={(id) => setCurrentRiskLevel(id)}
+                isActive={riskLevelOverview.id === currentRiskLevel}
+              />
+            ))}
           </div>
         </div>
         <div>
@@ -87,24 +120,29 @@ export default function PortfolioDetailsPage() {
 // }
 
 function RiskLevelButton({
+  id,
   name,
   description,
-}: // slug,
-{
+  onClick,
+  isActive,
+}: {
+  id: string;
   name: string;
   description: string;
+  isActive: boolean;
+  onClick: (id: string) => void;
 }) {
   return (
     <div
       key={name}
-      className="relative flex space-x-3 rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350"
+      // className="relative flex space-x-3 rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350"
+      className={classNames(
+        isActive ? "bg-blue-100" : "bg-white",
+        "relative flex space-x-3 rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350"
+      )}
     >
       <div className="min-w-0 flex-1">
-        <Link
-          to={`./${"heheheeh"}`}
-          prefetch="intent"
-          className="focus:outline-none"
-        >
+        <button className="focus:outline-none" onClick={() => onClick(id)}>
           <div className="flex h-full flex-col justify-between gap-4">
             <div className="">
               <span className="absolute inset-0" aria-hidden="true" />
@@ -117,7 +155,7 @@ function RiskLevelButton({
               </div> */}
             </div>
           </div>
-        </Link>
+        </button>
       </div>
     </div>
   );
