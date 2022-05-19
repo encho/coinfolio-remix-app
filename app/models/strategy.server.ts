@@ -135,7 +135,7 @@ export function getStrategies(): Promise<null | Array<TStrategy>> {
         } else {
           resolve(foundStrategies);
         }
-      }, 500);
+      }, 2000);
     }
   );
   return strategiesPromise;
