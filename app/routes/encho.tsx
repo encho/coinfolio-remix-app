@@ -95,8 +95,16 @@ export default function PortalStrategiesPage() {
     }));
 
   return (
-    <div className="fixed top-0 left-0 overflow-scroll bg-orange-500 bg-opacity-80">
-      <div className="relative">
+    <div>
+      <div className="h-40 w-full bg-slate-200">
+        <Link to={`/portal`} prefetch="render" className="focus:outline-none">
+          Back
+        </Link>
+      </div>
+
+      <div className="mx-auto max-w-7xl bg-green-400 sm:px-6 lg:px-8">
+        {/* Content goes here */}
+
         <PageTitle>CoinFolios Library</PageTitle>
         <PageTitle>CoinFolios Library</PageTitle>
         <div className="flex flex-col gap-8">

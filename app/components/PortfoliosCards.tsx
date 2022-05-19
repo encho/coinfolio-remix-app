@@ -53,11 +53,7 @@ function AddNewPortfolioTile() {
       className="relative flex space-x-3 rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350"
     >
       <div className="min-w-0 flex-1">
-        <Link
-          to={`./strategies`}
-          prefetch="render"
-          className="focus:outline-none"
-        >
+        <Link to={`/encho`} prefetch="render" className="focus:outline-none">
           <div className="flex h-full flex-col justify-between gap-4">
             <div className="">
               <span className="absolute inset-0" aria-hidden="true" />
