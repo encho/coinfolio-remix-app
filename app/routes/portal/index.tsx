@@ -3,25 +3,25 @@ import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import numeral from "numeral";
 
-import { getUserPortfoliosOverview } from "~/models/portfolio.server";
+import { getUserPortfolios } from "~/models/portfolio.server";
 import { requireUserId } from "~/session.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
-import PortfoliosTable from "~/components/PortfoliosTable";
+import PortfoliosCards from "~/components/PortfoliosCards";
 import PeriodPicker from "~/components/PeriodPicker";
 import { MonetaryValueLarge, MonetaryValueSmall } from "~/components/Money";
 import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
 
-import type { TPortfolioOverview } from "~/models/portfolio.server";
+import type { TPortfolio } from "~/models/portfolio.server";
 
 type LoaderData = {
-  portfoliosOverview: Array<TPortfolioOverview>;
+  portfolios: Array<TPortfolio>;
   performanceSeries: Array<{ date: Date; value: number }>;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request);
 
-  const portfoliosOverview = await getUserPortfoliosOverview({ userId });
+  const portfolios = await getUserPortfolios({ userId });
 
   const performanceSeries = [
     { date: new Date("2022-01-01"), value: 100 },
@@ -33,11 +33,11 @@ export const loader: LoaderFunction = async ({ request }) => {
     { date: new Date("2022-01-07"), value: 120 },
   ];
 
-  if (!portfoliosOverview) {
+  if (!portfolios) {
     throw new Response("Not Found", { status: 404 });
   }
   return json<LoaderData>({
-    portfoliosOverview,
+    portfolios,
     performanceSeries,
   });
 };
@@ -77,7 +77,7 @@ export default function PortalIndexPage() {
       </div>
       <div className="mt-12">
         <SectionTitle>My CoinFolios</SectionTitle>
-        <PortfoliosTable data={data.portfoliosOverview} />
+        <PortfoliosCards data={data.portfolios} />
       </div>
     </div>
   );

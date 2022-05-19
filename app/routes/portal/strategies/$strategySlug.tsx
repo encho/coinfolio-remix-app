@@ -9,7 +9,7 @@ import { CheckIcon } from "@heroicons/react/outline";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import { getStrategyFromSlug } from "~/models/strategy.server";
+import { getStrategyFromSlug, TRiskLevel } from "~/models/strategy.server";
 
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PeriodPicker from "~/components/PeriodPicker";
@@ -27,24 +27,61 @@ function classNames(...classes: string[]) {
 //               {/* TODO parse dates before */}
 //               {/* TODO plot area color from theme */}
 
-type TStrategyRiskLevelOverview = {
-  id: string;
-  name: string;
-  description: string;
-  // TODO the following are dependent on the active period (1d | 1w | 1m | 1y...)
-  performanceSeries: Array<{ date: Date; value: number }>;
-  assetAllocation: Array<{
-    ticker: string;
-    name: string;
-    weight: number;
-    performance: number;
-  }>;
-};
+// type TStrategyRiskLevelOverview = {
+//   id: string;
+//   name: string;
+//   description: string;
+//   // TODO the following are dependent on the active period (1d | 1w | 1m | 1y...)
+//   performanceSeries: Array<{ date: Date; value: number }>;
+//   assetAllocation: Array<{
+//     ticker: string;
+//     name: string;
+//     weight: number;
+//     performance: number;
+//   }>;
+// };
 
 type LoaderData = {
   strategy: TStrategy;
-  riskLevelsOverview: Array<TStrategyRiskLevelOverview>;
+  // riskLevelsOverview: Array<TStrategyRiskLevelOverview>;
 };
+
+const PERFORMANCE_SERIES_FIXTURE = [
+  { date: new Date("2022-01-01"), value: 100 },
+  { date: new Date("2022-01-02"), value: 110 },
+  { date: new Date("2022-01-03"), value: 105 },
+  { date: new Date("2022-01-04"), value: 120 },
+  { date: new Date("2022-01-05"), value: 110 },
+  { date: new Date("2022-01-06"), value: 130 },
+  { date: new Date("2022-01-07"), value: 120 },
+];
+
+const ASSET_ALLOCATION_FIXTURE = [
+  {
+    ticker: "BTC",
+    name: "Bitcoin",
+    weight: 0.2,
+    performance: 0.03,
+  },
+  {
+    ticker: "XRP",
+    name: "Ripple",
+    weight: 0.1,
+    performance: 0.01,
+  },
+  {
+    ticker: "ETH",
+    name: "Ethereum",
+    weight: 0.1,
+    performance: -0.03,
+  },
+  {
+    ticker: "USDT",
+    name: "USD Theter",
+    weight: 0.6,
+    performance: 0.01,
+  },
+];
 
 export const loader: LoaderFunction = async ({ request, params }) => {
   invariant(params.strategySlug, "strategySlug not found");
@@ -54,79 +91,11 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     slug,
   });
 
-  const lowRiskPerformanceSeriesFixture = [
-    { date: new Date("2022-01-01"), value: 100 },
-    { date: new Date("2022-01-02"), value: 110 },
-    { date: new Date("2022-01-03"), value: 105 },
-    { date: new Date("2022-01-04"), value: 120 },
-    { date: new Date("2022-01-05"), value: 110 },
-    { date: new Date("2022-01-06"), value: 130 },
-    { date: new Date("2022-01-07"), value: 120 },
-  ];
-
-  const lowRiskAssetAllocationFixture = [
-    {
-      ticker: "AAA",
-      name: "hello coin",
-      weight: 0.2,
-      performance: 0.03,
-    },
-    {
-      ticker: "QQQ",
-      name: "bitcoin",
-      weight: 0.1,
-      performance: 0.01,
-    },
-    {
-      ticker: "DJX",
-      name: "Ethereum",
-      weight: 0.1,
-      performance: -0.03,
-    },
-    {
-      ticker: "USDT",
-      name: "USD Theter",
-      weight: 0.6,
-      performance: 0.01,
-    },
-  ];
-
-  const riskLevelsOverviewFixture = [
-    {
-      id: "001",
-      name: "Low Risk",
-      description: "10% VaR",
-      performanceSeries: lowRiskPerformanceSeriesFixture,
-      assetAllocation: lowRiskAssetAllocationFixture,
-    },
-    {
-      id: "002",
-      name: "Medium Risk",
-      description: "30% VaR",
-      performanceSeries: lowRiskPerformanceSeriesFixture.map((it) => ({
-        ...it,
-        value: it.value * 2,
-      })),
-      assetAllocation: lowRiskAssetAllocationFixture,
-    },
-    {
-      id: "003",
-      name: "High Risk",
-      description: "50% VaR",
-      performanceSeries: lowRiskPerformanceSeriesFixture.map((it) => ({
-        ...it,
-        value: it.value * 3,
-      })),
-      assetAllocation: lowRiskAssetAllocationFixture,
-    },
-  ];
-
   if (!strategy) {
     throw new Response("Not Found", { status: 404 });
   }
   return json<LoaderData>({
     strategy,
-    riskLevelsOverview: riskLevelsOverviewFixture,
   });
 };
 
@@ -134,11 +103,11 @@ export default function PortfolioDetailsPage() {
   const data = useLoaderData() as LoaderData;
 
   const [currentRiskLevel, setCurrentRiskLevel] = useState(
-    data.riskLevelsOverview[0].id
+    data.strategy.riskLevels[0].id
   );
 
   // TODO useMemo
-  const currentRiskLevelOverview = data.riskLevelsOverview.find(
+  const currentRiskLevelOverview = data.strategy.riskLevels.find(
     (it) => it.id === currentRiskLevel
   );
 
@@ -177,14 +146,14 @@ export default function PortfolioDetailsPage() {
           <SectionTitle>Risk Level</SectionTitle>
           <p className="mb-2">Select the target risk level for the strategy.</p>
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
-            {data.riskLevelsOverview.map((riskLevelOverview) => (
+            {data.strategy.riskLevels.map((riskLevel) => (
               <RiskLevelButton
-                key={riskLevelOverview.id}
-                id={riskLevelOverview.id}
-                name={riskLevelOverview.name}
-                description={riskLevelOverview.description}
+                key={riskLevel.id}
+                id={riskLevel.id}
+                name={riskLevel.name}
+                description={riskLevel.description}
                 onClick={(id) => setCurrentRiskLevel(id)}
-                isActive={riskLevelOverview.id === currentRiskLevel}
+                isActive={riskLevel.id === currentRiskLevel}
               />
             ))}
           </div>
@@ -196,19 +165,13 @@ export default function PortfolioDetailsPage() {
               <PeriodPicker />
             </div>
             <div className="h-[400px] w-full bg-gray-50">
-              <SmallPerformanceChart
-                data={data.riskLevelsOverview[0].performanceSeries.map(
-                  (it) => ({ ...it, date: new Date(it.date) })
-                )}
-              />
+              <SmallPerformanceChart data={PERFORMANCE_SERIES_FIXTURE} />
             </div>
           </div>
         </div>
         <div>
           <SectionTitle>Asset Allocation</SectionTitle>
-          <StrategyAssetAllocationTable
-            data={data.riskLevelsOverview[0].assetAllocation}
-          />
+          <StrategyAssetAllocationTable data={ASSET_ALLOCATION_FIXTURE} />
         </div>
       </div>
     </div>
@@ -280,10 +243,7 @@ type TModalExampleProps = {
   open: boolean;
   setOpen: (newOpen: boolean) => void;
   strategy: Pick<TStrategy, "name">;
-  strategyRiskLevelOverview: Pick<
-    TStrategyRiskLevelOverview,
-    "id" | "name" | "description"
-  >;
+  strategyRiskLevelOverview: Pick<TRiskLevel, "id" | "name" | "description">;
 };
 
 function ModalExample({

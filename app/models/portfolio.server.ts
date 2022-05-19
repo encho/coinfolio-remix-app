@@ -1,17 +1,19 @@
 import type { User } from "@prisma/client";
-
+import type { TStrategy, TRiskLevel } from "./strategy.server";
 // TODO define TPortfolio type here, and export!
 
-export type TRiskLevel = {
+export type TRiskLevelOLD = {
   name: string;
   metric: "VaR";
   value: number;
 };
 
 export type TPortfolio = {
-  userId: User["id"];
-  name: string;
-  slug: string;
+  userId: User["id"]; // primary key
+  strategyId: TStrategy["id"]; // primary key
+  riskLevelId: TRiskLevel["id"];
+  // name: string;
+  // slug: string;
 };
 
 export type TPortfolioPeriodPerformance = {
@@ -23,87 +25,97 @@ export type TPortfolioPeriodPerformance = {
   };
 };
 
-export type TPortfolioOverview = TPortfolio & {
-  markToMarketValue: { amount: 10000; currency: "EUR" };
-  riskLevel: TRiskLevel;
-  performance: TPortfolioPeriodPerformance;
-};
+// TODO for now remove the added fieldsLevel
+// export type TPortfolioOverview = TPortfolio & {
+//   markToMarketValue: { amount: 10000; currency: "EUR" };
+//   riskLevel: TRiskLevelOLD;
+//   performance: TPortfolioPeriodPerformance;
+// };
 
-const portfolios: Array<TPortfolioOverview> = [
+// const portfolios: Array<TPortfolioOverview> = [
+const portfoliosDB: Array<TPortfolio> = [
   {
     userId: "cl305plna000699t19aqezycd",
-    name: "G10 Momentum FTW",
-    slug: "g10-momentum",
-    riskLevel: {
-      name: "High",
-      metric: "VaR",
-      value: 0.5,
-    },
-    markToMarketValue: { amount: 10000, currency: "EUR" },
-    performance: {
-      periodStart: new Date(),
-      periodEnd: new Date(),
-      monetaryValue: { amount: 300, currency: "EUR" },
-    },
+    strategyId: "strategy-001",
+    riskLevelId: "riskLevel-001",
+    // name: "G10 Momentum FTW",
+    // riskLevel: {
+    //   name: "High",
+    //   metric: "VaR",
+    //   value: 0.5,
+    // },
+    // markToMarketValue: { amount: 10000, currency: "EUR" },
+    // performance: {
+    //   periodStart: new Date(),
+    //   periodEnd: new Date(),
+    //   monetaryValue: { amount: 300, currency: "EUR" },
+    // },
   },
   {
     userId: "cl305plna000699t19aqezycd",
-    name: "defi Rocks!",
-    slug: "defi",
-    riskLevel: {
-      name: "Medium",
-      metric: "VaR",
-      value: 0.3,
-    },
-    markToMarketValue: { amount: 10000, currency: "EUR" },
-    performance: {
-      periodStart: new Date(),
-      periodEnd: new Date(),
-      monetaryValue: { amount: 300, currency: "EUR" },
-    },
+    strategyId: "strategy-002",
+    riskLevelId: "riskLevel-001",
+    // name: "defi Rocks!",
+    // riskLevel: {
+    //   name: "Medium",
+    //   metric: "VaR",
+    //   value: 0.3,
+    // },
+    // markToMarketValue: { amount: 10000, currency: "EUR" },
+    // performance: {
+    //   periodStart: new Date(),
+    //   periodEnd: new Date(),
+    //   monetaryValue: { amount: 300, currency: "EUR" },
+    // },
   },
 ];
 
-export function getUserPortfoliosOverview({
+export function getUserPortfolios({
   userId,
 }: {
   userId: User["id"];
-}): Promise<null | Array<TPortfolioOverview>> {
+}): Promise<null | Array<TPortfolio>> {
   console.log(`Retrieving portfolio data for user: ${userId}...`);
-  const portfolioPromise: Promise<null | Array<TPortfolioOverview>> =
-    new Promise((resolve) => {
+  const portfolioPromise: Promise<null | Array<TPortfolio>> = new Promise(
+    (resolve) => {
       setTimeout(() => {
-        const userPortfolios = portfolios.filter((it) => it.userId === userId);
+        const userPortfolios = portfoliosDB.filter(
+          (it) => it.userId === userId
+        );
         if (!userPortfolios) {
           resolve(null);
         } else {
           resolve(userPortfolios);
         }
       }, 300);
-    });
+    }
+  );
   return portfolioPromise;
 }
 
-export function getUserPortfolioInfoFromSlug({
-  slug,
+export function getUserPortfolioInfoFromStrategyId({
+  strategyId,
   userId,
 }: {
-  slug: string;
+  strategyId: TPortfolio["strategyId"];
   userId: User["id"];
-}): Promise<null | { name: string; slug: string }> {
+}): Promise<null | TPortfolio> {
   console.log(
-    `Retrieving portfolio data for user: ${userId} and slug: ${slug}...`
+    `Retrieving portfolio data for user: ${userId} and strategyId: ${strategyId}...`
   );
-  const portfolioPromise: Promise<null | { name: string; slug: string }> =
-    new Promise((resolve) => {
+  const portfolioPromise: Promise<null | TPortfolio> = new Promise(
+    (resolve) => {
       setTimeout(() => {
-        const portfolio = portfolios.find((it) => it.slug === slug);
+        const portfolio = portfoliosDB.find(
+          (it) => it.strategyId === strategyId
+        );
         if (!portfolio) {
           resolve(null);
         } else {
           resolve(portfolio);
         }
       }, 300);
-    });
+    }
+  );
   return portfolioPromise;
 }
