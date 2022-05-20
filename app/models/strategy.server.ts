@@ -1,3 +1,6 @@
+import { resolve } from "path";
+import { getRiskLevels } from "./riskLevel.server";
+
 const bitcoinLongDescripton = `
 Bitcoin is a cryptocurrency, a virtual currency designed to act as money and a form of payment outside the control of any one person, group, or entity, and thus removing the need for third-party involvement in financial transactions. It is rewarded to blockchain miners for the work done to verify transactions and can be purchased on several exchanges.
 `;
@@ -12,6 +15,7 @@ export type TStrategy = {
   riskLevels: Array<TRiskLevel>;
 };
 
+// TODO deprecate ASAP
 export type TRiskLevel = {
   id: string;
   name: string;
@@ -20,6 +24,7 @@ export type TRiskLevel = {
   metricValue: number;
 };
 
+// TODO deprecate ASAP
 const riskLevelsDB: Array<TRiskLevel> = [
   {
     id: "riskLevel-001",
@@ -51,6 +56,7 @@ const riskLevelsDB: Array<TRiskLevel> = [
   },
 ];
 
+// TODO: risklevels should be id's to risklevels as these will in any case be expanded
 const strategiesDB: Array<TStrategy> = [
   {
     id: "strategy-001",
@@ -146,7 +152,7 @@ export function getStrategyFromId({
 }: {
   id: string;
 }): Promise<null | TStrategy> {
-  console.log(`Retrieving strategy data for slug: ${id}...`);
+  console.log(`Retrieving strategy data for id: ${id}...`);
   const strategyPromise: Promise<null | TStrategy> = new Promise((resolve) => {
     setTimeout(() => {
       const strategy = strategiesDB.find((it) => it.id === id);
@@ -160,19 +166,35 @@ export function getStrategyFromId({
   return strategyPromise;
 }
 
-export function getStrategyFromSlug({
+export async function getStrategyFromSlug({
   slug,
 }: {
   slug: string;
 }): Promise<null | TStrategy> {
   console.log(`Retrieving strategy data for slug: ${slug}...`);
+  console.log(`RISK LEVELS ARE>>>>>`);
+
+  const riskLevels = await getRiskLevels();
+
+  if (!riskLevels) {
+    // resolve(null);
+    throw Error();
+  }
+
+  console.log(riskLevels);
   const strategyPromise: Promise<null | TStrategy> = new Promise((resolve) => {
     setTimeout(() => {
       const strategy = strategiesDB.find((it) => it.slug === slug);
       if (!strategy) {
         resolve(null);
       } else {
-        resolve(strategy);
+        const expandedStrategy = {
+          ...strategy,
+          riskLevels: strategy.riskLevels.map((it) =>
+            riskLevels.find((rl) => rl.id === it.id)
+          ),
+        } as TStrategy;
+        resolve(expandedStrategy);
       }
     }, 500);
   });

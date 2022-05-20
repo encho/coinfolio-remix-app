@@ -141,12 +141,12 @@ export default function PortfolioDetailsPage() {
               </div>
             </div>
             <div>
-              <SectionTitle>Performance</SectionTitle>
+              <div className="flex justify-between align-baseline">
+                <SectionTitle>Performance</SectionTitle>
+                <PeriodPicker />
+              </div>
               <div className="w-full">
-                <div className="mb-3 text-right">
-                  <PeriodPicker />
-                </div>
-                <div className="h-[200px] w-full bg-gray-50">
+                <div className="h-[250px] w-full bg-gray-50">
                   <SmallPerformanceChart data={PERFORMANCE_SERIES_FIXTURE} />
                 </div>
               </div>

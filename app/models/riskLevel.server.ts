@@ -37,6 +37,23 @@ const riskLevelsDB: Array<TRiskLevel> = [
   },
 ];
 
+export function getRiskLevels(): Promise<null | Array<TRiskLevel>> {
+  console.log(`Retrieving riskLevels data...`);
+  const riskLevelsPromise: Promise<null | Array<TRiskLevel>> = new Promise(
+    (resolve) => {
+      setTimeout(() => {
+        const foundRiskLevels = riskLevelsDB;
+        if (!foundRiskLevels) {
+          resolve(null);
+        } else {
+          resolve(foundRiskLevels);
+        }
+      }, 300);
+    }
+  );
+  return riskLevelsPromise;
+}
+
 export function getRiskLevelFromId({
   id,
 }: {

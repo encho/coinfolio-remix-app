@@ -8,6 +8,8 @@ import { PageTitle, SectionTitle } from "~/components/Typography";
 import { Container, Header } from "~/components/NewPortfolio";
 import { SparklineChart } from "~/components/SparklineChart";
 
+import { getStrategyPerformanceSeries } from "~/fixtures/strategyPerformanceSeries";
+
 import type { TStrategy } from "~/models/strategy.server";
 
 type TStrategyOverview = TStrategy & {
@@ -24,23 +26,15 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ request }) => {
   const strategies = await getStrategies();
 
-  const performanceSeriesFixture = [
-    { date: new Date("2022-01-01"), value: 100 },
-    { date: new Date("2022-01-02"), value: 110 },
-    { date: new Date("2022-01-03"), value: 105 },
-    { date: new Date("2022-01-04"), value: 120 },
-    { date: new Date("2022-01-05"), value: 110 },
-    { date: new Date("2022-01-06"), value: 130 },
-    { date: new Date("2022-01-07"), value: 120 },
-  ];
-
   if (!strategies) {
     throw new Response("Not Found", { status: 404 });
   }
 
   const strategiesOverview = strategies.map((strategy) => ({
     ...strategy,
-    performanceSeries: performanceSeriesFixture,
+    performanceSeries: getStrategyPerformanceSeries({
+      strategyId: strategy.id,
+    }),
   }));
 
   const singleCoinStrategies = strategiesOverview.filter(
