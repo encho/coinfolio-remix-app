@@ -5,19 +5,12 @@ import { json } from "@remix-run/node";
 
 import { getStrategies } from "~/models/strategy.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
+import { Container, Header } from "~/components/NewPortfolio";
 import { SparklineChart } from "~/components/SparklineChart";
 
-import type { TStrategy } from "~/models/strategy.server";
+import { getStrategyPerformanceSeries } from "~/fixtures/strategyPerformanceSeries";
 
-const performanceSeries = [
-  { date: new Date("2022-01-01"), value: 100 },
-  { date: new Date("2022-01-02"), value: 110 },
-  { date: new Date("2022-01-03"), value: 105 },
-  { date: new Date("2022-01-04"), value: 120 },
-  { date: new Date("2022-01-05"), value: 110 },
-  { date: new Date("2022-01-06"), value: 130 },
-  { date: new Date("2022-01-07"), value: 120 },
-];
+import type { TStrategy } from "~/models/strategy.server";
 
 type TStrategyOverview = TStrategy & {
   performanceSeries: Array<{ date: Date; value: number }>;
@@ -33,23 +26,15 @@ type LoaderData = {
 export const loader: LoaderFunction = async ({ request }) => {
   const strategies = await getStrategies();
 
-  const performanceSeriesFixture = [
-    { date: new Date("2022-01-01"), value: 100 },
-    { date: new Date("2022-01-02"), value: 110 },
-    { date: new Date("2022-01-03"), value: 105 },
-    { date: new Date("2022-01-04"), value: 120 },
-    { date: new Date("2022-01-05"), value: 110 },
-    { date: new Date("2022-01-06"), value: 130 },
-    { date: new Date("2022-01-07"), value: 120 },
-  ];
-
   if (!strategies) {
     throw new Response("Not Found", { status: 404 });
   }
 
   const strategiesOverview = strategies.map((strategy) => ({
     ...strategy,
-    performanceSeries: performanceSeriesFixture,
+    performanceSeries: getStrategyPerformanceSeries({
+      strategyId: strategy.id,
+    }),
   }));
 
   const singleCoinStrategies = strategiesOverview.filter(
@@ -91,17 +76,20 @@ export default function PortalStrategiesPage() {
 
   return (
     <div>
-      <PageTitle>CoinFolios Library</PageTitle>
-      <div className="flex flex-col gap-8">
-        <div className="">
-          <SectionTitle>Single Coin Indices</SectionTitle>
-          <StrategyTiles data={singleCoinStrategiesOverview} />
+      <Header />
+      <Container>
+        <PageTitle>CoinFolio Strategies</PageTitle>
+        <div className="flex flex-col gap-12">
+          <div className="">
+            <SectionTitle>Single Coin Indices</SectionTitle>
+            <StrategyTiles data={singleCoinStrategiesOverview} />
+          </div>
+          <div className="">
+            <SectionTitle>Broad Market Indices</SectionTitle>
+            <StrategyTiles data={cryptoMarketBetaStrategiesOverview} />
+          </div>
         </div>
-        <div className="">
-          <SectionTitle>Broad Market Indices</SectionTitle>
-          <StrategyTiles data={cryptoMarketBetaStrategiesOverview} />
-        </div>
-      </div>
+      </Container>
     </div>
   );
 }
@@ -145,14 +133,14 @@ function StrategyTile({
     >
       <div className="min-w-0 flex-1">
         <Link to={`./${slug}`} prefetch="intent" className="focus:outline-none">
-          <div className="flex h-full flex-col justify-between gap-4">
+          <div className="flex h-full flex-col justify-between gap-3">
             <div className="">
               <span className="absolute inset-0" aria-hidden="true" />
               <p className="mb-1 text-base font-bold text-gray-900">{name}</p>
               <p className="text-sm text-gray-900">{description}</p>
             </div>
             <div>
-              <div className="h-16 w-full bg-gray-50">
+              <div className="h-12 w-full bg-gray-50">
                 <SparklineChart data={performanceSeries} />
               </div>
             </div>
