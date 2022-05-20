@@ -3,26 +3,12 @@ import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 
-import { Fragment, useState, useRef } from "react";
-import { PlusSmIcon as PlusSmIconOutline } from "@heroicons/react/outline";
-import { Dialog, Transition } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/outline";
-
 import { getStrategies } from "~/models/strategy.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
+import { Container, Header } from "~/components/NewPortfolio";
 import { SparklineChart } from "~/components/SparklineChart";
 
 import type { TStrategy } from "~/models/strategy.server";
-
-const performanceSeries = [
-  { date: new Date("2022-01-01"), value: 100 },
-  { date: new Date("2022-01-02"), value: 110 },
-  { date: new Date("2022-01-03"), value: 105 },
-  { date: new Date("2022-01-04"), value: 120 },
-  { date: new Date("2022-01-05"), value: 110 },
-  { date: new Date("2022-01-06"), value: 130 },
-  { date: new Date("2022-01-07"), value: 120 },
-];
 
 type TStrategyOverview = TStrategy & {
   performanceSeries: Array<{ date: Date; value: number }>;
@@ -95,11 +81,11 @@ export default function PortalStrategiesPage() {
     }));
 
   return (
-    <div className="fixed top-0 left-0 overflow-scroll bg-orange-500 bg-opacity-80">
-      <div className="relative">
-        <PageTitle>CoinFolios Library</PageTitle>
-        <PageTitle>CoinFolios Library</PageTitle>
-        <div className="flex flex-col gap-8">
+    <div>
+      <Header />
+      <Container>
+        <PageTitle>CoinFolio Strategies</PageTitle>
+        <div className="flex flex-col gap-12">
           <div className="">
             <SectionTitle>Single Coin Indices</SectionTitle>
             <StrategyTiles data={singleCoinStrategiesOverview} />
@@ -109,7 +95,7 @@ export default function PortalStrategiesPage() {
             <StrategyTiles data={cryptoMarketBetaStrategiesOverview} />
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   );
 }
@@ -153,14 +139,14 @@ function StrategyTile({
     >
       <div className="min-w-0 flex-1">
         <Link to={`./${slug}`} prefetch="intent" className="focus:outline-none">
-          <div className="flex h-full flex-col justify-between gap-4">
+          <div className="flex h-full flex-col justify-between gap-3">
             <div className="">
               <span className="absolute inset-0" aria-hidden="true" />
               <p className="mb-1 text-base font-bold text-gray-900">{name}</p>
               <p className="text-sm text-gray-900">{description}</p>
             </div>
             <div>
-              <div className="h-16 w-full bg-gray-50">
+              <div className="h-12 w-full bg-gray-50">
                 <SparklineChart data={performanceSeries} />
               </div>
             </div>

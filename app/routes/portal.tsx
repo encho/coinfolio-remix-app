@@ -8,7 +8,12 @@ import {
   XIcon,
   DocumentReportIcon,
   LibraryIcon,
-  ChartPieIcon,
+  // ChartPieIcon,
+  UserIcon,
+  LogoutIcon,
+  MailIcon,
+  SupportIcon,
+  GiftIcon,
 } from "@heroicons/react/outline";
 
 const navigation = [
@@ -18,14 +23,24 @@ const navigation = [
     icon: DocumentReportIcon,
   },
   {
-    name: "Strategies",
-    href: "./strategies",
-    icon: ChartPieIcon,
-  },
-  {
     name: "Account",
     href: "./account",
     icon: LibraryIcon,
+  },
+  {
+    name: "Mailbox",
+    href: "./mailbox",
+    icon: MailIcon,
+  },
+  {
+    name: "Referrals",
+    href: "./referrals",
+    icon: GiftIcon,
+  },
+  {
+    name: "Profile",
+    href: "./profile",
+    icon: UserIcon,
   },
 ];
 
@@ -211,25 +226,35 @@ export default function Example() {
               </nav>
             </div>
             <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
-              <a href="#" className="group block w-full flex-shrink-0">
-                <div className="flex items-center">
-                  <div>
-                    <img
-                      className="inline-block h-9 w-9 rounded-full"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                      alt=""
+              <NavLink
+                end
+                // key={}
+                to="/logout"
+                className={({ isActive }) =>
+                  classNames(
+                    isActive
+                      ? "bg-gray-100 text-gray-900"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
+                    "group flex w-full items-center rounded-md px-2 py-2 text-sm font-medium"
+                  )
+                }
+              >
+                {({ isActive }) => (
+                  <Fragment>
+                    <LogoutIcon
+                      className={classNames(
+                        isActive
+                          ? "text-gray-500"
+                          : "text-gray-400 group-hover:text-gray-500",
+                        "mr-3 h-6 w-6 flex-shrink-0"
+                      )}
+                      aria-hidden="true"
                     />
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-700 group-hover:text-gray-900">
-                      Lorenzo B.
-                    </p>
-                    <p className="text-xs font-medium text-gray-500 group-hover:text-gray-700">
-                      View profile
-                    </p>
-                  </div>
-                </div>
-              </a>
+                    {/* {item.name} */}
+                    Logout
+                  </Fragment>
+                )}
+              </NavLink>
             </div>
           </div>
         </div>

@@ -1,14 +1,12 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { Link } from "@remix-run/react";
 import { Fragment, useState, useRef } from "react";
-import { PlusSmIcon as PlusSmIconOutline } from "@heroicons/react/outline";
 import { Dialog, Transition } from "@headlessui/react";
 import { CheckIcon } from "@heroicons/react/outline";
-
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
+import { Container, Header } from "~/components/NewPortfolio";
 import { getStrategyFromSlug, TRiskLevel } from "~/models/strategy.server";
 
 import { PageTitle, SectionTitle } from "~/components/Typography";
@@ -22,28 +20,8 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-// TODOS:
-//               {/* TODO multiline chart */}
-//               {/* TODO parse dates before */}
-//               {/* TODO plot area color from theme */}
-
-// type TStrategyRiskLevelOverview = {
-//   id: string;
-//   name: string;
-//   description: string;
-//   // TODO the following are dependent on the active period (1d | 1w | 1m | 1y...)
-//   performanceSeries: Array<{ date: Date; value: number }>;
-//   assetAllocation: Array<{
-//     ticker: string;
-//     name: string;
-//     weight: number;
-//     performance: number;
-//   }>;
-// };
-
 type LoaderData = {
   strategy: TStrategy;
-  // riskLevelsOverview: Array<TStrategyRiskLevelOverview>;
 };
 
 const PERFORMANCE_SERIES_FIXTURE = [
@@ -116,64 +94,70 @@ export default function PortfolioDetailsPage() {
 
   return (
     <div>
-      <PageTitle>{data.strategy.name}</PageTitle>
-      {currentRiskLevelOverview && (
-        <ModalExample
-          open={open}
-          setOpen={setOpen}
-          strategy={{ name: data.strategy.name }}
-          strategyRiskLevelOverview={currentRiskLevelOverview}
-        />
-      )}
-      {/* TODO make VStack */}
-      <div className="flex flex-col gap-12">
-        <div>
-          <h3 className="max-w-xl text-gray-900">
-            {data.strategy.longDescription}
-          </h3>
-        </div>
-        <div>
-          <div className="fixed bottom-10 right-10">
-            <button
-              type="button"
-              className="inline-flex items-center rounded-full border border-transparent bg-blue-600 p-3 text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              onClick={() => setOpen(true)}
-            >
-              <PlusSmIconOutline className="h-9 w-9" aria-hidden="true" />
-            </button>
-          </div>
-
-          <SectionTitle>Risk Level</SectionTitle>
-          <p className="mb-2">Select the target risk level for the strategy.</p>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
-            {data.strategy.riskLevels.map((riskLevel) => (
-              <RiskLevelButton
-                key={riskLevel.id}
-                id={riskLevel.id}
-                name={riskLevel.name}
-                description={riskLevel.description}
-                onClick={(id) => setCurrentRiskLevel(id)}
-                isActive={riskLevel.id === currentRiskLevel}
-              />
-            ))}
-          </div>
-        </div>
-        <div>
-          <SectionTitle>Performance</SectionTitle>
-          <div className="w-[900px]">
-            <div className="mb-3 text-right">
-              <PeriodPicker />
-            </div>
-            <div className="h-[400px] w-full bg-gray-50">
-              <SmallPerformanceChart data={PERFORMANCE_SERIES_FIXTURE} />
-            </div>
-          </div>
-        </div>
-        <div>
-          <SectionTitle>Asset Allocation</SectionTitle>
-          <StrategyAssetAllocationTable data={ASSET_ALLOCATION_FIXTURE} />
-        </div>
+      <div className="fixed bottom-10 right-10">
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          className="inline-flex items-center rounded-full border border-transparent bg-blue-600 px-8 py-3 text-lg font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          Buy CoinFolio
+        </button>
       </div>
+
+      <Header />
+      <Container>
+        <PageTitle>{data.strategy.name}</PageTitle>
+        {currentRiskLevelOverview && (
+          <ModalExample
+            open={open}
+            setOpen={setOpen}
+            strategy={{ name: data.strategy.name }}
+            strategyRiskLevelOverview={currentRiskLevelOverview}
+          />
+        )}
+        <div className="flex flex-row-reverse gap-16">
+          <div className="w-1/3">
+            <SectionTitle>Strategy Description</SectionTitle>
+            <div className="text-gray-900">{data.strategy.longDescription}</div>
+          </div>
+          {/* TODO make VStack */}
+          <div className="flex w-2/3 flex-col gap-10">
+            <div>
+              <SectionTitle>Risk Level</SectionTitle>
+              <p className="mb-4">
+                Select the target risk level for the strategy.
+              </p>
+              <div className="relative grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
+                {data.strategy.riskLevels.map((riskLevel) => (
+                  <RiskLevelButton
+                    key={riskLevel.id}
+                    id={riskLevel.id}
+                    name={riskLevel.name}
+                    description={riskLevel.description}
+                    onClick={(id) => setCurrentRiskLevel(id)}
+                    isActive={riskLevel.id === currentRiskLevel}
+                  />
+                ))}
+              </div>
+            </div>
+            <div>
+              <SectionTitle>Performance</SectionTitle>
+              <div className="w-full">
+                <div className="mb-3 text-right">
+                  <PeriodPicker />
+                </div>
+                <div className="h-[200px] w-full bg-gray-50">
+                  <SmallPerformanceChart data={PERFORMANCE_SERIES_FIXTURE} />
+                </div>
+              </div>
+            </div>
+            <div>
+              <SectionTitle>Asset Allocation</SectionTitle>
+              <StrategyAssetAllocationTable data={ASSET_ALLOCATION_FIXTURE} />
+            </div>
+          </div>
+        </div>
+      </Container>
     </div>
   );
 }
@@ -212,26 +196,23 @@ function RiskLevelButton({
       key={name}
       onClick={() => onClick(id)}
       className={classNames(
-        isActive ? "bg-blue-500" : "bg-white",
-        "relative flex rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350 focus:outline-none"
+        isActive
+          ? "border-2 border-blue-500 bg-blue-50"
+          : "border-gray-200 hover:border-gray-350 hover:bg-gray-50",
+        "relative flex rounded border bg-white px-6 py-5 shadow-sm focus-within:ring-0 focus-within:ring-blue-200 focus-within:ring-offset-2 focus:outline-none"
       )}
     >
       <div className="text-left">
         <span className="absolute inset-0" aria-hidden="true" />
         <p
           className={classNames(
-            isActive ? "text-white" : "text-gray-900",
+            isActive ? "" : "text-gray-900",
             "text-sm font-bold"
           )}
         >
           {name}
         </p>
-        <p
-          className={classNames(
-            isActive ? "text-white" : "text-gray-900",
-            "text-sm"
-          )}
-        >
+        <p className={classNames(isActive ? "" : "text-gray-900", "text-sm")}>
           {description}
         </p>
       </div>
@@ -311,14 +292,14 @@ function ModalExample({
                 <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
+                    className="inline-flex w-full justify-center rounded border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
                     onClick={() => setOpen(false)}
                   >
-                    Invest Now
+                    Buy Coinfolio Now
                   </button>
                   <button
                     type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
+                    className="mt-3 inline-flex w-full justify-center rounded border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
                     onClick={() => setOpen(false)}
                     ref={cancelButtonRef}
                   >
