@@ -10,6 +10,7 @@ import PortfoliosCards from "~/components/PortfoliosCards";
 import PeriodPicker from "~/components/PeriodPicker";
 import { MonetaryValueLarge, MonetaryValueSmall } from "~/components/Money";
 import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
+import PieChart from "~/components/PieFixtureChart";
 
 import type { TPortfolio } from "~/models/portfolio.server";
 
@@ -50,6 +51,12 @@ export default function PortalIndexPage() {
     date: new Date(it.date),
   }));
 
+  const coins = [
+    { symbol: "ADA", amount: 200, color: "#0033ad", inUSD: 1.48 },
+    { symbol: "SOL", amount: 5, color: "#00ffbd", inUSD: 37.6 },
+    { symbol: "BTC", amount: 0.005, color: "#F7931A", inUSD: 37363 },
+  ];
+
   return (
     <div>
       {/* TODO layout PageTitle better? better layout page better and use capsize on PageTitle */}
@@ -64,6 +71,7 @@ export default function PortalIndexPage() {
 
       {/* flex based layout */}
       <div className="flex justify-between gap-12">
+        {/* <div className="flex w-2/3 flex-col"> */}
         <div className="flex w-2/3 flex-col">
           <div className="flex justify-between align-baseline">
             <SectionTitle>Performance</SectionTitle>
@@ -78,7 +86,9 @@ export default function PortalIndexPage() {
         </div>
         <div className="flex w-1/3 flex-col">
           <SectionTitle>My Cryptocurrencies</SectionTitle>
-          <div className="flex-1 bg-gray-50"></div>
+          <div className=" h-[300px] bg-gray-50">
+            <PieChart coins={coins} />
+          </div>
         </div>
       </div>
 
