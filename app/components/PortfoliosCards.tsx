@@ -1,10 +1,10 @@
 import { Link } from "@remix-run/react";
 import { PlusIcon } from "@heroicons/react/solid";
 
-import type { TPortfolio } from "~/models/portfolio.server";
+import type { TExpandedPortfolio } from "~/models/portfolio.server";
 
 type TPortfoliosCards = {
-  data: Array<TPortfolio>;
+  data: Array<TExpandedPortfolio>;
 };
 
 export default function PortfoliosCards({ data }: TPortfoliosCards) {
@@ -25,10 +25,10 @@ export default function PortfoliosCards({ data }: TPortfoliosCards) {
                 <div className="">
                   <span className="absolute inset-0" aria-hidden="true" />
                   <p className="mb-1 text-base font-bold text-gray-900">
-                    {portfolioItem.strategyId}
+                    {portfolioItem.strategy.name}
                   </p>
                   <p className="text-sm text-gray-900">
-                    {portfolioItem.riskLevelId}
+                    {portfolioItem.riskLevel.name}
                   </p>
                 </div>
                 <div>

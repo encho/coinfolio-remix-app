@@ -3,7 +3,10 @@ import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 import numeral from "numeral";
 
-import { getUserPortfolios } from "~/models/portfolio.server";
+import {
+  getUserExpandedPortfolios,
+  getUserPortfolios,
+} from "~/models/portfolio.server";
 import { requireUserId } from "~/session.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PortfoliosCards from "~/components/PortfoliosCards";
@@ -12,17 +15,17 @@ import { MonetaryValueLarge, MonetaryValueSmall } from "~/components/Money";
 import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
 import PieChart from "~/components/PieFixtureChart";
 
-import type { TPortfolio } from "~/models/portfolio.server";
+import type { TExpandedPortfolio } from "~/models/portfolio.server";
 
 type LoaderData = {
-  portfolios: Array<TPortfolio>;
+  portfolios: Array<TExpandedPortfolio>;
   performanceSeries: Array<{ date: Date; value: number }>;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request);
 
-  const portfolios = await getUserPortfolios({ userId });
+  const portfolios = await getUserExpandedPortfolios({ userId });
 
   const performanceSeries = [
     { date: new Date("2022-01-01"), value: 100 },

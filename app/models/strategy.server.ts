@@ -1,4 +1,3 @@
-import { resolve } from "path";
 import { getRiskLevels } from "./riskLevel.server";
 
 const bitcoinLongDescripton = `
@@ -172,12 +171,10 @@ export async function getStrategyFromSlug({
   slug: string;
 }): Promise<null | TStrategy> {
   console.log(`Retrieving strategy data for slug: ${slug}...`);
-  console.log(`RISK LEVELS ARE>>>>>`);
 
   const riskLevels = await getRiskLevels();
 
   if (!riskLevels) {
-    // resolve(null);
     throw Error();
   }
 
