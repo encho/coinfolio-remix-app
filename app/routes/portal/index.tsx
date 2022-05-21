@@ -52,9 +52,42 @@ export default function PortalIndexPage() {
   }));
 
   const coins = [
-    { symbol: "ADA", amount: 200, color: "#0033ad", inUSD: 1.48 },
-    { symbol: "SOL", amount: 5, color: "#00ffbd", inUSD: 37.6 },
-    { symbol: "BTC", amount: 0.005, color: "#F7931A", inUSD: 37363 },
+    {
+      symbol: "ADA",
+      amount: 200,
+      color: "var(--color-cyan-500)",
+      inUSD: 1.48,
+    },
+    {
+      symbol: "SOL",
+      amount: 5,
+      color: "var(--color-yellow-500)",
+      inUSD: 37.6,
+    },
+    {
+      symbol: "BTC",
+      amount: 0.005,
+      color: "var(--color-violet-500)",
+      inUSD: 37363,
+    },
+    {
+      symbol: "QQQ",
+      amount: 0.005,
+      color: "var(--color-orange-500)",
+      inUSD: 37363,
+    },
+    {
+      symbol: "AAA",
+      amount: 0.005,
+      color: "var(--color-fuchsia-500)",
+      inUSD: 37363,
+    },
+    {
+      symbol: "DEI",
+      amount: 12.3,
+      color: "var(--color-blue-500)",
+      inUSD: 40,
+    },
   ];
 
   return (
@@ -79,7 +112,7 @@ export default function PortalIndexPage() {
           <SmallPerformanceChart data={parsedPerformanceSeries} />
         </div>
         <div className="">
-          <SectionTitle>My Cryptocurrencies</SectionTitle>
+          <SectionTitle>Asset Allocation</SectionTitle>
         </div>
         <div className="">
           <PieChart coins={coins} />
@@ -88,7 +121,7 @@ export default function PortalIndexPage() {
 
       {/* Coinfolio Cards Section */}
       <div className="mt-12">
-        <SectionTitle>My Strategies</SectionTitle>
+        <SectionTitle>Strategies</SectionTitle>
         <PortfoliosCards data={data.portfolios} />
       </div>
     </div>

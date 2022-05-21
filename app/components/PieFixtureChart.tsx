@@ -35,11 +35,15 @@ const PieChart = ({
             data={coins}
             pieValue={(data) => data.amount * data.inUSD}
             outerRadius={half}
+            // innerRadius={({ data }) => {
+            //   const size = active && active.symbol == data.symbol ? 12 : 8;
+            //   return half - size;
+            // }}
             innerRadius={({ data }) => {
-              const size = active && active.symbol == data.symbol ? 12 : 8;
+              const size = active && active.symbol == data.symbol ? 14 : 10;
               return half - size;
             }}
-            padAngle={0.01}
+            padAngle={0.015}
           >
             {(pie) => {
               return pie.arcs.map((arc) => {
@@ -63,39 +67,37 @@ const PieChart = ({
             <>
               <Text
                 textAnchor="middle"
-                className="fill-red-500"
-                // fill="#000000"
-                fontSize={40}
-                dy={-20}
+                className="fill-black"
+                fontSize={26}
+                dy={-7}
               >
-                {`$${Math.floor(active.amount * active.inUSD)}`}
+                {`${Math.floor(active.amount * active.inUSD)}$`}
               </Text>
 
               <Text
                 textAnchor="middle"
                 fill={active.color}
-                fontSize={20}
+                fontSize={16}
                 dy={20}
               >
-                {`${active.amount} ${active.symbol}`}
+                {`${active.amount} ${active.symbol} (20%)`}
               </Text>
             </>
           ) : (
             <>
               <Text
                 textAnchor="middle"
-                className="fill-green-500"
-                // fill="#ff0000"
-                fontSize={40}
-                dy={-20}
+                className="fill-black"
+                fontSize={26}
+                dy={-7}
               >
-                {`$${Math.floor(
+                {`${Math.floor(
                   coins.reduce((acc, coin) => acc + coin.amount * coin.inUSD, 0)
-                )}`}
+                )}$`}
               </Text>
 
-              <Text textAnchor="middle" fill="#aaa" fontSize={20} dy={20}>
-                {`${coins.length} Assets`}
+              <Text textAnchor="middle" fill="#aaa" fontSize={16} dy={20}>
+                {`${coins.length} Cryptocurrencies`}
               </Text>
             </>
           )}
