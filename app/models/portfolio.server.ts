@@ -35,14 +35,6 @@ export type TPortfolioPeriodPerformance = {
   };
 };
 
-// TODO for now remove the added fieldsLevel
-// export type TPortfolioOverview = TPortfolio & {
-//   markToMarketValue: { amount: 10000; currency: "EUR" };
-//   riskLevel: TRiskLevelOLD;
-//   performance: TPortfolioPeriodPerformance;
-// };
-
-// const portfolios: Array<TPortfolioOverview> = [
 const portfoliosDB: Array<TPortfolio> = [
   {
     userId: "cl305plna000699t19aqezycd",
@@ -51,8 +43,8 @@ const portfoliosDB: Array<TPortfolio> = [
   },
   {
     userId: "cl305plna000699t19aqezycd",
-    strategyId: "strategy-002",
-    riskLevelId: "riskLevel-001",
+    strategyId: "strategy-007",
+    riskLevelId: "riskLevel-002",
   },
 ];
 

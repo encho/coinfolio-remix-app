@@ -130,38 +130,38 @@ export default function PortalIndexPage() {
     </div>
   );
 }
-type TPortfolioAbsoluteReturnProps = {
-  currency: "EUR";
-  amount: number;
-};
+// type TPortfolioAbsoluteReturnProps = {
+//   currency: "EUR";
+//   amount: number;
+// };
 
-function PortfolioAbsoluteReturn({
-  currency,
-  amount,
-}: TPortfolioAbsoluteReturnProps) {
-  const formattedAbsoluteAmount = numeral(Math.abs(amount)).format("0,0.00");
-  const currencySymbols = {
-    EUR: "€",
-  };
+// function PortfolioAbsoluteReturn({
+//   currency,
+//   amount,
+// }: TPortfolioAbsoluteReturnProps) {
+//   const formattedAbsoluteAmount = numeral(Math.abs(amount)).format("0,0.00");
+//   const currencySymbols = {
+//     EUR: "€",
+//   };
 
-  const currencySymbol = currencySymbols[currency];
+//   const currencySymbol = currencySymbols[currency];
 
-  const sign = amount === 0 ? "" : amount < 0 ? "-" : "+";
-  // const colorClass =
-  //   amount === 0
-  //     ? "text-neue-charts-neutral-text"
-  //     : amount < 0
-  //     ? "text-neue-charts-negative-text"
-  //     : "text-neue-charts-positive-text";
+//   const sign = amount === 0 ? "" : amount < 0 ? "-" : "+";
+//   // const colorClass =
+//   //   amount === 0
+//   //     ? "text-neue-charts-neutral-text"
+//   //     : amount < 0
+//   //     ? "text-neue-charts-negative-text"
+//   //     : "text-neue-charts-positive-text";
 
-  return (
-    <div>
-      {/* <div className={`text-xl font-bold leading-none ${colorClass}`}> */}
-      <div className={"mb-1 text-xl font-bold leading-none"}>
-        {sign}
-        {formattedAbsoluteAmount} {currencySymbol}
-      </div>
-      <div>Absolute Return</div>
-    </div>
-  );
-}
+//   return (
+//     <div>
+//       {/* <div className={`text-xl font-bold leading-none ${colorClass}`}> */}
+//       <div className={"mb-1 text-xl font-bold leading-none"}>
+//         {sign}
+//         {formattedAbsoluteAmount} {currencySymbol}
+//       </div>
+//       <div>Absolute Return</div>
+//     </div>
+//   );
+// }
