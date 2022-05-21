@@ -61,44 +61,30 @@ export default function PortalIndexPage() {
           <MonetaryValueSmall currency="EUR" amount={23.11} /> available.
         </div>
       </div>
+
+      {/* flex based layout */}
       <div className="flex justify-between gap-12">
-        {/* <div>
-          <SectionTitle>Account Value</SectionTitle>
-          <MonetaryValueLarge currency="EUR" amount={123.33} />
-          <div className="mt-1">
-            <MonetaryValueSmall currency="EUR" amount={23.11} /> available.
-          </div>
-        </div> */}
-        <div className="w-2/3">
+        <div className="flex w-2/3 flex-col">
           <div className="flex justify-between align-baseline">
             <SectionTitle>Performance</SectionTitle>
             <PeriodPicker />
           </div>
 
-          {/* <div className="flex justify-between">
-            <SectionTitle>Performance</SectionTitle>
-            <div className="mb-6 text-right">
-              <PeriodPicker />
-            </div>
-          </div> */}
-
           <div className="flex items-center gap-10">
-            {/* <div className="h-[200px] w-[600px] overflow-visible bg-gray-50"> */}
             <div className="h-[300px] w-full overflow-visible bg-gray-50">
               <SmallPerformanceChart data={parsedPerformanceSeries} />
             </div>
-            {/* <div>
-              <PortfolioAbsoluteReturn currency="EUR" amount={23.11} />
-            </div> */}
           </div>
         </div>
-        <div className="bg-gray-100xx w-1/3">
-          <SectionTitle>Cryptocurrency Allocation</SectionTitle>
-          <div className="h-full bg-gray-50"></div>
+        <div className="flex w-1/3 flex-col">
+          <SectionTitle>My Cryptocurrencies</SectionTitle>
+          <div className="flex-1 bg-gray-50"></div>
         </div>
       </div>
+
+      {/* Coinfolio Cards Section */}
       <div className="mt-12">
-        <SectionTitle>My CoinFolios</SectionTitle>
+        <SectionTitle>My Strategies</SectionTitle>
         <PortfoliosCards data={data.portfolios} />
       </div>
     </div>
