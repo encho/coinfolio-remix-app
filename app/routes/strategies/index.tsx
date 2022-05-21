@@ -133,14 +133,14 @@ function StrategyTile({
     >
       <div className="min-w-0 flex-1">
         <Link to={`./${slug}`} prefetch="intent" className="focus:outline-none">
-          <div className="flex h-full flex-col justify-between gap-3">
+          <div className="flex h-full flex-col justify-between gap-4">
             <div className="">
               <span className="absolute inset-0" aria-hidden="true" />
               <p className="mb-1 text-base font-bold text-gray-900">{name}</p>
               <p className="text-sm text-gray-900">{description}</p>
             </div>
             <div>
-              <div className="h-12 w-full bg-gray-50">
+              <div className="h-14 w-full bg-gray-50">
                 <SparklineChart data={performanceSeries} />
               </div>
             </div>
