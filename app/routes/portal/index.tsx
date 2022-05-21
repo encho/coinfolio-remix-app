@@ -69,26 +69,20 @@ export default function PortalIndexPage() {
         </div>
       </div>
 
-      {/* flex based layout */}
-      <div className="flex justify-between gap-12">
-        {/* <div className="flex w-2/3 flex-col"> */}
-        <div className="flex w-2/3 flex-col">
-          <div className="flex justify-between align-baseline">
-            <SectionTitle>Performance</SectionTitle>
-            <PeriodPicker />
-          </div>
-
-          <div className="flex items-center gap-10">
-            <div className="h-[300px] w-full overflow-visible bg-gray-50">
-              <SmallPerformanceChart data={parsedPerformanceSeries} />
-            </div>
-          </div>
+      {/* grid based layout */}
+      <div className="grid w-full grid-flow-col grid-cols-[1fr_250px] grid-rows-[auto_250px] gap-x-24">
+        <div className="flex justify-between align-baseline">
+          <SectionTitle>Performance</SectionTitle>
+          <PeriodPicker />
         </div>
-        <div className="flex w-1/3 flex-col">
+        <div className="bg-gray-50">
+          <SmallPerformanceChart data={parsedPerformanceSeries} />
+        </div>
+        <div className="">
           <SectionTitle>My Cryptocurrencies</SectionTitle>
-          <div className=" h-[300px] bg-gray-50">
-            <PieChart coins={coins} />
-          </div>
+        </div>
+        <div className="">
+          <PieChart coins={coins} />
         </div>
       </div>
 

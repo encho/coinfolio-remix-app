@@ -24,7 +24,6 @@ const PieChart = ({
   coins,
 }: TPieChartProps) => {
   const [active, setActive] = useState<TCoin | null>(null);
-  // const width = 400;
   const width = height;
   const half = width / 2;
 
