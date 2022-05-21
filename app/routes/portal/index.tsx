@@ -52,27 +52,49 @@ export default function PortalIndexPage() {
 
   return (
     <div>
+      {/* TODO layout PageTitle better? better layout page better and use capsize on PageTitle */}
       <PageTitle>Good morning</PageTitle>
-      <div className="flex justify-between">
-        <div>
+      <div className="mb-14">
+        <SectionTitle>Account Value</SectionTitle>
+        <MonetaryValueLarge currency="EUR" amount={123.33} />
+        <div className="mt-1">
+          <MonetaryValueSmall currency="EUR" amount={23.11} /> available.
+        </div>
+      </div>
+      <div className="flex justify-between gap-12">
+        {/* <div>
           <SectionTitle>Account Value</SectionTitle>
           <MonetaryValueLarge currency="EUR" amount={123.33} />
           <div className="mt-1">
             <MonetaryValueSmall currency="EUR" amount={23.11} /> available.
           </div>
-        </div>
-        <div className="">
-          <div className="mb-6 text-right">
+        </div> */}
+        <div className="w-2/3">
+          <div className="flex justify-between align-baseline">
+            <SectionTitle>Performance</SectionTitle>
             <PeriodPicker />
           </div>
+
+          {/* <div className="flex justify-between">
+            <SectionTitle>Performance</SectionTitle>
+            <div className="mb-6 text-right">
+              <PeriodPicker />
+            </div>
+          </div> */}
+
           <div className="flex items-center gap-10">
-            <div className="h-[200px] w-[600px] overflow-visible bg-gray-50">
+            {/* <div className="h-[200px] w-[600px] overflow-visible bg-gray-50"> */}
+            <div className="h-[300px] w-full overflow-visible bg-gray-50">
               <SmallPerformanceChart data={parsedPerformanceSeries} />
             </div>
-            <div>
+            {/* <div>
               <PortfolioAbsoluteReturn currency="EUR" amount={23.11} />
-            </div>
+            </div> */}
           </div>
+        </div>
+        <div className="bg-gray-100xx w-1/3">
+          <SectionTitle>Cryptocurrency Allocation</SectionTitle>
+          <div className="h-full bg-gray-50"></div>
         </div>
       </div>
       <div className="mt-12">
