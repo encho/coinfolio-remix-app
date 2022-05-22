@@ -1,5 +1,6 @@
 import { Link } from "@remix-run/react";
 import { PlusIcon } from "@heroicons/react/solid";
+import { RefreshIcon } from "@heroicons/react/outline";
 
 import { getStrategyPerformanceSeries } from "~/fixtures/strategyPerformanceSeries";
 
@@ -38,8 +39,20 @@ function PortfolioTile({ strategy, riskLevel }: TExpandedPortfolio) {
     >
       <div className="flex flex-col gap-2">
         <div className="flex justify-between align-baseline">
-          <div className="bg-gray-100x text-base font-bold text-gray-900">
-            {strategy.name}
+          <div className="flex gap-2 align-middle">
+            <div className="bg-gray-100x text-base font-bold text-gray-900">
+              {strategy.name}
+            </div>
+            {/* TODO: discuss recurring payment and how it affects the whole account value too AND wheter it is possible with TradeCore */}
+            {/* <div className="bg-green-200x self-center">
+              <div className="flex gap-[1px]">
+                <RefreshIcon
+                  className="bg-yellow-200x h-3 w-3 self-center text-gray-400"
+                  aria-hidden="true"
+                />
+                <div className="text-xs text-gray-400">300 $</div>
+              </div>
+            </div> */}
           </div>
           <RiskLevelBars {...riskLevel} />
         </div>
