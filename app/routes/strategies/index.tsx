@@ -100,7 +100,7 @@ type TStrategyTilesProps = {
 
 function StrategyTiles({ data }: TStrategyTilesProps) {
   return (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
       {data.map((strategy) => (
         <StrategyTile
           key={strategy.name}
@@ -137,7 +137,7 @@ function StrategyTile({
             <div className="">
               <span className="absolute inset-0" aria-hidden="true" />
               <p className="mb-1 text-base font-bold text-gray-900">{name}</p>
-              <p className="text-sm text-gray-900">{description}</p>
+              <p className="text-xs text-gray-900">{description}</p>
             </div>
             <div>
               <div className="h-14 w-full bg-gray-50">
