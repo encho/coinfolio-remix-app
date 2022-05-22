@@ -18,11 +18,7 @@ type TPieChartProps = {
   coins: Array<TCoin>;
 };
 
-const PieChart = ({
-  //  width,
-  height = 200,
-  coins,
-}: TPieChartProps) => {
+const PieChart = ({ height = 200, coins }: TPieChartProps) => {
   const [active, setActive] = useState<TCoin | null>(null);
   const width = height;
   const half = width / 2;
@@ -35,10 +31,6 @@ const PieChart = ({
             data={coins}
             pieValue={(data) => data.amount * data.inUSD}
             outerRadius={half}
-            // innerRadius={({ data }) => {
-            //   const size = active && active.symbol == data.symbol ? 12 : 8;
-            //   return half - size;
-            // }}
             innerRadius={({ data }) => {
               const size = active && active.symbol == data.symbol ? 14 : 10;
               return half - size;
@@ -71,7 +63,7 @@ const PieChart = ({
                 fontSize={26}
                 dy={-7}
               >
-                {`${Math.floor(active.amount * active.inUSD)}$`}
+                {`${Math.floor(active.amount * active.inUSD)} €`}
               </Text>
 
               <Text
@@ -93,7 +85,7 @@ const PieChart = ({
               >
                 {`${Math.floor(
                   coins.reduce((acc, coin) => acc + coin.amount * coin.inUSD, 0)
-                )}$`}
+                )} €`}
               </Text>
 
               <Text textAnchor="middle" fill="#aaa" fontSize={16} dy={20}>

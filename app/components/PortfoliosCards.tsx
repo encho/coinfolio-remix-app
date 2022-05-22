@@ -1,7 +1,10 @@
 import { Link } from "@remix-run/react";
 import { PlusIcon } from "@heroicons/react/solid";
 
+import { getStrategyPerformanceSeries } from "~/fixtures/strategyPerformanceSeries";
+
 import type { TExpandedPortfolio } from "~/models/portfolio.server";
+import { SparklineChart } from "./SparklineChart";
 
 type TPortfoliosCards = {
   data: Array<TExpandedPortfolio>;
@@ -11,38 +14,51 @@ export default function PortfoliosCards({ data }: TPortfoliosCards) {
   return (
     <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
       {data.map((portfolioItem) => (
-        <div
-          key={portfolioItem.strategyId}
-          className="relative flex space-x-3 rounded border border-gray-200 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-blue-500 focus-within:ring-offset-2 hover:border-gray-350"
-        >
-          <div className="min-w-0 flex-1">
-            <Link
-              to={`./portfolios/${portfolioItem.strategyId}`}
-              prefetch="intent"
-              className="focus:outline-none"
-            >
-              <div className="flex h-full flex-col justify-between gap-4">
-                <div className="">
-                  <span className="absolute inset-0" aria-hidden="true" />
-                  <p className="mb-1 text-base font-bold text-gray-900">
-                    {portfolioItem.strategy.name}
-                  </p>
-                  <p className="text-sm text-gray-900">
-                    {portfolioItem.riskLevel.name}
-                  </p>
-                </div>
-                <div>
-                  {/* <div className="h-16 w-full bg-gray-50">
-                <SparklineChart data={performanceSeries} />
-              </div> */}
-                </div>
-              </div>
-            </Link>
-          </div>
-        </div>
+        <PortfolioTile key={portfolioItem.strategyId} {...portfolioItem} />
       ))}
       <AddNewPortfolioTile />
     </div>
+  );
+}
+
+function PortfolioTile({ strategy, riskLevel }: TExpandedPortfolio) {
+  const cardStyles =
+    "rounded border border-gray-200 transition bg-white shadow-sm px-6 py-5 hover:border-gray-350";
+  const focusStyles = "focus-within:ring-blue-500 focus-within:ring-offset-2";
+
+  const performanceSeries = getStrategyPerformanceSeries({
+    strategyId: strategy.id,
+  });
+  return (
+    <Link
+      to={`./portfolios/${strategy.id}`}
+      prefetch="intent"
+      // className="focus:outline-none"
+      className={`${cardStyles} min-w-0 flex-1`}
+    >
+      <div className="flex flex-col gap-2">
+        <div>
+          <div className="text-base font-bold text-gray-900">
+            {strategy.name}
+          </div>
+          <div className="text-xs text-gray-900">{riskLevel.name}</div>
+        </div>
+
+        {/* <div className="h-4 w-full bg-slate-400"></div> */}
+
+        <div className="flex justify-between">
+          <div className="bg-yellow-300xxx">
+            <div className="text-xl text-gray-900">2,300.43 €</div>
+            <div className="text-sm text-gray-900">+300.88 €</div>
+          </div>
+          <div className="h-12 w-40 p-2">
+            <div className="h-full bg-gray-50">
+              <SparklineChart data={performanceSeries} />
+            </div>
+          </div>
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -51,7 +67,7 @@ function AddNewPortfolioTile() {
     <Link
       to="/strategies"
       prefetch="render"
-      className="relative block w-full rounded border border-gray-200 bg-gray-50 px-6 py-5 text-center shadow-inner hover:border-gray-350 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+      className="relative block w-full rounded border border-gray-200 bg-gray-50 px-6 py-5 text-center shadow-inner transition hover:border-gray-350 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
     >
       <div className="flex h-full flex-col justify-center">
         <PlusIcon
@@ -60,7 +76,7 @@ function AddNewPortfolioTile() {
         />
 
         <span className="mt-1 block text-sm font-medium text-gray-400">
-          Add CoinFolio
+          Add Strategy
         </span>
       </div>
     </Link>
