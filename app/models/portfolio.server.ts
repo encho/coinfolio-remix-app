@@ -44,7 +44,7 @@ const portfoliosDB: Array<TPortfolio> = [
   {
     userId: "cl305plna000699t19aqezycd",
     strategyId: "strategy-007",
-    riskLevelId: "riskLevel-002",
+    riskLevelId: "riskLevel-003",
   },
 ];
 

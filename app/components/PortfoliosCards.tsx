@@ -5,6 +5,7 @@ import { getStrategyPerformanceSeries } from "~/fixtures/strategyPerformanceSeri
 
 import type { TExpandedPortfolio } from "~/models/portfolio.server";
 import { SparklineChart } from "./SparklineChart";
+import { TRiskLevel } from "~/models/riskLevel.server";
 
 type TPortfoliosCards = {
   data: Array<TExpandedPortfolio>;
@@ -24,7 +25,7 @@ export default function PortfoliosCards({ data }: TPortfoliosCards) {
 function PortfolioTile({ strategy, riskLevel }: TExpandedPortfolio) {
   const cardStyles =
     "rounded border border-gray-200 transition bg-white shadow-sm px-6 py-5 hover:border-gray-350";
-  const focusStyles = "focus-within:ring-blue-500 focus-within:ring-offset-2";
+  // const focusStyles = "focus-within:ring-blue-500 focus-within:ring-offset-2";
 
   const performanceSeries = getStrategyPerformanceSeries({
     strategyId: strategy.id,
@@ -33,25 +34,22 @@ function PortfolioTile({ strategy, riskLevel }: TExpandedPortfolio) {
     <Link
       to={`./portfolios/${strategy.id}`}
       prefetch="intent"
-      // className="focus:outline-none"
       className={`${cardStyles} min-w-0 flex-1`}
     >
       <div className="flex flex-col gap-2">
-        <div>
-          <div className="text-base font-bold text-gray-900">
+        <div className="flex justify-between align-baseline">
+          <div className="bg-gray-100x text-base font-bold text-gray-900">
             {strategy.name}
           </div>
-          <div className="text-xs text-gray-900">{riskLevel.name}</div>
+          <RiskLevelBars {...riskLevel} />
         </div>
-
-        {/* <div className="h-4 w-full bg-slate-400"></div> */}
 
         <div className="flex justify-between">
           <div className="bg-yellow-300xxx">
             <div className="text-xl text-gray-900">2,300.43 €</div>
             <div className="text-sm text-gray-900">+300.88 €</div>
           </div>
-          <div className="h-12 w-40 p-2">
+          <div className="h-12 w-40 py-2">
             <div className="h-full bg-gray-50">
               <SparklineChart data={performanceSeries} />
             </div>
@@ -80,5 +78,23 @@ function AddNewPortfolioTile() {
         </span>
       </div>
     </Link>
+  );
+}
+
+function RiskLevelBars(props: TRiskLevel) {
+  const firstBarColor = "bg-green-500";
+  const secondBarColor =
+    props.name === "Medium Risk" || props.name === "High Risk"
+      ? "bg-yellow-500"
+      : "bg-gray-200";
+  const thirdBarColor =
+    props.name === "High Risk" ? "bg-red-500" : "bg-gray-200";
+
+  return (
+    <div className="bg-yellow-200x flex gap-[3px] align-middle">
+      <div className={`h-[6px] w-4 self-center ${firstBarColor}`}></div>
+      <div className={`h-[6px] w-4 self-center ${secondBarColor}`}></div>
+      <div className={`h-[6px] w-4 self-center ${thirdBarColor}`}></div>
+    </div>
   );
 }
