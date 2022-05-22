@@ -78,14 +78,14 @@ export default function PortalStrategiesPage() {
     <div>
       <Header />
       <Container>
-        <PageTitle>CoinFolio Strategies</PageTitle>
+        <PageTitle>Crypto Strategies</PageTitle>
         <div className="flex flex-col gap-12">
           <div className="">
-            <SectionTitle>Single Coin Indices</SectionTitle>
+            <SectionTitle>Single Coin Strategies</SectionTitle>
             <StrategyTiles data={singleCoinStrategiesOverview} />
           </div>
           <div className="">
-            <SectionTitle>Broad Market Indices</SectionTitle>
+            <SectionTitle>Broad Market Strategies</SectionTitle>
             <StrategyTiles data={cryptoMarketBetaStrategiesOverview} />
           </div>
         </div>
