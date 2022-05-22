@@ -109,7 +109,7 @@ const strategiesDB: Array<TStrategy> = [
   },
   {
     id: "strategy-006",
-    name: "G5 Equally Weighted Index",
+    name: "G10 Equal Weighted",
     description:
       "Our equally weighted Cryptocurrency Index composed of the 5 largest cryptocurrencies.",
     longDescription: bitcoinLongDescripton,
@@ -119,7 +119,7 @@ const strategiesDB: Array<TStrategy> = [
   },
   {
     id: "strategy-007",
-    name: "G5 Volatility Weighted Index",
+    name: "G10 Volatility Weighted",
     description:
       "Our volatility weighted Cryptocurrency Index composed of the 5 largest cryptocurrencies.",
     longDescription: bitcoinLongDescripton,

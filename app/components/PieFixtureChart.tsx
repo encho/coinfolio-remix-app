@@ -59,8 +59,7 @@ const PieChart = ({ height = 200, coins }: TPieChartProps) => {
             <>
               <Text
                 textAnchor="middle"
-                className="fill-black"
-                fontSize={26}
+                className="fill-black text-2xl font-normal"
                 dy={-7}
               >
                 {`${Math.floor(active.amount * active.inUSD)} €`}
@@ -68,8 +67,8 @@ const PieChart = ({ height = 200, coins }: TPieChartProps) => {
 
               <Text
                 textAnchor="middle"
+                className="text-sm"
                 fill={active.color}
-                fontSize={16}
                 dy={20}
               >
                 {`${active.amount} ${active.symbol} (20%)`}
@@ -79,8 +78,7 @@ const PieChart = ({ height = 200, coins }: TPieChartProps) => {
             <>
               <Text
                 textAnchor="middle"
-                className="fill-black"
-                fontSize={26}
+                className="fill-black text-2xl font-normal"
                 dy={-7}
               >
                 {`${Math.floor(
@@ -88,7 +86,7 @@ const PieChart = ({ height = 200, coins }: TPieChartProps) => {
                 )} €`}
               </Text>
 
-              <Text textAnchor="middle" fill="#aaa" fontSize={16} dy={20}>
+              <Text textAnchor="middle" className="fill-black text-sm" dy={20}>
                 {`${coins.length} Cryptocurrencies`}
               </Text>
             </>

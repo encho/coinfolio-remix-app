@@ -97,7 +97,7 @@ export default function PortalIndexPage() {
     <div>
       {/* TODO layout PageTitle better? better layout page better and use capsize on PageTitle */}
       <PageTitle>Good morning</PageTitle>
-      <div className="mb-14">
+      <div className="mb-12">
         <SectionTitle>Account Value</SectionTitle>
         <MonetaryValueLarge currency="EUR" amount={123.33} />
         <div className="mt-1">
@@ -106,7 +106,7 @@ export default function PortalIndexPage() {
       </div>
 
       {/* grid based layout */}
-      <div className="grid w-full grid-flow-col grid-cols-[1fr_250px] grid-rows-[auto_250px] gap-x-24">
+      <div className="grid w-full grid-flow-col grid-cols-[1fr_270px] grid-rows-[auto_270px] gap-x-24">
         <div className="flex justify-between align-baseline">
           <SectionTitle>Performance</SectionTitle>
           <PeriodPicker />

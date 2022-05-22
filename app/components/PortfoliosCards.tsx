@@ -46,7 +46,7 @@ function PortfolioTile({ strategy, riskLevel }: TExpandedPortfolio) {
 
         <div className="flex justify-between">
           <div className="bg-yellow-300xxx">
-            <div className="text-xl text-gray-900">2,300.43 €</div>
+            <div className="text-xl font-normal text-gray-900">2,300.43 €</div>
             <div className="text-sm text-gray-900">+300.88 €</div>
           </div>
           <div className="h-12 w-40 py-2">
@@ -82,19 +82,26 @@ function AddNewPortfolioTile() {
 }
 
 function RiskLevelBars(props: TRiskLevel) {
-  const firstBarColor = "bg-green-500";
+  // const firstBarColor = "bg-green-500";
+  // const secondBarColor =
+  //   props.name === "Medium Risk" || props.name === "High Risk"
+  //     ? "bg-yellow-500"
+  //     : "bg-gray-200";
+  // const thirdBarColor =
+  //   props.name === "High Risk" ? "bg-red-500" : "bg-gray-200";
+
+  const firstBarColor = "bg-blue-500";
   const secondBarColor =
     props.name === "Medium Risk" || props.name === "High Risk"
-      ? "bg-yellow-500"
+      ? "bg-blue-500"
       : "bg-gray-200";
   const thirdBarColor =
-    props.name === "High Risk" ? "bg-red-500" : "bg-gray-200";
-
+    props.name === "High Risk" ? "bg-blue-500" : "bg-gray-200";
   return (
     <div className="bg-yellow-200x flex gap-[3px] align-middle">
-      <div className={`h-[6px] w-4 self-center ${firstBarColor}`}></div>
-      <div className={`h-[6px] w-4 self-center ${secondBarColor}`}></div>
-      <div className={`h-[6px] w-4 self-center ${thirdBarColor}`}></div>
+      <div className={`h-[5px] w-4 self-center ${firstBarColor}`}></div>
+      <div className={`h-[5px] w-4 self-center ${secondBarColor}`}></div>
+      <div className={`h-[5px] w-4 self-center ${thirdBarColor}`}></div>
     </div>
   );
 }
