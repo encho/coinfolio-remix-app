@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 
 export function PageTitle({ children }: { children: ReactNode }) {
   return (
-    <div className="mt-4 mb-12">
+    <div className="mt-3 mb-12">
       <Heading1>{children}</Heading1>
     </div>
   );

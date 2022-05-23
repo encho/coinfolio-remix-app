@@ -7,13 +7,11 @@ import {
   MenuIcon,
   XIcon,
   DocumentReportIcon,
-  LibraryIcon,
-  // ChartPieIcon,
   UserIcon,
   LogoutIcon,
   MailIcon,
-  SupportIcon,
   GiftIcon,
+  ChatAlt2Icon,
 } from "@heroicons/react/outline";
 
 const navigation = [
@@ -23,14 +21,14 @@ const navigation = [
     icon: DocumentReportIcon,
   },
   {
-    name: "Account",
-    href: "./account",
-    icon: LibraryIcon,
-  },
-  {
     name: "Mailbox",
     href: "./mailbox",
     icon: MailIcon,
+  },
+  {
+    name: "Support",
+    href: "./support",
+    icon: ChatAlt2Icon,
   },
   {
     name: "Referrals",
