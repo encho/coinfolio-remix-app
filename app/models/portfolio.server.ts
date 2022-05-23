@@ -48,6 +48,31 @@ const portfoliosDB: Array<TPortfolio> = [
   },
 ];
 
+export type TPortfolioPerformanceSeries = Array<{ date: Date; value: number }>;
+
+const portfolioPerformanceSeriesDB: Array<{
+  userId: string;
+  strategyId: string;
+  performanceSeries: TPortfolioPerformanceSeries;
+}> = [
+  {
+    userId: "cl305plna000699t19aqezycd",
+    strategyId: "strategy-001",
+    performanceSeries: [
+      { date: new Date(), value: 100 },
+      { date: new Date(), value: 200 },
+    ],
+  },
+  {
+    userId: "cl305plna000699t19aqezycd",
+    strategyId: "strategy-007",
+    performanceSeries: [
+      { date: new Date(), value: 20000 },
+      { date: new Date(), value: 30000 },
+    ],
+  },
+];
+
 export function getUserPortfolios({
   userId,
 }: {
@@ -126,6 +151,7 @@ export function getUserPortfolioInfoFromStrategyId({
   const portfolioPromise: Promise<null | TPortfolio> = new Promise(
     (resolve) => {
       setTimeout(() => {
+        // TODO filter for user too
         const portfolio = portfoliosDB.find(
           (it) => it.strategyId === strategyId
         );
@@ -138,4 +164,30 @@ export function getUserPortfolioInfoFromStrategyId({
     }
   );
   return portfolioPromise;
+}
+
+export function getUserPortfolioPerformanceSeriesFromStrategyId({
+  strategyId,
+  userId,
+}: {
+  strategyId: TPortfolio["strategyId"];
+  userId: User["id"];
+}): Promise<null | TPortfolioPerformanceSeries> {
+  console.log(
+    `Retrieving portfolio performance series for user: ${userId} and strategyId: ${strategyId}...`
+  );
+  const performanceSeriesPromise: Promise<null | TPortfolioPerformanceSeries> =
+    new Promise((resolve) => {
+      setTimeout(() => {
+        const { performanceSeries } = portfolioPerformanceSeriesDB.find(
+          (it) => it.strategyId === strategyId && it.userId === userId
+        ) as { performanceSeries: TPortfolioPerformanceSeries };
+        if (!performanceSeries) {
+          resolve(null);
+        } else {
+          resolve(performanceSeries);
+        }
+      }, 300);
+    });
+  return performanceSeriesPromise;
 }

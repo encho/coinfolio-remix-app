@@ -126,7 +126,7 @@ export default function PortalIndexPage() {
         </div>
       </div> */}
 
-      <div className="bg-gray-150x mb-8">
+      <div className="bg-gray-150x mb-12">
         <DashboardTabs />
       </div>
 
@@ -138,52 +138,63 @@ export default function PortalIndexPage() {
         </div>
       </div> */}
 
-      <div className="mb-10">
-        <SectionTitle>Account Value</SectionTitle>
-        <MonetaryValueLarge currency="EUR" amount={123.33} />
-        <div className="mt-3">
-          <div className="flex gap-2">
-            <div>
-              <MonetaryValueSmall currency="EUR" amount={23.11} /> available
-            </div>
-            {/* TODO make better layout this is a hack! */}
-            <div className="-mt-[2px]">
-              <button
-                type="button"
-                className="inline-flex items-center rounded border border-transparent bg-blue-500 px-3 py-1 text-xs font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              >
-                Payments
-              </button>
+      <div className="flex flex-col gap-10">
+        <div className="mb-10xxx">
+          <SectionTitle>Account Value</SectionTitle>
+          {/* TODO remove this design white space hack once we have capsize trim */}
+          <div className="-mt-1">
+            <MonetaryValueLarge currency="EUR" amount={123.33} />
+          </div>
+          <div className="mt-3">
+            <div className="flex gap-3">
+              <div>
+                <MonetaryValueSmall currency="EUR" amount={23.11} /> available
+              </div>
+              {/* TODO make better layout this is a hack! */}
+              <div className="-mt-[2px]">
+                <button
+                  type="button"
+                  className="inline-flex items-center rounded border border-transparent bg-blue-500 px-3 py-1 text-xs font-medium text-white shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                  Payments
+                </button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* <div className="bg-gray-150x -mt-2 mb-10">
+        {/* <div className="bg-gray-150x -mt-2 mb-10">
         <DashboardTabs />
       </div> */}
 
-      {/* grid based layout */}
-      <div className="grid w-full grid-flow-col grid-cols-[1fr_260px] grid-rows-[auto_260px] gap-x-24">
-        <div className="flex justify-between align-baseline">
-          <SectionTitle>Performance</SectionTitle>
-          <PeriodPicker />
+        {/* grid based layout */}
+        <div className="grid w-full grid-flow-col grid-cols-[1fr_240px] grid-rows-[auto_240px_0px] gap-x-24">
+          <div className="flex justify-between align-baseline">
+            <SectionTitle>Performance</SectionTitle>
+            <PeriodPicker />
+          </div>
+          <div className="bg-gray-50">
+            <SmallPerformanceChart data={parsedPerformanceSeries} />
+          </div>
+          <div className="mt-2 text-right text-sm text-blue-500 underline hover:cursor-pointer">
+            Performance
+          </div>
+          <div className="">
+            <SectionTitle>Asset Allocation</SectionTitle>
+          </div>
+          <div className="">
+            <PieChart coins={coins} />
+          </div>
+          <div className="mt-2 text-right text-sm text-blue-500 underline hover:cursor-pointer">
+            Asset Allocation
+          </div>
         </div>
-        <div className="bg-gray-50">
-          <SmallPerformanceChart data={parsedPerformanceSeries} />
-        </div>
-        <div className="">
-          <SectionTitle>Asset Allocation</SectionTitle>
-        </div>
-        <div className="">
-          <PieChart coins={coins} />
-        </div>
-      </div>
 
-      {/* Coinfolio Cards Section */}
-      <div className="mt-10">
-        <SectionTitle>Strategies</SectionTitle>
-        <PortfoliosCards data={data.portfolios} />
+        {/* Coinfolio Cards Section */}
+        <div className="mt-10xxxx">
+          <SectionTitle>Strategies</SectionTitle>
+          <PortfoliosCards data={data.portfolios} />
+        </div>
       </div>
     </div>
   );

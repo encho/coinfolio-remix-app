@@ -109,7 +109,7 @@ export default function PortfolioDetailsPage() {
         <div className="inline-flex items-center rounded-md bg-gray-150 px-2.5 py-0.5 text-sm font-medium text-gray-550">
           Crypto Strategy
         </div>
-        <div className="-mt-1">
+        <div className="-mt-2">
           <PageTitle>{data.strategy.name}</PageTitle>
         </div>
         {currentRiskLevelOverview && (

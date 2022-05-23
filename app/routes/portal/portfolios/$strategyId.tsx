@@ -3,13 +3,19 @@ import { json } from "@remix-run/node";
 import { useCatch, useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
-import { getUserPortfolioInfoFromStrategyId } from "~/models/portfolio.server";
+import {
+  getUserPortfolioInfoFromStrategyId,
+  getUserPortfolioPerformanceSeriesFromStrategyId,
+} from "~/models/portfolio.server";
 import { requireUserId } from "~/session.server";
 import { getStrategyFromId } from "~/models/strategy.server";
 import { getRiskLevelFromId } from "~/models/riskLevel.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 
-import type { TPortfolio } from "~/models/portfolio.server";
+import type {
+  TPortfolio,
+  TPortfolioPerformanceSeries,
+} from "~/models/portfolio.server";
 import type { TStrategy } from "~/models/strategy.server";
 import type { TRiskLevel } from "~/models/riskLevel.server";
 
@@ -17,6 +23,7 @@ type LoaderData = {
   portfolio: TPortfolio;
   strategy: TStrategy;
   riskLevel: TRiskLevel;
+  performanceSeries: TPortfolioPerformanceSeries;
 };
 
 export const loader: LoaderFunction = async ({ request, params }) => {
@@ -43,10 +50,20 @@ export const loader: LoaderFunction = async ({ request, params }) => {
     throw new Response("Not Found", { status: 404 });
   }
 
+  const performanceSeries =
+    await getUserPortfolioPerformanceSeriesFromStrategyId({
+      strategyId,
+      userId,
+    });
+  if (!performanceSeries) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
   return json<LoaderData>({
     portfolio,
     strategy,
     riskLevel,
+    performanceSeries,
   });
 };
 
@@ -65,6 +82,9 @@ export default function PortfolioDetailsPage() {
         >
           Change Risk Level
         </button>
+      </div>
+      <div className="bg-orange-400">
+        {JSON.stringify(data.performanceSeries)}
       </div>
     </div>
   );
