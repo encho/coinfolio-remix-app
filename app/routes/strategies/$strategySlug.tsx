@@ -100,13 +100,18 @@ export default function PortfolioDetailsPage() {
           onClick={() => setOpen(true)}
           className="inline-flex items-center rounded-full border border-transparent bg-blue-600 px-8 py-3 text-lg font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
-          Buy CoinFolio
+          Add to Portfolio
         </button>
       </div>
 
       <Header />
       <Container>
-        <PageTitle>{data.strategy.name}</PageTitle>
+        <div className="inline-flex items-center rounded-md bg-gray-150 px-2.5 py-0.5 text-sm font-medium text-gray-550">
+          Crypto Strategy
+        </div>
+        <div className="-mt-1">
+          <PageTitle>{data.strategy.name}</PageTitle>
+        </div>
         {currentRiskLevelOverview && (
           <ModalExample
             open={open}
@@ -295,7 +300,7 @@ function ModalExample({
                     className="inline-flex w-full justify-center rounded border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
                     onClick={() => setOpen(false)}
                   >
-                    Buy Coinfolio Now
+                    Buy Now
                   </button>
                   <button
                     type="button"

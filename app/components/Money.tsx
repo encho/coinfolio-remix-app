@@ -15,7 +15,7 @@ export function MonetaryValueSmall({ amount, currency }: TMonetaryValue) {
   const currencySymbol = currencySymbols[currency];
 
   return (
-    <div className="text-normal inline-block">
+    <div className="inline-block text-base">
       {formattedAmount} {currencySymbol}
     </div>
   );

@@ -78,14 +78,14 @@ export default function PortalStrategiesPage() {
     <div>
       <Header />
       <Container>
-        <PageTitle>CoinFolio Strategies</PageTitle>
+        <PageTitle>Crypto Strategies</PageTitle>
         <div className="flex flex-col gap-12">
           <div className="">
-            <SectionTitle>Single Coin Indices</SectionTitle>
+            <SectionTitle>Single Coin Strategies</SectionTitle>
             <StrategyTiles data={singleCoinStrategiesOverview} />
           </div>
           <div className="">
-            <SectionTitle>Broad Market Indices</SectionTitle>
+            <SectionTitle>Broad Market Strategies</SectionTitle>
             <StrategyTiles data={cryptoMarketBetaStrategiesOverview} />
           </div>
         </div>
@@ -100,7 +100,7 @@ type TStrategyTilesProps = {
 
 function StrategyTiles({ data }: TStrategyTilesProps) {
   return (
-    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
       {data.map((strategy) => (
         <StrategyTile
           key={strategy.name}
@@ -133,14 +133,14 @@ function StrategyTile({
     >
       <div className="min-w-0 flex-1">
         <Link to={`./${slug}`} prefetch="intent" className="focus:outline-none">
-          <div className="flex h-full flex-col justify-between gap-3">
+          <div className="flex h-full flex-col justify-between gap-4">
             <div className="">
               <span className="absolute inset-0" aria-hidden="true" />
               <p className="mb-1 text-base font-bold text-gray-900">{name}</p>
-              <p className="text-sm text-gray-900">{description}</p>
+              <p className="text-xs text-gray-900">{description}</p>
             </div>
             <div>
-              <div className="h-12 w-full bg-gray-50">
+              <div className="h-14 w-full bg-gray-50">
                 <SparklineChart data={performanceSeries} />
               </div>
             </div>

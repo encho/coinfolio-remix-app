@@ -1,4 +1,3 @@
-import { resolve } from "path";
 import { getRiskLevels } from "./riskLevel.server";
 
 const bitcoinLongDescripton = `
@@ -110,7 +109,7 @@ const strategiesDB: Array<TStrategy> = [
   },
   {
     id: "strategy-006",
-    name: "G5 Equally Weighted Index",
+    name: "G10 Equal Weighted",
     description:
       "Our equally weighted Cryptocurrency Index composed of the 5 largest cryptocurrencies.",
     longDescription: bitcoinLongDescripton,
@@ -120,7 +119,7 @@ const strategiesDB: Array<TStrategy> = [
   },
   {
     id: "strategy-007",
-    name: "G5 Volatility Weighted Index",
+    name: "G10 Volatility Weighted",
     description:
       "Our volatility weighted Cryptocurrency Index composed of the 5 largest cryptocurrencies.",
     longDescription: bitcoinLongDescripton,
@@ -172,12 +171,10 @@ export async function getStrategyFromSlug({
   slug: string;
 }): Promise<null | TStrategy> {
   console.log(`Retrieving strategy data for slug: ${slug}...`);
-  console.log(`RISK LEVELS ARE>>>>>`);
 
   const riskLevels = await getRiskLevels();
 
   if (!riskLevels) {
-    // resolve(null);
     throw Error();
   }
 
