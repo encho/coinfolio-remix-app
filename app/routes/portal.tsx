@@ -12,14 +12,20 @@ import {
   MailIcon,
   GiftIcon,
   ChatAlt2Icon,
+  // ChartPieIcon,
 } from "@heroicons/react/outline";
 
 const navigation = [
   {
-    name: "Dashboard",
+    name: "Home",
     href: ".",
     icon: DocumentReportIcon,
   },
+  // {
+  //   name: "Strategies",
+  //   href: "./portfolios",
+  //   icon: ChartPieIcon,
+  // },
   {
     name: "Mailbox",
     href: "./mailbox",
@@ -31,14 +37,14 @@ const navigation = [
     icon: ChatAlt2Icon,
   },
   {
-    name: "Referrals",
-    href: "./referrals",
-    icon: GiftIcon,
-  },
-  {
     name: "Profile",
     href: "./profile",
     icon: UserIcon,
+  },
+  {
+    name: "Invite",
+    href: "./invite",
+    icon: GiftIcon,
   },
 ];
 

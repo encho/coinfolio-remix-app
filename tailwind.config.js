@@ -22,6 +22,8 @@ module.exports = {
     fontWeight: fontWeight,
   },
   plugins: [
+    require("@tailwindcss/forms"),
+
     // Export Tailwind Colors as CSS Custom Properties
     // adapted from: https://gist.github.com/Merott/d2a19b32db07565e94f10d13d11a8574
     // just to add some clarity to this otherwise amazing snippet, the colors
