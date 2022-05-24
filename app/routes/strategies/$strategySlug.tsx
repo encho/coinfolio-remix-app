@@ -5,6 +5,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { CashIcon } from "@heroicons/react/outline";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
+import numeral from "numeral";
 
 import { Container, Header } from "~/components/NewPortfolio";
 import { getStrategyFromSlug, TRiskLevel } from "~/models/strategy.server";
@@ -36,7 +37,8 @@ const RETURNS_FIXTURE = [
   { date: new Date("2022-01-08"), value: 0.02 },
   { date: new Date("2022-01-09"), value: -0.011 },
   { date: new Date("2022-01-10"), value: -0.005 },
-  { date: new Date("2022-01-11"), value: 0.01 },
+  { date: new Date("2022-01-11"), value: 0.018 },
+  { date: new Date("2022-01-12"), value: -0.028 },
 ];
 
 type TTimeseries = Array<{ date: Date; value: number }>;
@@ -210,20 +212,13 @@ export default function PortfolioDetailsPage() {
   // strategy confirmation modal state
   const [open, setOpen] = useState(false);
 
-  // const lastDataframeItem =
-  //   PERFORMANCE_DATAFRAME[PERFORMANCE_DATAFRAME.length - 1];
-
-  // const currentPeriodPerformance =
-  //   currentHoveredRiskLevelOverview.name === "Low Risk"
-  //     ? "LOW_RISK"
-  //     : "hehehehe";
-
+  // TODO do we need null check here?
   const currentPeriodPerformance = currentRiskLevelOverview
     ? getCurrentPeriodPerformance(
         PERFORMANCE_DATAFRAME,
         currentRiskLevelOverview.name
       )
-    : "oh nooooo";
+    : null;
 
   return (
     <div>
@@ -282,14 +277,11 @@ export default function PortfolioDetailsPage() {
             </div>
             <div>
               <div className="flex justify-between align-baseline">
-                <SectionTitle>Performance</SectionTitle>
+                <SectionTitle>Historical Performance</SectionTitle>
                 <PeriodPicker />
               </div>
               <div className="w-full">
-                {/* <div className="h-[250px] w-full bg-gray-50">
-                  <SmallPerformanceChart data={PERFORMANCE_SERIES_FIXTURE} />
-                </div> */}
-                <div className="h-[250px] w-full bg-gray-50">
+                <div className="relative h-[300px] w-full bg-gray-50">
                   {currentRiskLevelOverview ? (
                     <MultiPerformanceChart
                       data={PERFORMANCE_DATAFRAME}
@@ -301,9 +293,11 @@ export default function PortfolioDetailsPage() {
                       }
                     />
                   ) : null}
-                </div>
-                <div className="w-full bg-orange-100">
-                  {JSON.stringify(currentPeriodPerformance, undefined, 2)}
+                  {currentPeriodPerformance ? (
+                    <div className="absolute top-2 left-4">
+                      <PerformanceFigure {...currentPeriodPerformance} />
+                    </div>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -505,5 +499,29 @@ function ModalExample({
         </div>
       </Dialog>
     </Transition.Root>
+  );
+}
+
+type TPerformanceFigureProps = {
+  from: Date;
+  to: Date;
+  value: number;
+};
+
+function PerformanceFigure({ from, to, value }: TPerformanceFigureProps) {
+  const formattedPercentagePerformance = numeral(Math.abs(value)).format(
+    "0.00%"
+  );
+
+  const sign = value === 0 ? "" : value < 0 ? "-" : "+";
+
+  return (
+    <div className="flex flex-col gap-0">
+      <div className="text-3xl font-bold text-gray-900">
+        {sign}
+        {formattedPercentagePerformance}
+      </div>
+      <div className="text-sm text-gray-400">from 11.11.2022 to 12.05.2023</div>
+    </div>
   );
 }
