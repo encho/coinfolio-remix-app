@@ -24,15 +24,58 @@ type LoaderData = {
   strategy: TStrategy;
 };
 
-const PERFORMANCE_SERIES_FIXTURE = [
-  { date: new Date("2022-01-01"), value: 100 },
-  { date: new Date("2022-01-02"), value: 110 },
-  { date: new Date("2022-01-03"), value: 105 },
-  { date: new Date("2022-01-04"), value: 120 },
-  { date: new Date("2022-01-05"), value: 110 },
-  { date: new Date("2022-01-06"), value: 130 },
-  { date: new Date("2022-01-07"), value: 120 },
+const RETURNS_FIXTURE = [
+  { date: new Date("2022-01-01"), value: 0 },
+  { date: new Date("2022-01-02"), value: 0.02 },
+  { date: new Date("2022-01-03"), value: -0.01 },
+  { date: new Date("2022-01-04"), value: 0.023 },
+  { date: new Date("2022-01-05"), value: -0.005 },
+  { date: new Date("2022-01-06"), value: 0.002 },
+  { date: new Date("2022-01-07"), value: 0.012 },
 ];
+
+type TTimeseries = Array<{ date: Date; value: number }>;
+
+function getStrategyPerformanceSeries({
+  riskLevel,
+}: {
+  riskLevel: "Low Risk" | "Medium Risk" | "High Risk";
+}): TTimeseries {
+  const startCapital = 1000;
+  const returnsMultiplicator =
+    riskLevel === "High Risk" ? 3 : riskLevel === "Medium Risk" ? 2 : 1;
+
+  const performanceSeries = RETURNS_FIXTURE.reduce<TTimeseries>(
+    (memo, current, i) => {
+      const strategyHPR = current.value * returnsMultiplicator + 1;
+
+      if (i === 0) {
+        return [{ ...current, value: strategyHPR * startCapital }];
+      }
+      return [
+        ...memo,
+        { ...current, value: strategyHPR * memo[memo.length - 1].value },
+      ];
+    },
+    []
+  );
+
+  return performanceSeries;
+}
+
+const PERFORMANCE_SERIES_FIXTURE = getStrategyPerformanceSeries({
+  riskLevel: "Low Risk",
+});
+
+// const PERFORMANCE_SERIES_FIXTURE = [
+//   { date: new Date("2022-01-01"), value: 100 },
+//   { date: new Date("2022-01-02"), value: 110 },
+//   { date: new Date("2022-01-03"), value: 105 },
+//   { date: new Date("2022-01-04"), value: 120 },
+//   { date: new Date("2022-01-05"), value: 110 },
+//   { date: new Date("2022-01-06"), value: 130 },
+//   { date: new Date("2022-01-07"), value: 120 },
+// ];
 
 const ASSET_ALLOCATION_FIXTURE = [
   {
