@@ -21,7 +21,7 @@ export type TStrategy = {
 // TODO deprecate ASAP
 export type TRiskLevel = {
   id: string;
-  name: string;
+  name: "Low Risk" | "Medium Risk" | "High Risk";
   description: string;
   metricType: "VaR";
   metricValue: number;
@@ -49,13 +49,6 @@ const riskLevelsDB: Array<TRiskLevel> = [
     description: "make consistent",
     metricType: "VaR",
     metricValue: 0.3,
-  },
-  {
-    id: "riskLevel-004",
-    name: "Highestttt Risk",
-    description: "make consistent",
-    metricType: "VaR",
-    metricValue: 0.4,
   },
 ];
 

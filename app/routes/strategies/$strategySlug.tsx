@@ -12,10 +12,10 @@ import { getStrategyFromSlug, TRiskLevel } from "~/models/strategy.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PeriodPicker from "~/components/PeriodPicker";
 import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
+import { MultiPerformanceChart } from "~/components/MultiPerformanceChart";
 import StrategyAssetAllocationTable from "~/components/StrategyAssetAllocationTable";
 
 import type { TStrategy } from "~/models/strategy.server";
-import { data } from "msw/lib/types/context";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -33,6 +33,10 @@ const RETURNS_FIXTURE = [
   { date: new Date("2022-01-05"), value: -0.005 },
   { date: new Date("2022-01-06"), value: 0.002 },
   { date: new Date("2022-01-07"), value: 0.012 },
+  { date: new Date("2022-01-08"), value: 0.02 },
+  { date: new Date("2022-01-09"), value: -0.011 },
+  { date: new Date("2022-01-10"), value: -0.005 },
+  { date: new Date("2022-01-11"), value: 0.01 },
 ];
 
 type TTimeseries = Array<{ date: Date; value: number }>;
@@ -42,7 +46,7 @@ function getStrategyPerformanceSeries({
 }: {
   riskLevel: "Low Risk" | "Medium Risk" | "High Risk";
 }): TTimeseries {
-  const startCapital = 1000;
+  const startCapital = 1;
   const returnsMultiplicator =
     riskLevel === "High Risk" ? 3 : riskLevel === "Medium Risk" ? 2 : 1;
 
@@ -68,12 +72,14 @@ const PERFORMANCE_SERIES_FIXTURE = getStrategyPerformanceSeries({
   riskLevel: "Low Risk",
 });
 
-type TStrategyPerformanceDataframe = Array<{
+type TStrategyPerfromanceItem = {
   date: Date;
   LOW_RISK: number;
   MEDIUM_RISK: number;
   HIGH_RISK: number;
-}>;
+};
+
+type TStrategyPerformanceDataframe = Array<TStrategyPerfromanceItem>;
 
 const LOW_RISK_SERIES = getStrategyPerformanceSeries({
   riskLevel: "Low Risk",
@@ -134,6 +140,37 @@ const ASSET_ALLOCATION_FIXTURE = [
   },
 ];
 
+function getCurrentPeriodPerformance(
+  dataframe: TStrategyPerformanceDataframe,
+  riskLevel: "Low Risk" | "Medium Risk" | "High Risk"
+): { from: Date; to: Date; value: number } {
+  const firstItem = dataframe[0];
+  const lastItem = dataframe[dataframe.length - 1];
+
+  invariant(firstItem.date);
+  invariant(lastItem.date);
+
+  const from = firstItem.date;
+  const to = lastItem.date;
+
+  const period = { from, to };
+
+  // by default returns value accessor for Low Risk Performance
+  const valueAccessor: (it: TStrategyPerfromanceItem) => number =
+    riskLevel === "High Risk"
+      ? (it) => it.HIGH_RISK
+      : riskLevel === "Medium Risk"
+      ? (it) => it.MEDIUM_RISK
+      : (it) => it.LOW_RISK;
+
+  const firstValue = valueAccessor(firstItem);
+  const lastValue = valueAccessor(lastItem);
+
+  const percentagePerformance = lastValue / firstValue - 1;
+
+  return { ...period, value: percentagePerformance };
+}
+
 export const loader: LoaderFunction = async ({ request, params }) => {
   invariant(params.strategySlug, "strategySlug not found");
   const slug = params.strategySlug;
@@ -157,13 +194,36 @@ export default function PortfolioDetailsPage() {
     data.strategy.riskLevels[0].id
   );
 
+  // TODO rename to hoveredRiskLevel
+  const [hovered, setHovered] = useState<string | null>(null);
+
   // TODO useMemo
   const currentRiskLevelOverview = data.strategy.riskLevels.find(
     (it) => it.id === currentRiskLevel
   );
 
+  // TODO useMemo
+  const currentHoveredRiskLevelOverview = hovered
+    ? data.strategy.riskLevels.find((it) => it.id === hovered)
+    : null;
+
   // strategy confirmation modal state
   const [open, setOpen] = useState(false);
+
+  // const lastDataframeItem =
+  //   PERFORMANCE_DATAFRAME[PERFORMANCE_DATAFRAME.length - 1];
+
+  // const currentPeriodPerformance =
+  //   currentHoveredRiskLevelOverview.name === "Low Risk"
+  //     ? "LOW_RISK"
+  //     : "hehehehe";
+
+  const currentPeriodPerformance = currentRiskLevelOverview
+    ? getCurrentPeriodPerformance(
+        PERFORMANCE_DATAFRAME,
+        currentRiskLevelOverview.name
+      )
+    : "oh nooooo";
 
   return (
     <div>
@@ -213,6 +273,8 @@ export default function PortfolioDetailsPage() {
                     name={riskLevel.name}
                     description={riskLevel.description}
                     onClick={(id) => setCurrentRiskLevel(id)}
+                    onMouseOver={(id) => setHovered(id)}
+                    onMouseLeave={() => setHovered(null)}
                     isActive={riskLevel.id === currentRiskLevel}
                   />
                 ))}
@@ -224,11 +286,24 @@ export default function PortfolioDetailsPage() {
                 <PeriodPicker />
               </div>
               <div className="w-full">
-                <div className="h-[250px] w-full bg-gray-50">
+                {/* <div className="h-[250px] w-full bg-gray-50">
                   <SmallPerformanceChart data={PERFORMANCE_SERIES_FIXTURE} />
+                </div> */}
+                <div className="h-[250px] w-full bg-gray-50">
+                  {currentRiskLevelOverview ? (
+                    <MultiPerformanceChart
+                      data={PERFORMANCE_DATAFRAME}
+                      activeStrategy={currentRiskLevelOverview.name}
+                      hoveredStrategy={
+                        currentHoveredRiskLevelOverview
+                          ? currentHoveredRiskLevelOverview.name
+                          : null
+                      }
+                    />
+                  ) : null}
                 </div>
                 <div className="w-full bg-orange-100">
-                  {JSON.stringify(PERFORMANCE_DATAFRAME, undefined, 2)}
+                  {JSON.stringify(currentPeriodPerformance, undefined, 2)}
                 </div>
               </div>
             </div>
@@ -264,6 +339,8 @@ function RiskLevelButton({
   name,
   description,
   onClick,
+  onMouseOver,
+  onMouseLeave,
   isActive,
 }: {
   id: string;
@@ -271,11 +348,15 @@ function RiskLevelButton({
   description: string;
   isActive: boolean;
   onClick: (id: string) => void;
+  onMouseOver: (id: string) => void;
+  onMouseLeave: (id: string) => void;
 }) {
   return (
     <button
       key={name}
       onClick={() => onClick(id)}
+      onMouseOver={() => onMouseOver(id)}
+      onMouseLeave={() => onMouseLeave(id)}
       className={classNames(
         isActive
           ? "border-2 border-blue-500 bg-blue-50"
