@@ -1,12 +1,12 @@
 export type TRiskLevel = {
   id: string;
-  name: string;
+  name: "Low Risk" | "Medium Risk" | "High Risk";
   description: string;
   metricType: "VaR";
   metricValue: number;
 };
 
-const riskLevelsDB: Array<TRiskLevel> = [
+export const riskLevelsDB: Array<TRiskLevel> = [
   {
     id: "riskLevel-001",
     name: "Low Risk",
@@ -27,13 +27,6 @@ const riskLevelsDB: Array<TRiskLevel> = [
     description: "30% VaR",
     metricType: "VaR",
     metricValue: 0.3,
-  },
-  {
-    id: "riskLevel-004",
-    name: "Highestttt Risk",
-    description: "40% VaR",
-    metricType: "VaR",
-    metricValue: 0.4,
   },
 ];
 

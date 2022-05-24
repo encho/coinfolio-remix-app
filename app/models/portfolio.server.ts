@@ -1,5 +1,6 @@
 import type { User } from "@prisma/client";
-import type { TStrategy, TRiskLevel } from "./strategy.server";
+import type { TStrategy } from "./strategy.server";
+import type { TRiskLevel } from "./riskLevel.server";
 import { getRiskLevels } from "./riskLevel.server";
 import { getStrategies } from "./strategy.server";
 import invariant from "tiny-invariant";
