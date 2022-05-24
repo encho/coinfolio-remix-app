@@ -2,7 +2,7 @@ import type { LoaderFunction } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Fragment, useState, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { CheckIcon } from "@heroicons/react/outline";
+import { CashIcon } from "@heroicons/react/outline";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 
@@ -109,7 +109,7 @@ export default function PortfolioDetailsPage() {
         <div className="inline-flex items-center rounded-md bg-gray-150 px-2.5 py-0.5 text-sm font-medium text-gray-550">
           Crypto Strategy
         </div>
-        <div className="-mt-1">
+        <div className="-mt-2">
           <PageTitle>{data.strategy.name}</PageTitle>
         </div>
         {currentRiskLevelOverview && (
@@ -257,7 +257,7 @@ function ModalExample({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+          <div className="fixed inset-0 bg-gray-900 bg-opacity-75 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
@@ -271,40 +271,71 @@ function ModalExample({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6">
+              <Dialog.Panel className="relative transform overflow-hidden rounded bg-white px-8 pt-8 pb-8 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-8">
                 <div>
-                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                    <CheckIcon
-                      className="h-6 w-6 text-green-600"
+                  <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
+                    <CashIcon
+                      className="h-6 w-6 text-blue-500"
                       aria-hidden="true"
                     />
                   </div>
-                  <div className="mt-3 text-center sm:mt-5">
+                  <div className="mt-2 text-center sm:mt-5">
                     <Dialog.Title
                       as="h3"
-                      className="text-lg font-medium leading-6 text-gray-900"
+                      className="text-xl font-bold leading-6 text-gray-900"
                     >
-                      Investing in {strategy.name} -{" "}
-                      {strategyRiskLevelOverview.name}
+                      {/* Please set the Investment Amount */}
+                      How much would you like to invest?
                     </Dialog.Title>
-                    <div className="mt-2">
-                      <p className="text-sm text-gray-900">
-                        Select investment amount here...
-                      </p>
+                  </div>
+                  <div>
+                    <div className="mt-10">
+                      <label
+                        htmlFor="price"
+                        className="block text-sm font-medium text-gray-900"
+                      >
+                        Investment Amount
+                      </label>
+                      <div className="relative mt-1 rounded-md shadow-sm">
+                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                          <span className="text-gray-900 sm:text-sm">€</span>
+                        </div>
+                        <input
+                          type="text"
+                          name="price"
+                          id="price"
+                          className="block w-full rounded border-gray-300 pl-7 pr-12 placeholder-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                          placeholder="1,000.00"
+                        />
+                      </div>
+                      <div className="mt-1 text-xs text-gray-500">
+                        max. 2,580.89 € available
+                      </div>
                     </div>
                   </div>
+
+                  <div className="mt-8 text-gray-900">
+                    I want to invest{" "}
+                    <span className="font-semibold">1,000.00 €</span> in the{" "}
+                    <span className="font-semibold">{strategy.name}</span>{" "}
+                    strategy with a risk level of:{" "}
+                    <span className="font-semibold">
+                      {strategyRiskLevelOverview.name}
+                    </span>
+                    .
+                  </div>
                 </div>
-                <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                <div className="mt-6 sm:mt-8 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
                   <button
                     type="button"
-                    className="inline-flex w-full justify-center rounded border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
+                    className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
                     onClick={() => setOpen(false)}
                   >
-                    Buy Now
+                    Yes, Invest Now
                   </button>
                   <button
                     type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
+                    className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
                     onClick={() => setOpen(false)}
                     ref={cancelButtonRef}
                   >

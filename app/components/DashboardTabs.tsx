@@ -20,7 +20,7 @@ type TTab = { name: string; href: string; current: boolean };
 const tabs: Array<TTab> = [
   { name: "Overview", href: "#", current: true },
   { name: "Performance", href: "#", current: false },
-  { name: "Strategies", href: "#", current: false },
+  { name: "Asset Allocation", href: "#", current: false },
   { name: "Transactions", href: "#", current: false },
   //   { name: "Portfolio Analysis", href: "#", current: false },
 ];
