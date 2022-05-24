@@ -8,7 +8,8 @@ import invariant from "tiny-invariant";
 import numeral from "numeral";
 
 import { Container, Header } from "~/components/NewPortfolio";
-import { getStrategyFromSlug, TRiskLevel } from "~/models/strategy.server";
+import { getStrategyFromSlug } from "~/models/strategy.server";
+import { TRiskLevel } from "~/models/riskLevel.server";
 
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PeriodPicker from "~/components/PeriodPicker";

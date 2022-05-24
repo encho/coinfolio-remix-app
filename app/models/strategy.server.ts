@@ -1,4 +1,6 @@
-import { getRiskLevels } from "./riskLevel.server";
+import { getRiskLevels, riskLevelsDB } from "./riskLevel.server";
+
+import type { TRiskLevel } from "./riskLevel.server";
 
 // const bitcoinLongDescripton = `
 // Bitcoin is a cryptocurrency, a virtual currency designed to act as money and a form of payment outside the control of any one person, group, or entity, and thus removing the need for third-party involvement in financial transactions. It is rewarded to blockchain miners for the work done to verify transactions and can be purchased on several exchanges.
@@ -17,40 +19,6 @@ export type TStrategy = {
   category: "SINGLE_COIN" | "CRYPTO_MARKET_BETA";
   riskLevels: Array<TRiskLevel>;
 };
-
-// TODO deprecate ASAP
-export type TRiskLevel = {
-  id: string;
-  name: "Low Risk" | "Medium Risk" | "High Risk";
-  description: string;
-  metricType: "VaR";
-  metricValue: number;
-};
-
-// TODO deprecate ASAP
-const riskLevelsDB: Array<TRiskLevel> = [
-  {
-    id: "riskLevel-001",
-    name: "Low Risk",
-    description: "make consistent",
-    metricType: "VaR",
-    metricValue: 0.1,
-  },
-  {
-    id: "riskLevel-002",
-    name: "Medium Risk",
-    description: "make consistent",
-    metricType: "VaR",
-    metricValue: 0.2,
-  },
-  {
-    id: "riskLevel-003",
-    name: "High Risk",
-    description: "make consistent",
-    metricType: "VaR",
-    metricValue: 0.3,
-  },
-];
 
 // TODO: risklevels should be id's to risklevels as these will in any case be expanded
 const strategiesDB: Array<TStrategy> = [
