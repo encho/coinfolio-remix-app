@@ -13,7 +13,7 @@ import { TRiskLevel } from "~/models/riskLevel.server";
 
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PeriodPicker from "~/components/PeriodPicker";
-import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
+import StrategyAssetAllocationPieChart from "~/components/StrategyAssetAllocationPieChart";
 import { MultiPerformanceChart } from "~/components/MultiPerformanceChart";
 import StrategyAssetAllocationTable from "~/components/StrategyAssetAllocationTable";
 
@@ -241,6 +241,9 @@ export default function PortfolioDetailsPage() {
         <div className="-mt-2">
           <PageTitle>{data.strategy.name}</PageTitle>
         </div>
+
+        {/* <div className="text-gray-900">{data.strategy.description}</div> */}
+
         {currentRiskLevelOverview && (
           <ModalExample
             open={open}
@@ -251,8 +254,31 @@ export default function PortfolioDetailsPage() {
         )}
         <div className="flex flex-row-reverse gap-16">
           <div className="w-1/3">
-            <SectionTitle>Strategy Description</SectionTitle>
-            <div className="text-gray-900">{data.strategy.longDescription}</div>
+            <div className="mb-10">
+              <SectionTitle>Strategy Description</SectionTitle>
+              <div className="text-gray-900">
+                {data.strategy.longDescription}
+              </div>
+            </div>
+            <div>
+              <SectionTitle>Cryptocurrencies Allocation</SectionTitle>
+              <div className="h-[200px]">
+                <StrategyAssetAllocationPieChart
+                  allocation={[
+                    {
+                      symbol: "BTC",
+                      weight: 0.6,
+                      color: "#f05122",
+                    },
+                    {
+                      symbol: "USDT",
+                      weight: 0.4,
+                      color: "#0099cc",
+                    },
+                  ]}
+                />
+              </div>
+            </div>
           </div>
           {/* TODO make VStack */}
           <div className="flex w-2/3 flex-col gap-10">
