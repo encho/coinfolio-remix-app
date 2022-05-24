@@ -18,6 +18,7 @@ import { MultiPerformanceChart } from "~/components/MultiPerformanceChart";
 import StrategyAssetAllocationTable from "~/components/StrategyAssetAllocationTable";
 
 import type { TStrategy } from "~/models/strategy.server";
+import type { TCoinAllocation } from "~/components/StrategyAssetAllocationPieChart";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -41,6 +42,35 @@ const RETURNS_FIXTURE = [
   { date: new Date("2022-01-11"), value: 0.018 },
   { date: new Date("2022-01-12"), value: -0.028 },
 ];
+
+const RISKY_ASSET_ALLOCATION_FIXTURE = [
+  { symbol: "BTC", weight: 0.5, color: "#f05122" },
+  { symbol: "ETH", weight: 0.25, color: "#0099cc" },
+  { symbol: "XRP", weight: 0.25, color: "#00cc99" },
+];
+
+type TStrategyAssetAllocation = Array<TCoinAllocation>;
+
+function getStrategyAssetAllocation({
+  riskLevel,
+}: {
+  riskLevel: "Low Risk" | "Medium Risk" | "High Risk";
+}): TStrategyAssetAllocation {
+  const theterWeight =
+    riskLevel === "High Risk" ? 0.2 : riskLevel === "Medium Risk" ? 0.4 : 0.7;
+  const theterAllocation = {
+    symbol: "USDT",
+    weight: theterWeight,
+    color: "#cccccc",
+  };
+
+  const weightedRiskyAllocation = RISKY_ASSET_ALLOCATION_FIXTURE.map((it) => ({
+    ...it,
+    weight: it.weight * (1 - theterWeight),
+  }));
+
+  return [...weightedRiskyAllocation, theterAllocation];
+}
 
 type TTimeseries = Array<{ date: Date; value: number }>;
 
@@ -263,30 +293,23 @@ export default function PortfolioDetailsPage() {
             <div>
               <SectionTitle>Cryptocurrencies Allocation</SectionTitle>
               <div className="h-[200px]">
-                <StrategyAssetAllocationPieChart
-                  allocation={[
-                    {
-                      symbol: "BTC",
-                      weight: 0.6,
-                      color: "#f05122",
-                    },
-                    {
-                      symbol: "USDT",
-                      weight: 0.4,
-                      color: "#0099cc",
-                    },
-                  ]}
-                />
+                {currentRiskLevelOverview ? (
+                  <StrategyAssetAllocationPieChart
+                    allocation={getStrategyAssetAllocation({
+                      riskLevel: currentRiskLevelOverview.name,
+                    })}
+                  />
+                ) : null}
               </div>
             </div>
           </div>
           {/* TODO make VStack */}
           <div className="flex w-2/3 flex-col gap-10">
             <div>
-              <SectionTitle>Risk Level</SectionTitle>
-              <p className="mb-4">
+              <SectionTitle>Strategy Risk Level</SectionTitle>
+              {/* <p className="mb-4">
                 Select the target risk level for the strategy.
-              </p>
+              </p> */}
               <div className="relative grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
                 {data.strategy.riskLevels.map((riskLevel) => (
                   <RiskLevelButton

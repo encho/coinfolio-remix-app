@@ -5,7 +5,7 @@ import { Text } from "@visx/text";
 
 import wrapComponent from "./wrapComponent";
 
-type TCoinAllocation = {
+export type TCoinAllocation = {
   symbol: string;
   weight: number;
   color: string;
