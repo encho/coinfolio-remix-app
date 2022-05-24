@@ -15,6 +15,7 @@ import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
 import StrategyAssetAllocationTable from "~/components/StrategyAssetAllocationTable";
 
 import type { TStrategy } from "~/models/strategy.server";
+import { data } from "msw/lib/types/context";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -66,6 +67,35 @@ function getStrategyPerformanceSeries({
 const PERFORMANCE_SERIES_FIXTURE = getStrategyPerformanceSeries({
   riskLevel: "Low Risk",
 });
+
+type TStrategyPerformanceDataframe = Array<{
+  date: Date;
+  LOW_RISK: number;
+  MEDIUM_RISK: number;
+  HIGH_RISK: number;
+}>;
+
+const LOW_RISK_SERIES = getStrategyPerformanceSeries({
+  riskLevel: "Low Risk",
+});
+const MEDIUM_RISK_SERIES = getStrategyPerformanceSeries({
+  riskLevel: "Medium Risk",
+});
+const HIGH_RISK_SERIES = getStrategyPerformanceSeries({
+  riskLevel: "High Risk",
+});
+
+const PERFORMANCE_DATAFRAME: TStrategyPerformanceDataframe = [];
+
+LOW_RISK_SERIES.forEach((it, i) => {
+  const date = it.date;
+  const LOW_RISK = it.value;
+  const MEDIUM_RISK = MEDIUM_RISK_SERIES[i].value;
+  const HIGH_RISK = HIGH_RISK_SERIES[i].value;
+  PERFORMANCE_DATAFRAME.push({ date, LOW_RISK, MEDIUM_RISK, HIGH_RISK });
+});
+
+console.log(PERFORMANCE_DATAFRAME);
 
 // const PERFORMANCE_SERIES_FIXTURE = [
 //   { date: new Date("2022-01-01"), value: 100 },
@@ -196,6 +226,9 @@ export default function PortfolioDetailsPage() {
               <div className="w-full">
                 <div className="h-[250px] w-full bg-gray-50">
                   <SmallPerformanceChart data={PERFORMANCE_SERIES_FIXTURE} />
+                </div>
+                <div className="w-full bg-orange-100">
+                  {JSON.stringify(PERFORMANCE_DATAFRAME, undefined, 2)}
                 </div>
               </div>
             </div>
