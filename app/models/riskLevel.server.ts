@@ -7,6 +7,7 @@ export type TRiskLevel = {
   metricValue: number;
 };
 
+// TODO deprecate metric type and metric value for now
 export const riskLevelsDB: Array<TRiskLevel> = [
   {
     id: "riskLevel-001",

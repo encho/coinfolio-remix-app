@@ -24,6 +24,28 @@ async function seed() {
     },
   });
 
+  await prisma.riskLevel.create({
+    data: {
+      type: "LOW_RISK",
+      name: "Basso Rischio",
+      description: "10% VaR",
+    },
+  });
+  await prisma.riskLevel.create({
+    data: {
+      type: "MEDIUM_RISK",
+      name: "Medio Rischio",
+      description: "30% VaR",
+    },
+  });
+  await prisma.riskLevel.create({
+    data: {
+      type: "HIGH_RISK",
+      name: "Alto Rischio",
+      description: "50% VaR",
+    },
+  });
+
   await prisma.note.create({
     data: {
       title: "My first note",

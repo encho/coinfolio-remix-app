@@ -37,13 +37,15 @@ model Note {
   userId String
 }
 
-// model RiskLevel {
-//   id   String        @id @default(cuid())
-//   type RiskLevelType @default(LOW_RISK)
-// }
+model RiskLevel {
+  id          String        @id @default(cuid())
+  type        RiskLevelType @default(LOW_RISK)
+  name        String
+  description String
+}
 
-// enum RiskLevelType {
-//   LOW_RISK
-//   MEDIUM_RISK
-//   HIGH_RISK
-// }
+enum RiskLevelType {
+  LOW_RISK
+  MEDIUM_RISK
+  HIGH_RISK
+}
