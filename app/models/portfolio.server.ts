@@ -38,12 +38,12 @@ export type TPortfolioPeriodPerformance = {
 
 const portfoliosDB: Array<TPortfolio> = [
   {
-    userId: "cl305plna000699t19aqezycd",
+    userId: "cl3lo0tjq0002xft15eftbn2y",
     strategyId: "strategy-001",
     riskLevelId: "riskLevel-001",
   },
   {
-    userId: "cl305plna000699t19aqezycd",
+    userId: "cl3lo0tjq0002xft15eftbn2y",
     strategyId: "strategy-007",
     riskLevelId: "riskLevel-003",
   },
@@ -58,7 +58,7 @@ const portfolioPerformanceSeriesDB: Array<{
   performanceSeries: TPortfolioPerformanceSeries;
 }> = [
   {
-    userId: "cl305plna000699t19aqezycd",
+    userId: "cl3lo0tjq0002xft15eftbn2y",
     strategyId: "strategy-001",
     performanceSeries: [
       { date: new Date(), value: 100 },
@@ -66,7 +66,7 @@ const portfolioPerformanceSeriesDB: Array<{
     ],
   },
   {
-    userId: "cl305plna000699t19aqezycd",
+    userId: "cl3lo0tjq0002xft15eftbn2y",
     strategyId: "strategy-007",
     performanceSeries: [
       { date: new Date(), value: 20000 },

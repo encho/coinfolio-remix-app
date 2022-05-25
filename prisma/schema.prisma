@@ -1,6 +1,6 @@
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("POSTGRES_DATABASE_URL")
 }
 
 generator client {
@@ -36,3 +36,14 @@ model Note {
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   userId String
 }
+
+// model RiskLevel {
+//   id   String        @id @default(cuid())
+//   type RiskLevelType @default(LOW_RISK)
+// }
+
+// enum RiskLevelType {
+//   LOW_RISK
+//   MEDIUM_RISK
+//   HIGH_RISK
+// }
