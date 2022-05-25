@@ -97,50 +97,14 @@ export default function PortalIndexPage() {
   return (
     <div>
       <PageTitle>Good morning</PageTitle>
-      {/* TODO layout PageTitle better? better layout page better and use capsize on PageTitle */}
-      {/* <div className="flex align-middle">
-        <div>
-          <PageTitle>Good morning</PageTitle>
-        </div>
-        <div className="self-center">
-          <button
-            type="button"
-            className="inline-flex items-center rounded-md border border-transparent bg-blue-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Button text
-          </button>
-        </div>
-      </div> */}
 
-      {/* <div className="mt-4 mb-12 flex justify-between align-middle">
-        <div className="self-center bg-green-200x">
-          <Heading1>Good morning</Heading1>
-        </div>
-        <div className="">
-          <button
-            type="button"
-            className="inline-flex items-center rounded-md border border-transparent bg-green-500 px-5 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Button text
-          </button>
-        </div>
-      </div> */}
-
-      <div className="bg-gray-150x mb-12">
+      <div className="mb-12">
         <DashboardTabs />
       </div>
 
-      {/* <div className="mb-10">
-        <SectionTitle>Account Value</SectionTitle>
-        <MonetaryValueLarge currency="EUR" amount={123.33} />
-        <div className="mt-2">
-          <MonetaryValueSmall currency="EUR" amount={23.11} /> available.
-        </div>
-      </div> */}
-
       <div className="flex flex-col gap-10">
-        <div className="mb-10xxx">
-          <SectionTitle>Account Value</SectionTitle>
+        <div>
+          <SectionTitle>Total Portfolio Value</SectionTitle>
           {/* TODO remove this design white space hack once we have capsize trim */}
           <div className="-mt-1">
             <MonetaryValueLarge currency="EUR" amount={123.33} />
@@ -162,10 +126,6 @@ export default function PortalIndexPage() {
             </div>
           </div>
         </div>
-
-        {/* <div className="bg-gray-150x -mt-2 mb-10">
-        <DashboardTabs />
-      </div> */}
 
         {/* grid based layout */}
         <div className="grid w-full grid-flow-col grid-cols-[1fr_240px] grid-rows-[auto_240px_0px] gap-x-24">

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pie } from "@visx/shape";
 import { Group } from "@visx/group";
 import { Text } from "@visx/text";
+import numeral from "numeral";
 
 import wrapComponent from "./wrapComponent";
 
@@ -61,19 +62,20 @@ const StrategyAssetAllocationPieChart = ({
             <>
               <Text
                 textAnchor="middle"
-                className="fill-black text-2xl font-normal"
-                dy={-7}
+                className="text-2xl font-normal"
+                fill={active.color}
+                dy={-14}
               >
-                {`${Math.floor(active.weight)} €`}
+                {`${active.symbol}`}
               </Text>
 
               <Text
                 textAnchor="middle"
-                className="text-sm"
+                className="text-base"
                 fill={active.color}
-                dy={20}
+                dy={16}
               >
-                {`${active.weight} ${active.symbol} (20%)`}
+                {`${numeral(active.weight).format("0.00%")}`}
               </Text>
             </>
           ) : (
@@ -81,18 +83,17 @@ const StrategyAssetAllocationPieChart = ({
               <Text
                 textAnchor="middle"
                 className="fill-black text-2xl font-normal"
-                dy={-7}
+                dy={-14}
               >
-                {`${Math.floor(
-                  allocation.reduce(
-                    (acc, allocation) => acc + allocation.weight,
-                    0
-                  )
-                )} €`}
+                {`${allocation.length} Currencies`}
               </Text>
 
-              <Text textAnchor="middle" className="fill-black text-sm" dy={20}>
-                {`${allocation.length} Cryptocurrencies`}
+              <Text
+                textAnchor="middle"
+                className="fill-black text-base"
+                dy={16}
+              >
+                100%
               </Text>
             </>
           )}

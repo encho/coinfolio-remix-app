@@ -15,7 +15,9 @@ import { PageTitle, SectionTitle } from "~/components/Typography";
 import PeriodPicker from "~/components/PeriodPicker";
 import StrategyAssetAllocationPieChart from "~/components/StrategyAssetAllocationPieChart";
 import { MultiPerformanceChart } from "~/components/MultiPerformanceChart";
-import StrategyAssetAllocationTable from "~/components/StrategyAssetAllocationTable";
+
+// TODO deprecate table for now?
+// import StrategyAssetAllocationTable from "~/components/StrategyAssetAllocationTable";
 
 import type { TStrategy } from "~/models/strategy.server";
 import type { TCoinAllocation } from "~/components/StrategyAssetAllocationPieChart";
@@ -40,13 +42,13 @@ const RETURNS_FIXTURE = [
   { date: new Date("2022-01-09"), value: -0.011 },
   { date: new Date("2022-01-10"), value: -0.005 },
   { date: new Date("2022-01-11"), value: 0.018 },
-  { date: new Date("2022-01-12"), value: -0.028 },
+  { date: new Date("2022-01-12"), value: -0.022 },
 ];
 
 const RISKY_ASSET_ALLOCATION_FIXTURE = [
-  { symbol: "BTC", weight: 0.5, color: "#f05122" },
-  { symbol: "ETH", weight: 0.25, color: "#0099cc" },
-  { symbol: "XRP", weight: 0.25, color: "#00cc99" },
+  { symbol: "BTC", weight: 0.5, color: "var(--color-orange-500)" },
+  { symbol: "ETH", weight: 0.25, color: "var(--color-cyan-500)" },
+  { symbol: "XRP", weight: 0.25, color: "var(--color-yellow-500)" },
 ];
 
 type TStrategyAssetAllocation = Array<TCoinAllocation>;
@@ -61,7 +63,7 @@ function getStrategyAssetAllocation({
   const theterAllocation = {
     symbol: "USDT",
     weight: theterWeight,
-    color: "#cccccc",
+    color: "var(--color-blue-500)",
   };
 
   const weightedRiskyAllocation = RISKY_ASSET_ALLOCATION_FIXTURE.map((it) => ({
@@ -146,32 +148,32 @@ console.log(PERFORMANCE_DATAFRAME);
 //   { date: new Date("2022-01-07"), value: 120 },
 // ];
 
-const ASSET_ALLOCATION_FIXTURE = [
-  {
-    ticker: "BTC",
-    name: "Bitcoin",
-    weight: 0.2,
-    performance: 0.03,
-  },
-  {
-    ticker: "XRP",
-    name: "Ripple",
-    weight: 0.1,
-    performance: 0.01,
-  },
-  {
-    ticker: "ETH",
-    name: "Ethereum",
-    weight: 0.1,
-    performance: -0.03,
-  },
-  {
-    ticker: "USDT",
-    name: "USD Theter",
-    weight: 0.6,
-    performance: 0.01,
-  },
-];
+// const ASSET_ALLOCATION_FIXTURE = [
+//   {
+//     ticker: "BTC",
+//     name: "Bitcoin",
+//     weight: 0.2,
+//     performance: 0.03,
+//   },
+//   {
+//     ticker: "XRP",
+//     name: "Ripple",
+//     weight: 0.1,
+//     performance: 0.01,
+//   },
+//   {
+//     ticker: "ETH",
+//     name: "Ethereum",
+//     weight: 0.1,
+//     performance: -0.03,
+//   },
+//   {
+//     ticker: "USDT",
+//     name: "USD Theter",
+//     weight: 0.6,
+//     performance: 0.01,
+//   },
+// ];
 
 function getCurrentPeriodPerformance(
   dataframe: TStrategyPerformanceDataframe,
@@ -268,11 +270,9 @@ export default function PortfolioDetailsPage() {
         <div className="inline-flex items-center rounded-md bg-gray-150 px-2.5 py-0.5 text-sm font-medium text-gray-550">
           Crypto Strategy
         </div>
-        <div className="-mt-2">
+        <div>
           <PageTitle>{data.strategy.name}</PageTitle>
         </div>
-
-        {/* <div className="text-gray-900">{data.strategy.description}</div> */}
 
         {currentRiskLevelOverview && (
           <ModalExample
@@ -282,79 +282,66 @@ export default function PortfolioDetailsPage() {
             strategyRiskLevelOverview={currentRiskLevelOverview}
           />
         )}
-        <div className="flex flex-row-reverse gap-16">
-          <div className="w-1/3">
-            <div className="mb-10">
-              <SectionTitle>Strategy Description</SectionTitle>
-              <div className="text-gray-900">
-                {data.strategy.longDescription}
-              </div>
-            </div>
-            <div>
-              <SectionTitle>Cryptocurrencies Allocation</SectionTitle>
-              <div className="h-[200px]">
-                {currentRiskLevelOverview ? (
-                  <StrategyAssetAllocationPieChart
-                    allocation={getStrategyAssetAllocation({
-                      riskLevel: currentRiskLevelOverview.name,
-                    })}
-                  />
-                ) : null}
-              </div>
-            </div>
+
+        <div className="mb-14 grid w-full grid-flow-col grid-cols-[1fr_320px] grid-rows-[auto_auto] gap-x-24">
+          <div>
+            <SectionTitle>Strategy Risk Level</SectionTitle>
           </div>
-          {/* TODO make VStack */}
-          <div className="flex w-2/3 flex-col gap-10">
-            <div>
-              <SectionTitle>Strategy Risk Level</SectionTitle>
-              {/* <p className="mb-4">
-                Select the target risk level for the strategy.
-              </p> */}
-              <div className="relative grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
-                {data.strategy.riskLevels.map((riskLevel) => (
-                  <RiskLevelButton
-                    key={riskLevel.id}
-                    id={riskLevel.id}
-                    name={riskLevel.name}
-                    description={riskLevel.description}
-                    onClick={(id) => setCurrentRiskLevel(id)}
-                    onMouseOver={(id) => setHovered(id)}
-                    onMouseLeave={() => setHovered(null)}
-                    isActive={riskLevel.id === currentRiskLevel}
-                  />
-                ))}
+          <div className="relative grid grid-cols-1 gap-2 sm:grid-cols-2 md:grid-cols-3">
+            {data.strategy.riskLevels.map((riskLevel) => (
+              <RiskLevelButton
+                key={riskLevel.id}
+                id={riskLevel.id}
+                name={riskLevel.name}
+                description={riskLevel.description}
+                onClick={(id) => setCurrentRiskLevel(id)}
+                onMouseOver={(id) => setHovered(id)}
+                onMouseLeave={() => setHovered(null)}
+                isActive={riskLevel.id === currentRiskLevel}
+              />
+            ))}
+          </div>
+          <div>
+            <SectionTitle>Strategy Description</SectionTitle>
+          </div>
+          <div className="text-gray-900">{data.strategy.description}</div>
+        </div>
+
+        {/* grid based layout */}
+        <div className="grid w-full grid-flow-col grid-cols-[1fr_320px] grid-rows-[auto_320px] gap-x-24">
+          <div className="flex justify-between align-baseline">
+            <SectionTitle>Historical Performance</SectionTitle>
+            <PeriodPicker />
+          </div>
+          <div className="relative bg-gray-50">
+            {currentRiskLevelOverview ? (
+              <MultiPerformanceChart
+                data={PERFORMANCE_DATAFRAME}
+                activeStrategy={currentRiskLevelOverview.name}
+                hoveredStrategy={
+                  currentHoveredRiskLevelOverview
+                    ? currentHoveredRiskLevelOverview.name
+                    : null
+                }
+              />
+            ) : null}
+            {currentPeriodPerformance ? (
+              <div className="absolute top-2 left-4">
+                <PerformanceFigure {...currentPeriodPerformance} />
               </div>
-            </div>
-            <div>
-              <div className="flex justify-between align-baseline">
-                <SectionTitle>Historical Performance</SectionTitle>
-                <PeriodPicker />
-              </div>
-              <div className="w-full">
-                <div className="relative h-[300px] w-full bg-gray-50">
-                  {currentRiskLevelOverview ? (
-                    <MultiPerformanceChart
-                      data={PERFORMANCE_DATAFRAME}
-                      activeStrategy={currentRiskLevelOverview.name}
-                      hoveredStrategy={
-                        currentHoveredRiskLevelOverview
-                          ? currentHoveredRiskLevelOverview.name
-                          : null
-                      }
-                    />
-                  ) : null}
-                  {currentPeriodPerformance ? (
-                    <div className="absolute top-2 left-4">
-                      <PerformanceFigure {...currentPeriodPerformance} />
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-            <div>
-              <SectionTitle>Asset Allocation</SectionTitle>
-              <StrategyAssetAllocationTable data={ASSET_ALLOCATION_FIXTURE} />
-            </div>
+            ) : null}
+          </div>
+          <div className="">
+            <SectionTitle>Asset Allocation</SectionTitle>
+          </div>
+          <div className="">
+            {currentRiskLevelOverview ? (
+              <StrategyAssetAllocationPieChart
+                allocation={getStrategyAssetAllocation({
+                  riskLevel: currentRiskLevelOverview.name,
+                })}
+              />
+            ) : null}
           </div>
         </div>
       </Container>
