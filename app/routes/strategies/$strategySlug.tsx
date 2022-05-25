@@ -6,6 +6,8 @@ import { CashIcon } from "@heroicons/react/outline";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import numeral from "numeral";
+import type { ActionFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 
 import { Container, Header } from "~/components/NewPortfolio";
 import { getStrategyFromSlug } from "~/models/strategy.server";
@@ -222,6 +224,34 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   });
 };
 
+export const action: ActionFunction = async ({ request }) => {
+  const form = await request.formData();
+
+  const strategyId = form.get("strategyId");
+  const riskLevelId = form.get("riskLevelId");
+  const investmentAmount = Number(form.get("investmentAmount"));
+
+  // we do this type check to be extra sure and to make TypeScript happy
+  // we'll explore validation next!
+  if (
+    typeof strategyId !== "string" ||
+    typeof riskLevelId !== "string" ||
+    typeof investmentAmount !== "number"
+  ) {
+    throw new Error(`Form not submitted correctly.`);
+  }
+
+  // const fields = { strategyId, riskLevelId, investmentAmount };
+  // const userPortfolio = await db.userPortfolio.create({ data: fields });
+  // return redirect(
+  //   `/portal?newUserPortfolio=${userPortfolio.id}`
+  // );
+
+  return redirect(
+    `/portal?newStrategy=${strategyId}-${riskLevelId}-${investmentAmount}`
+  );
+};
+
 export default function PortfolioDetailsPage() {
   const data = useLoaderData() as LoaderData;
 
@@ -243,7 +273,7 @@ export default function PortfolioDetailsPage() {
     : null;
 
   // strategy confirmation modal state
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   // TODO do we need null check here?
   const currentPeriodPerformance = currentRiskLevelOverview
@@ -476,59 +506,92 @@ function ModalExample({
                       How much would you like to invest?
                     </Dialog.Title>
                   </div>
-                  <div>
-                    <div className="mt-10">
-                      <label
-                        htmlFor="price"
-                        className="block text-sm font-medium text-gray-900"
-                      >
-                        Investment Amount
-                      </label>
-                      <div className="relative mt-1 rounded-md shadow-sm">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-900 sm:text-sm">€</span>
+                </div>
+
+                <div className="mt-10">
+                  <form method="post">
+                    <div>
+                      <input
+                        type="hidden"
+                        name="strategyId"
+                        value="MY_GREAT_STRATEGY_ID"
+                      />
+                      <input
+                        type="hidden"
+                        name="riskLevelId"
+                        value="MY_GREAT_RISK_LEVEL_ID"
+                      />
+
+                      <div className="flex justify-center">
+                        <div className="w-full">
+                          <label
+                            htmlFor="investmentAmountNumber"
+                            className="mb-1 inline-block text-sm font-medium text-gray-900"
+                          >
+                            Investment Amount
+                          </label>
+                          <input
+                            type="number"
+                            name="investmentAmount"
+                            className="
+        form-control
+        m-0
+        block
+        w-full
+        rounded
+        border
+        border-solid
+        border-gray-300
+        bg-white bg-clip-padding
+        px-3 py-1.5 text-base
+        font-normal
+        text-gray-700
+        transition
+        ease-in-out
+        focus:border-blue-600 focus:bg-white focus:text-gray-700 focus:outline-none
+      "
+                            id="investmentAmountNumber"
+                            placeholder="Amount in Euro"
+                          />
+
+                          <div className="mt-1 text-xs text-gray-500">
+                            max. 2,580.89 € available
+                          </div>
                         </div>
-                        <input
-                          type="text"
-                          name="price"
-                          id="price"
-                          className="block w-full rounded border-gray-300 pl-7 pr-12 placeholder-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                          placeholder="1,000.00"
-                        />
-                      </div>
-                      <div className="mt-1 text-xs text-gray-500">
-                        max. 2,580.89 € available
                       </div>
                     </div>
-                  </div>
 
-                  <div className="mt-8 text-gray-900">
-                    I want to invest{" "}
-                    <span className="font-semibold">1,000.00 €</span> in the{" "}
-                    <span className="font-semibold">{strategy.name}</span>{" "}
-                    strategy with a risk level of:{" "}
-                    <span className="font-semibold">
-                      {strategyRiskLevelOverview.name}
-                    </span>
-                    .
-                  </div>
-                </div>
-                <div className="mt-6 sm:mt-8 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                  <button
-                    type="button"
-                    className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
-                    onClick={() => setOpen(false)}
-                  >
-                    Yes, Invest Now
-                  </button>
-                  <button
-                    type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
-                    onClick={() => setOpen(false)}
-                    ref={cancelButtonRef}
-                  >
-                    Cancel
-                  </button>
+                    <div className="mt-6 text-gray-900">
+                      I want to invest{" "}
+                      <span className="font-semibold">1,000.00 €</span> in the{" "}
+                      <span className="font-semibold">{strategy.name}</span>{" "}
+                      strategy with a risk level of:{" "}
+                      <span className="font-semibold">
+                        {strategyRiskLevelOverview.name}
+                      </span>
+                      .
+                    </div>
+
+                    <div>
+                      <div className="mt-6 sm:mt-8 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                        <button
+                          type="submit"
+                          className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
+                          // onClick={() => setOpen(false)}
+                        >
+                          Yes, Invest Now
+                        </button>
+                        <button
+                          type="button"
+                          className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
+                          onClick={() => setOpen(false)}
+                          ref={cancelButtonRef}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
