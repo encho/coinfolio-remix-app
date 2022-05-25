@@ -38,14 +38,39 @@ model Note {
 }
 
 model RiskLevel {
-  id          String        @id @default(cuid())
-  type        RiskLevelType @default(LOW_RISK)
+  id          String                   @id @default(cuid())
+  type        RiskLevelType            @default(LOW_RISK)
   name        String
   description String
+  strategies  RiskLevelsOnStrategies[]
 }
 
 enum RiskLevelType {
   LOW_RISK
   MEDIUM_RISK
   HIGH_RISK
+}
+
+model Strategy {
+  id          String                   @id @default(cuid())
+  name        String
+  description String                   @db.VarChar(150)
+  slug        String
+  category    StrategyCategoryType     @default(SINGLE_COIN)
+  riskLevels  RiskLevelsOnStrategies[]
+}
+
+enum StrategyCategoryType {
+  SINGLE_COIN
+  CRYPTO_MARKET_BETA
+}
+
+model RiskLevelsOnStrategies {
+  strategy    Strategy  @relation(fields: [strategyId], references: [id])
+  strategyId  String
+  riskLevel   RiskLevel @relation(fields: [riskLevelId], references: [id])
+  riskLevelId String
+  assignedAt  DateTime  @default(now())
+
+  @@id([strategyId, riskLevelId])
 }
