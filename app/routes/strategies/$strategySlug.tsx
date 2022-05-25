@@ -60,10 +60,10 @@ type TStrategyAssetAllocation = Array<TCoinAllocation>;
 function getStrategyAssetAllocation({
   riskLevel,
 }: {
-  riskLevel: "Low Risk" | "Medium Risk" | "High Risk";
+  riskLevel: TRiskLevel["type"];
 }): TStrategyAssetAllocation {
   const theterWeight =
-    riskLevel === "High Risk" ? 0.2 : riskLevel === "Medium Risk" ? 0.4 : 0.7;
+    riskLevel === "HIGH_RISK" ? 0.2 : riskLevel === "MEDIUM_RISK" ? 0.4 : 0.7;
   const theterAllocation = {
     symbol: "USDT",
     weight: theterWeight,
@@ -83,11 +83,11 @@ type TTimeseries = Array<{ date: Date; value: number }>;
 function getStrategyPerformanceSeries({
   riskLevel,
 }: {
-  riskLevel: "Low Risk" | "Medium Risk" | "High Risk";
+  riskLevel: TRiskLevel["type"];
 }): TTimeseries {
   const startCapital = 1;
   const returnsMultiplicator =
-    riskLevel === "High Risk" ? 3 : riskLevel === "Medium Risk" ? 2 : 1;
+    riskLevel === "HIGH_RISK" ? 3 : riskLevel === "MEDIUM_RISK" ? 2 : 1;
 
   const performanceSeries = RETURNS_FIXTURE.reduce<TTimeseries>(
     (memo, current, i) => {
@@ -107,10 +107,6 @@ function getStrategyPerformanceSeries({
   return performanceSeries;
 }
 
-const PERFORMANCE_SERIES_FIXTURE = getStrategyPerformanceSeries({
-  riskLevel: "Low Risk",
-});
-
 type TStrategyPerfromanceItem = {
   date: Date;
   LOW_RISK: number;
@@ -121,13 +117,13 @@ type TStrategyPerfromanceItem = {
 type TStrategyPerformanceDataframe = Array<TStrategyPerfromanceItem>;
 
 const LOW_RISK_SERIES = getStrategyPerformanceSeries({
-  riskLevel: "Low Risk",
+  riskLevel: "LOW_RISK",
 });
 const MEDIUM_RISK_SERIES = getStrategyPerformanceSeries({
-  riskLevel: "Medium Risk",
+  riskLevel: "MEDIUM_RISK",
 });
 const HIGH_RISK_SERIES = getStrategyPerformanceSeries({
-  riskLevel: "High Risk",
+  riskLevel: "HIGH_RISK",
 });
 
 const PERFORMANCE_DATAFRAME: TStrategyPerformanceDataframe = [];
@@ -140,46 +136,9 @@ LOW_RISK_SERIES.forEach((it, i) => {
   PERFORMANCE_DATAFRAME.push({ date, LOW_RISK, MEDIUM_RISK, HIGH_RISK });
 });
 
-// const PERFORMANCE_SERIES_FIXTURE = [
-//   { date: new Date("2022-01-01"), value: 100 },
-//   { date: new Date("2022-01-02"), value: 110 },
-//   { date: new Date("2022-01-03"), value: 105 },
-//   { date: new Date("2022-01-04"), value: 120 },
-//   { date: new Date("2022-01-05"), value: 110 },
-//   { date: new Date("2022-01-06"), value: 130 },
-//   { date: new Date("2022-01-07"), value: 120 },
-// ];
-
-// const ASSET_ALLOCATION_FIXTURE = [
-//   {
-//     ticker: "BTC",
-//     name: "Bitcoin",
-//     weight: 0.2,
-//     performance: 0.03,
-//   },
-//   {
-//     ticker: "XRP",
-//     name: "Ripple",
-//     weight: 0.1,
-//     performance: 0.01,
-//   },
-//   {
-//     ticker: "ETH",
-//     name: "Ethereum",
-//     weight: 0.1,
-//     performance: -0.03,
-//   },
-//   {
-//     ticker: "USDT",
-//     name: "USD Theter",
-//     weight: 0.6,
-//     performance: 0.01,
-//   },
-// ];
-
 function getCurrentPeriodPerformance(
   dataframe: TStrategyPerformanceDataframe,
-  riskLevel: "Low Risk" | "Medium Risk" | "High Risk"
+  riskLevel: TRiskLevel["type"]
 ): { from: Date; to: Date; value: number } {
   const firstItem = dataframe[0];
   const lastItem = dataframe[dataframe.length - 1];
@@ -194,9 +153,9 @@ function getCurrentPeriodPerformance(
 
   // by default returns value accessor for Low Risk Performance
   const valueAccessor: (it: TStrategyPerfromanceItem) => number =
-    riskLevel === "High Risk"
+    riskLevel === "HIGH_RISK"
       ? (it) => it.HIGH_RISK
-      : riskLevel === "Medium Risk"
+      : riskLevel === "MEDIUM_RISK"
       ? (it) => it.MEDIUM_RISK
       : (it) => it.LOW_RISK;
 
@@ -243,22 +202,16 @@ export const action: ActionFunction = async ({ request }) => {
     throw new Error(`Form not submitted correctly.`);
   }
 
+  // TODO integrate with database:
+  // const userPortfolio = await db.userPortfolio.create({ data: fields });
   const newUserPortfolio = createUserPortfolio({
     userId,
     strategyId,
     riskLevelId,
     investmentAmount,
   });
-  // const userPortfolio = await db.userPortfolio.create({ data: fields });
-  // return redirect(
-  //   `/portal?newUserPortfolio=${userPortfolio.id}`
-  // );
 
   return redirect(`/portal?newUserPortfolio=${newUserPortfolio.id}`);
-
-  // return redirect(
-  //   `/portal?newStrategy=${userId}----${strategyId}-${riskLevelId}-${investmentAmount}`
-  // );
 };
 
 export default function PortfolioDetailsPage() {
@@ -288,7 +241,7 @@ export default function PortfolioDetailsPage() {
   const currentPeriodPerformance = currentRiskLevelOverview
     ? getCurrentPeriodPerformance(
         PERFORMANCE_DATAFRAME,
-        currentRiskLevelOverview.name
+        currentRiskLevelOverview.type
       )
     : null;
 
@@ -356,10 +309,10 @@ export default function PortfolioDetailsPage() {
             {currentRiskLevelOverview ? (
               <MultiPerformanceChart
                 data={PERFORMANCE_DATAFRAME}
-                activeStrategy={currentRiskLevelOverview.name}
+                activeStrategy={currentRiskLevelOverview.type}
                 hoveredStrategy={
                   currentHoveredRiskLevelOverview
-                    ? currentHoveredRiskLevelOverview.name
+                    ? currentHoveredRiskLevelOverview.type
                     : null
                 }
               />
@@ -377,7 +330,7 @@ export default function PortfolioDetailsPage() {
             {currentRiskLevelOverview ? (
               <StrategyAssetAllocationPieChart
                 allocation={getStrategyAssetAllocation({
-                  riskLevel: currentRiskLevelOverview.name,
+                  riskLevel: currentRiskLevelOverview.type,
                 })}
               />
             ) : null}

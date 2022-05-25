@@ -95,21 +95,13 @@ function AddNewPortfolioTile() {
 }
 
 function RiskLevelBars(props: TRiskLevel) {
-  // const firstBarColor = "bg-green-500";
-  // const secondBarColor =
-  //   props.name === "Medium Risk" || props.name === "High Risk"
-  //     ? "bg-yellow-500"
-  //     : "bg-gray-200";
-  // const thirdBarColor =
-  //   props.name === "High Risk" ? "bg-red-500" : "bg-gray-200";
-
   const firstBarColor = "bg-blue-500";
   const secondBarColor =
-    props.name === "Medium Risk" || props.name === "High Risk"
+    props.type === "MEDIUM_RISK" || props.type === "HIGH_RISK"
       ? "bg-blue-500"
       : "bg-gray-200";
   const thirdBarColor =
-    props.name === "High Risk" ? "bg-blue-500" : "bg-gray-200";
+    props.type === "HIGH_RISK" ? "bg-blue-500" : "bg-gray-200";
   return (
     <div className="bg-yellow-200x flex gap-[3px] align-middle">
       <div className={`h-[5px] w-4 self-center ${firstBarColor}`}></div>
