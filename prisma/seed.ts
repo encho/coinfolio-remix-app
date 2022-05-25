@@ -24,6 +24,11 @@ async function seed() {
     },
   });
 
+  // cleanup the existing database table
+  await prisma.riskLevel.deleteMany().catch(() => {
+    // no worries if it doesn't exist yet
+  });
+
   await prisma.riskLevel.create({
     data: {
       type: "LOW_RISK",
