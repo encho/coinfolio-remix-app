@@ -81,3 +81,11 @@ export function getStrategyPerformanceSeries({
   invariant(performanceSeriesDB[strategyId]);
   return performanceSeriesDB[strategyId];
 }
+
+export function getStrategyPerformanceSeries2({}: // strategyId,
+{
+  strategyId: string;
+}): TStrategyPerformanceSeries {
+  // invariant(performanceSeriesDB[strategyId]);
+  return performanceSeriesDB["strategy-002"];
+}

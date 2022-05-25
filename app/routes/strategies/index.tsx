@@ -4,16 +4,26 @@ import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 
 import { getStrategies } from "~/models/strategy.server";
+import { getStrategies as getStrategies2 } from "~/models/strategy2.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import { Container, Header } from "~/components/NewPortfolio";
 import { SparklineChart } from "~/components/SparklineChart";
 
-import { getStrategyPerformanceSeries } from "~/fixtures/strategyPerformanceSeries";
+import {
+  getStrategyPerformanceSeries,
+  getStrategyPerformanceSeries2,
+} from "~/fixtures/strategyPerformanceSeries";
 
 import type { TStrategy } from "~/models/strategy.server";
+import type { Strategy } from "~/models/strategy2.server";
+import type { TStrategyPerformanceSeries } from "~/fixtures/strategyPerformanceSeries";
 
 type TStrategyOverview = TStrategy & {
   performanceSeries: Array<{ date: Date; value: number }>;
+};
+
+type StrategyOverview = Strategy & {
+  performanceSeries: TStrategyPerformanceSeries;
 };
 
 type LoaderData = {
@@ -21,6 +31,8 @@ type LoaderData = {
     SINGLE_COIN: Array<TStrategyOverview>;
     CRYPTO_MARKET_BETA: Array<TStrategyOverview>;
   };
+  // strategies2: Array<Strategy>;
+  strategies2: Array<StrategyOverview>;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -44,11 +56,25 @@ export const loader: LoaderFunction = async ({ request }) => {
     (it) => it.category === "CRYPTO_MARKET_BETA"
   );
 
+  const strategies2 = await getStrategies2();
+
+  if (!strategies2) {
+    throw new Response("Not Found", { status: 404 });
+  }
+
+  const strategies2Overview = strategies2.map((strategy) => ({
+    ...strategy,
+    performanceSeries: getStrategyPerformanceSeries2({
+      strategyId: strategy.id,
+    }),
+  }));
+
   return json<LoaderData>({
     strategies: {
       SINGLE_COIN: singleCoinStrategies,
       CRYPTO_MARKET_BETA: cryptoMarketBetaStrategies,
     },
+    strategies2: strategies2Overview,
   });
 };
 
@@ -74,12 +100,25 @@ export default function PortalStrategiesPage() {
       })),
     }));
 
+  const dbStrategiesOverview = data.strategies2.map((strategyOverview) => ({
+    ...strategyOverview,
+    performanceSeries: strategyOverview.performanceSeries.map((it) => ({
+      ...it,
+      date: new Date(it.date),
+    })),
+  }));
+
   return (
     <div>
       <Header />
       <Container>
         <PageTitle>Crypto Strategies</PageTitle>
         <div className="flex flex-col gap-12">
+          <div className="bg-orange-400">
+            <SectionTitle>Strategies From DB</SectionTitle>
+            <StrategyTiles data={dbStrategiesOverview} />
+            {/* {JSON.stringify(data.strategies2, undefined, 2)} */}
+          </div>
           <div className="">
             <SectionTitle>Single Coin Strategies</SectionTitle>
             <StrategyTiles data={singleCoinStrategiesOverview} />
@@ -95,7 +134,7 @@ export default function PortalStrategiesPage() {
 }
 
 type TStrategyTilesProps = {
-  data: Array<TStrategyOverview>;
+  data: Array<TStrategyOverview> | Array<StrategyOverview>;
 };
 
 function StrategyTiles({ data }: TStrategyTilesProps) {
@@ -103,7 +142,7 @@ function StrategyTiles({ data }: TStrategyTilesProps) {
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
       {data.map((strategy) => (
         <StrategyTile
-          key={strategy.name}
+          key={strategy.id}
           name={strategy.name}
           category={strategy.category}
           description={strategy.description}
@@ -116,7 +155,7 @@ function StrategyTiles({ data }: TStrategyTilesProps) {
 }
 
 type TStrategyTileProps = Pick<
-  TStrategyOverview,
+  StrategyOverview,
   "name" | "category" | "description" | "performanceSeries" | "slug"
 >;
 
