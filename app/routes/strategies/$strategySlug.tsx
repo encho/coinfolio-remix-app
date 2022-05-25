@@ -12,7 +12,9 @@ import { redirect } from "@remix-run/node";
 import { Container, Header } from "~/components/NewPortfolio";
 import { getStrategyFromSlug } from "~/models/strategy.server";
 import { TRiskLevel } from "~/models/riskLevel.server";
+import { createUserPortfolio } from "~/models/portfolio.server";
 
+import { requireUserId } from "~/session.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PeriodPicker from "~/components/PeriodPicker";
 import StrategyAssetAllocationPieChart from "~/components/StrategyAssetAllocationPieChart";
@@ -138,8 +140,6 @@ LOW_RISK_SERIES.forEach((it, i) => {
   PERFORMANCE_DATAFRAME.push({ date, LOW_RISK, MEDIUM_RISK, HIGH_RISK });
 });
 
-console.log(PERFORMANCE_DATAFRAME);
-
 // const PERFORMANCE_SERIES_FIXTURE = [
 //   { date: new Date("2022-01-01"), value: 100 },
 //   { date: new Date("2022-01-02"), value: 110 },
@@ -225,6 +225,8 @@ export const loader: LoaderFunction = async ({ request, params }) => {
 };
 
 export const action: ActionFunction = async ({ request }) => {
+  const userId = await requireUserId(request);
+
   const form = await request.formData();
 
   const strategyId = form.get("strategyId");
@@ -241,15 +243,22 @@ export const action: ActionFunction = async ({ request }) => {
     throw new Error(`Form not submitted correctly.`);
   }
 
-  // const fields = { strategyId, riskLevelId, investmentAmount };
+  const newUserPortfolio = createUserPortfolio({
+    userId,
+    strategyId,
+    riskLevelId,
+    investmentAmount,
+  });
   // const userPortfolio = await db.userPortfolio.create({ data: fields });
   // return redirect(
   //   `/portal?newUserPortfolio=${userPortfolio.id}`
   // );
 
-  return redirect(
-    `/portal?newStrategy=${strategyId}-${riskLevelId}-${investmentAmount}`
-  );
+  return redirect(`/portal?newUserPortfolio=${newUserPortfolio.id}`);
+
+  // return redirect(
+  //   `/portal?newStrategy=${userId}----${strategyId}-${riskLevelId}-${investmentAmount}`
+  // );
 };
 
 export default function PortfolioDetailsPage() {

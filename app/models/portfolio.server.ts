@@ -49,6 +49,7 @@ const portfoliosDB: Array<TPortfolio> = [
   },
 ];
 
+// TODO into own module?
 export type TPortfolioPerformanceSeries = Array<{ date: Date; value: number }>;
 
 const portfolioPerformanceSeriesDB: Array<{
@@ -102,7 +103,9 @@ export async function getUserExpandedPortfolios({
 }: {
   userId: User["id"];
 }): Promise<null | Array<TExpandedPortfolio>> {
-  console.log(`Retrieving portfolio data for user: ${userId}...`);
+  console.log(`Retrieving expanded portfolio data for user: ${userId}...`);
+
+  console.log(`LENGTH NOW: ${portfoliosDB.length}`);
 
   // get the data to join
   const riskLevels = await getRiskLevels();
@@ -191,4 +194,55 @@ export function getUserPortfolioPerformanceSeriesFromStrategyId({
       }, 300);
     });
   return performanceSeriesPromise;
+}
+
+type TCreateUserPortfolioArgs = {
+  strategyId: TStrategy["id"];
+  riskLevelId: TRiskLevel["id"];
+  investmentAmount: number;
+  userId: User["id"];
+};
+
+export function createUserPortfolio({
+  strategyId,
+  riskLevelId,
+  investmentAmount,
+  userId,
+}: TCreateUserPortfolioArgs) {
+  console.log(
+    `creating user portfolio with userId: ${userId}, riskLevelId: ${riskLevelId}, strategyId: ${strategyId}, investment amount: ${investmentAmount} `
+  );
+
+  // const portfoliosDB: Array<TPortfolio> = [
+  //   {
+  //     userId: "cl305plna000699t19aqezycd",
+  //     strategyId: "strategy-001",
+  //     riskLevelId: "riskLevel-001",
+  //   },
+  //   {
+  //     userId: "cl305plna000699t19aqezycd",
+  //     strategyId: "strategy-007",
+  //     riskLevelId: "riskLevel-003",
+  //   },
+  // ];
+
+  console.log(`LENGTH BEFORE: ${portfoliosDB.length}`);
+
+  portfoliosDB.push({ userId, strategyId, riskLevelId });
+
+  console.log(`LENGTH AFTER: ${portfoliosDB.length}`);
+
+  // TODO return promise to be more realistic
+  return { id: "new-portfolio-id" };
+  // return prisma.note.create({
+  //   data: {
+  //     title,
+  //     body,
+  //     user: {
+  //       connect: {
+  //         id: userId,
+  //       },
+  //     },
+  //   },
+  // });
 }

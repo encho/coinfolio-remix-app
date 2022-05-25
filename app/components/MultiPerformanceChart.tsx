@@ -35,8 +35,6 @@ export const MultiPerformanceChart = wrapComponent(
     width = 200,
     height = 100,
   }: TSmallPerformanceChartProps) => {
-    console.log(data);
-
     // scales
     const dateScale = useMemo(
       () =>

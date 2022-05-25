@@ -22,8 +22,6 @@ const getValue = (it: TDataItem): number => it.value;
 
 export const SmallPerformanceChart = wrapComponent(
   ({ data, width = 200, height = 100 }: TSmallPerformanceChartProps) => {
-    console.log(data);
-
     // scales
     const dateScale = useMemo(
       () =>
