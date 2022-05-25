@@ -10,7 +10,7 @@ import type { ActionFunction } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 
 import { Container, Header } from "~/components/NewPortfolio";
-import { getStrategyFromSlug } from "~/models/strategy.server";
+import { getStrategyFromSlug } from "~/models/strategy2.server";
 import { TRiskLevel } from "~/models/riskLevel.server";
 import { createUserPortfolio } from "~/models/portfolio.server";
 
@@ -20,10 +20,11 @@ import PeriodPicker from "~/components/PeriodPicker";
 import StrategyAssetAllocationPieChart from "~/components/StrategyAssetAllocationPieChart";
 import { MultiPerformanceChart } from "~/components/MultiPerformanceChart";
 
-// TODO deprecate table for now?
-// import StrategyAssetAllocationTable from "~/components/StrategyAssetAllocationTable";
+// TODO import from server modules not prisma directly!
+import type { RiskLevel } from "@prisma/client";
 
-import type { TStrategy } from "~/models/strategy.server";
+// TODO rename to strategy.server when old one is deprecated
+import type { Strategy } from "~/models/strategy2.server";
 import type { TCoinAllocation } from "~/components/StrategyAssetAllocationPieChart";
 
 function classNames(...classes: string[]) {
@@ -31,7 +32,9 @@ function classNames(...classes: string[]) {
 }
 
 type LoaderData = {
-  strategy: TStrategy;
+  strategy: Strategy & {
+    riskLevels: Array<RiskLevel>;
+  };
 };
 
 const RETURNS_FIXTURE = [
@@ -178,8 +181,14 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   if (!strategy) {
     throw new Response("Not Found", { status: 404 });
   }
+
+  // parse & simplify the response
+  const arrayOfRiskLevels = strategy.riskLevels.map(
+    ({ riskLevel }) => riskLevel
+  );
+
   return json<LoaderData>({
-    strategy,
+    strategy: { ...strategy, riskLevels: arrayOfRiskLevels },
   });
 };
 
@@ -226,16 +235,16 @@ export default function PortfolioDetailsPage() {
 
   // TODO useMemo
   const currentRiskLevelOverview = data.strategy.riskLevels.find(
-    (it) => it.id === currentRiskLevel
+    (riskLevel) => riskLevel.id === currentRiskLevel
   );
 
   // TODO useMemo
   const currentHoveredRiskLevelOverview = hovered
-    ? data.strategy.riskLevels.find((it) => it.id === hovered)
+    ? data.strategy.riskLevels.find((riskLevel) => riskLevel.id === hovered)
     : null;
 
   // strategy confirmation modal state
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   // TODO do we need null check here?
   const currentPeriodPerformance = currentRiskLevelOverview
@@ -408,7 +417,7 @@ function RiskLevelButton({
 type TModalExampleProps = {
   open: boolean;
   setOpen: (newOpen: boolean) => void;
-  strategy: Pick<TStrategy, "name">;
+  strategy: Pick<Strategy, "name">;
   strategyRiskLevelOverview: Pick<TRiskLevel, "id" | "name" | "description">;
 };
 
@@ -419,6 +428,7 @@ function ModalExample({
   strategyRiskLevelOverview,
 }: TModalExampleProps) {
   const cancelButtonRef = useRef(null);
+  const [currentNumber, setCurrentNumber] = useState(0);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -514,6 +524,10 @@ function ModalExample({
       "
                             id="investmentAmountNumber"
                             placeholder="Amount in Euro"
+                            onChange={(event) => {
+                              const number = Number(event.target.value);
+                              setCurrentNumber(number);
+                            }}
                           />
 
                           <div className="mt-1 text-xs text-gray-500">
@@ -525,7 +539,8 @@ function ModalExample({
 
                     <div className="mt-6 text-gray-900">
                       I want to invest{" "}
-                      <span className="font-semibold">1,000.00 €</span> in the{" "}
+                      <span className="font-semibold">{currentNumber} €</span>{" "}
+                      in the{" "}
                       <span className="font-semibold">{strategy.name}</span>{" "}
                       strategy with a risk level of:{" "}
                       <span className="font-semibold">
@@ -539,7 +554,6 @@ function ModalExample({
                         <button
                           type="submit"
                           className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
-                          // onClick={() => setOpen(false)}
                         >
                           Yes, Invest Now
                         </button>

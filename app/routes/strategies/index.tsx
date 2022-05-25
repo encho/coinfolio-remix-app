@@ -3,24 +3,16 @@ import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { json } from "@remix-run/node";
 
-import { getStrategies } from "~/models/strategy.server";
-import { getStrategies as getStrategies2 } from "~/models/strategy2.server";
+// TODO deprecate strategy.server and then rename this one
+import { getStrategies } from "~/models/strategy2.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import { Container, Header } from "~/components/NewPortfolio";
 import { SparklineChart } from "~/components/SparklineChart";
 
-import {
-  getStrategyPerformanceSeries,
-  getStrategyPerformanceSeries2,
-} from "~/fixtures/strategyPerformanceSeries";
+import { getStrategyPerformanceSeriesFromIndex } from "~/fixtures/strategyPerformanceSeries";
 
-import type { TStrategy } from "~/models/strategy.server";
 import type { Strategy } from "~/models/strategy2.server";
 import type { TStrategyPerformanceSeries } from "~/fixtures/strategyPerformanceSeries";
-
-type TStrategyOverview = TStrategy & {
-  performanceSeries: Array<{ date: Date; value: number }>;
-};
 
 type StrategyOverview = Strategy & {
   performanceSeries: TStrategyPerformanceSeries;
@@ -28,11 +20,9 @@ type StrategyOverview = Strategy & {
 
 type LoaderData = {
   strategies: {
-    SINGLE_COIN: Array<TStrategyOverview>;
-    CRYPTO_MARKET_BETA: Array<TStrategyOverview>;
+    SINGLE_COIN: Array<StrategyOverview>;
+    CRYPTO_MARKET_BETA: Array<StrategyOverview>;
   };
-  // strategies2: Array<Strategy>;
-  strategies2: Array<StrategyOverview>;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -42,11 +32,9 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const strategiesOverview = strategies.map((strategy) => ({
+  const strategiesOverview = strategies.map((strategy, i) => ({
     ...strategy,
-    performanceSeries: getStrategyPerformanceSeries({
-      strategyId: strategy.id,
-    }),
+    performanceSeries: getStrategyPerformanceSeriesFromIndex(i),
   }));
 
   const singleCoinStrategies = strategiesOverview.filter(
@@ -56,32 +44,18 @@ export const loader: LoaderFunction = async ({ request }) => {
     (it) => it.category === "CRYPTO_MARKET_BETA"
   );
 
-  const strategies2 = await getStrategies2();
-
-  if (!strategies2) {
-    throw new Response("Not Found", { status: 404 });
-  }
-
-  const strategies2Overview = strategies2.map((strategy) => ({
-    ...strategy,
-    performanceSeries: getStrategyPerformanceSeries2({
-      strategyId: strategy.id,
-    }),
-  }));
-
   return json<LoaderData>({
     strategies: {
       SINGLE_COIN: singleCoinStrategies,
       CRYPTO_MARKET_BETA: cryptoMarketBetaStrategies,
     },
-    strategies2: strategies2Overview,
   });
 };
 
 export default function PortalStrategiesPage() {
   const data = useLoaderData<LoaderData>();
 
-  const singleCoinStrategiesOverview = data.strategies.SINGLE_COIN.map(
+  const singleCoinStrategiesOverviewDB = data.strategies.SINGLE_COIN.map(
     (strategyOverview) => ({
       ...strategyOverview,
       performanceSeries: strategyOverview.performanceSeries.map((it) => ({
@@ -91,7 +65,7 @@ export default function PortalStrategiesPage() {
     })
   );
 
-  const cryptoMarketBetaStrategiesOverview =
+  const cryptoMarketBetaStrategiesOverviewDB =
     data.strategies.CRYPTO_MARKET_BETA.map((strategyOverview) => ({
       ...strategyOverview,
       performanceSeries: strategyOverview.performanceSeries.map((it) => ({
@@ -100,32 +74,19 @@ export default function PortalStrategiesPage() {
       })),
     }));
 
-  const dbStrategiesOverview = data.strategies2.map((strategyOverview) => ({
-    ...strategyOverview,
-    performanceSeries: strategyOverview.performanceSeries.map((it) => ({
-      ...it,
-      date: new Date(it.date),
-    })),
-  }));
-
   return (
     <div>
       <Header />
       <Container>
         <PageTitle>Crypto Strategies</PageTitle>
         <div className="flex flex-col gap-12">
-          <div className="bg-orange-400">
-            <SectionTitle>Strategies From DB</SectionTitle>
-            <StrategyTiles data={dbStrategiesOverview} />
-            {/* {JSON.stringify(data.strategies2, undefined, 2)} */}
-          </div>
-          <div className="">
+          <div>
             <SectionTitle>Single Coin Strategies</SectionTitle>
-            <StrategyTiles data={singleCoinStrategiesOverview} />
+            <StrategyTiles data={singleCoinStrategiesOverviewDB} />
           </div>
-          <div className="">
+          <div>
             <SectionTitle>Broad Market Strategies</SectionTitle>
-            <StrategyTiles data={cryptoMarketBetaStrategiesOverview} />
+            <StrategyTiles data={cryptoMarketBetaStrategiesOverviewDB} />
           </div>
         </div>
       </Container>
@@ -134,7 +95,7 @@ export default function PortalStrategiesPage() {
 }
 
 type TStrategyTilesProps = {
-  data: Array<TStrategyOverview> | Array<StrategyOverview>;
+  data: Array<StrategyOverview>;
 };
 
 function StrategyTiles({ data }: TStrategyTilesProps) {

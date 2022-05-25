@@ -89,3 +89,12 @@ export function getStrategyPerformanceSeries2({}: // strategyId,
   // invariant(performanceSeriesDB[strategyId]);
   return performanceSeriesDB["strategy-002"];
 }
+
+export function getStrategyPerformanceSeriesFromIndex(
+  i: number
+): TStrategyPerformanceSeries {
+  const performanceSeries = Object.values(performanceSeriesDB)[i];
+  invariant(performanceSeries);
+
+  return performanceSeries;
+}
