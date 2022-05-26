@@ -116,7 +116,7 @@ export function getUserPortfolioAssetAllocation({
     ];
   }
   return [
-    { currency: "BTC", percentage: 0.5 * 0.4 },
+    { currency: "BTC", percentage: 0.25 * 0.4 },
     { currency: "ETH", percentage: 0.25 * 0.4 },
     { currency: "BNB", percentage: 0.25 * 0.4 },
     { currency: "XRP", percentage: 0.25 * 0.4 },
@@ -125,12 +125,19 @@ export function getUserPortfolioAssetAllocation({
 }
 
 export function getCurrencyMetaInfo(currency: string) {
+  // const currencyDB = [
+  //   { currency: "BTC", color: "var(--color-orange-500)", currentPrice: 27228 },
+  //   { currency: "USDT", color: "var(--color-blue-500)", currentPrice: 0.93 },
+  //   { currency: "ETH", color: "var(--color-cyan-500)", currentPrice: 27228 },
+  //   { currency: "BNB", color: "var(--color-yellow-500)", currentPrice: 0.93 },
+  //   { currency: "XRP", color: "var(--color-purple-500)", currentPrice: 0.93 },
+  // ];
   const currencyDB = [
-    { currency: "BTC", color: "var(--color-orange-500)", currentPrice: 27228 },
-    { currency: "USDT", color: "var(--color-blue-500)", currentPrice: 0.93 },
-    { currency: "ETH", color: "var(--color-cyan-500)", currentPrice: 27228 },
-    { currency: "BNB", color: "var(--color-yellow-500)", currentPrice: 0.93 },
-    { currency: "XRP", color: "var(--color-purple-500)", currentPrice: 0.93 },
+    { currency: "BTC", color: "var(--color-orange-500)", currentPrice: 1 },
+    { currency: "USDT", color: "var(--color-blue-500)", currentPrice: 1 },
+    { currency: "ETH", color: "var(--color-cyan-500)", currentPrice: 1 },
+    { currency: "BNB", color: "var(--color-yellow-500)", currentPrice: 1 },
+    { currency: "XRP", color: "var(--color-purple-500)", currentPrice: 1 },
   ];
 
   const currencyMetaInfo = currencyDB.find((it) => it.currency === currency);
@@ -151,6 +158,9 @@ export function percentageToRealAssetAllocation(
   percentageAssetAllocation: Array<{ currency: string; percentage: number }>,
   portfolioValue: number
 ): Array<TRealAssetAllocationItem> {
+  console.log(portfolioValue);
+  console.log(percentageAssetAllocation);
+
   const realAssetAllocation = percentageAssetAllocation.map((percAAItem) => {
     const { color, currentPrice } = getCurrencyMetaInfo(percAAItem.currency);
     return {
@@ -213,7 +223,7 @@ export function aggregateAssetAllocations(
 
   const normalizedAssetAllocation = theAssetAllocation.map((it) => ({
     ...it,
-    percentage: it.percentage * summedPercentages,
+    percentage: it.percentage / summedPercentages,
   }));
 
   return normalizedAssetAllocation;

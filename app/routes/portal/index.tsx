@@ -119,7 +119,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     assetAllocation: aggregatedAssetAllocation,
     realAssetAllocation: percentageToRealAssetAllocation(
       aggregatedAssetAllocation,
-      lastValue
+      lastValue + investmentAmount
     ),
   });
 };

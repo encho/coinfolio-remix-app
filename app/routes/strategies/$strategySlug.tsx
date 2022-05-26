@@ -56,7 +56,7 @@ const RETURNS_FIXTURE = [
 ];
 
 const RISKY_ASSET_ALLOCATION_FIXTURE = [
-  { symbol: "BTC", weight: 0.5, color: "var(--color-orange-500)" },
+  { symbol: "BTC", weight: 0.25, color: "var(--color-orange-500)" },
   { symbol: "ETH", weight: 0.25, color: "var(--color-cyan-500)" },
   { symbol: "BNB", weight: 0.25, color: "var(--color-yellow-500)" },
   { symbol: "XRP", weight: 0.25, color: "var(--color-purple-500)" },
