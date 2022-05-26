@@ -6,20 +6,25 @@ import { CashIcon } from "@heroicons/react/outline";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import numeral from "numeral";
+import type { ActionFunction } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 
 import { Container, Header } from "~/components/NewPortfolio";
-import { getStrategyFromSlug } from "~/models/strategy.server";
+import { getStrategyFromSlug } from "~/models/strategy2.server";
 import { TRiskLevel } from "~/models/riskLevel.server";
+import { createUserPortfolio } from "~/models/portfolio2.server";
 
+import { requireUserId } from "~/session.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PeriodPicker from "~/components/PeriodPicker";
 import StrategyAssetAllocationPieChart from "~/components/StrategyAssetAllocationPieChart";
 import { MultiPerformanceChart } from "~/components/MultiPerformanceChart";
 
-// TODO deprecate table for now?
-// import StrategyAssetAllocationTable from "~/components/StrategyAssetAllocationTable";
+// TODO import from server modules not prisma directly!
+import type { RiskLevel } from "@prisma/client";
 
-import type { TStrategy } from "~/models/strategy.server";
+// TODO rename to strategy.server when old one is deprecated
+import type { Strategy } from "~/models/strategy2.server";
 import type { TCoinAllocation } from "~/components/StrategyAssetAllocationPieChart";
 
 function classNames(...classes: string[]) {
@@ -27,7 +32,9 @@ function classNames(...classes: string[]) {
 }
 
 type LoaderData = {
-  strategy: TStrategy;
+  strategy: Strategy & {
+    riskLevels: Array<RiskLevel>;
+  };
 };
 
 const RETURNS_FIXTURE = [
@@ -56,10 +63,10 @@ type TStrategyAssetAllocation = Array<TCoinAllocation>;
 function getStrategyAssetAllocation({
   riskLevel,
 }: {
-  riskLevel: "Low Risk" | "Medium Risk" | "High Risk";
+  riskLevel: TRiskLevel["type"];
 }): TStrategyAssetAllocation {
   const theterWeight =
-    riskLevel === "High Risk" ? 0.2 : riskLevel === "Medium Risk" ? 0.4 : 0.7;
+    riskLevel === "HIGH_RISK" ? 0.2 : riskLevel === "MEDIUM_RISK" ? 0.4 : 0.7;
   const theterAllocation = {
     symbol: "USDT",
     weight: theterWeight,
@@ -79,11 +86,11 @@ type TTimeseries = Array<{ date: Date; value: number }>;
 function getStrategyPerformanceSeries({
   riskLevel,
 }: {
-  riskLevel: "Low Risk" | "Medium Risk" | "High Risk";
+  riskLevel: TRiskLevel["type"];
 }): TTimeseries {
   const startCapital = 1;
   const returnsMultiplicator =
-    riskLevel === "High Risk" ? 3 : riskLevel === "Medium Risk" ? 2 : 1;
+    riskLevel === "HIGH_RISK" ? 3 : riskLevel === "MEDIUM_RISK" ? 2 : 1;
 
   const performanceSeries = RETURNS_FIXTURE.reduce<TTimeseries>(
     (memo, current, i) => {
@@ -103,10 +110,6 @@ function getStrategyPerformanceSeries({
   return performanceSeries;
 }
 
-const PERFORMANCE_SERIES_FIXTURE = getStrategyPerformanceSeries({
-  riskLevel: "Low Risk",
-});
-
 type TStrategyPerfromanceItem = {
   date: Date;
   LOW_RISK: number;
@@ -117,13 +120,13 @@ type TStrategyPerfromanceItem = {
 type TStrategyPerformanceDataframe = Array<TStrategyPerfromanceItem>;
 
 const LOW_RISK_SERIES = getStrategyPerformanceSeries({
-  riskLevel: "Low Risk",
+  riskLevel: "LOW_RISK",
 });
 const MEDIUM_RISK_SERIES = getStrategyPerformanceSeries({
-  riskLevel: "Medium Risk",
+  riskLevel: "MEDIUM_RISK",
 });
 const HIGH_RISK_SERIES = getStrategyPerformanceSeries({
-  riskLevel: "High Risk",
+  riskLevel: "HIGH_RISK",
 });
 
 const PERFORMANCE_DATAFRAME: TStrategyPerformanceDataframe = [];
@@ -136,48 +139,9 @@ LOW_RISK_SERIES.forEach((it, i) => {
   PERFORMANCE_DATAFRAME.push({ date, LOW_RISK, MEDIUM_RISK, HIGH_RISK });
 });
 
-console.log(PERFORMANCE_DATAFRAME);
-
-// const PERFORMANCE_SERIES_FIXTURE = [
-//   { date: new Date("2022-01-01"), value: 100 },
-//   { date: new Date("2022-01-02"), value: 110 },
-//   { date: new Date("2022-01-03"), value: 105 },
-//   { date: new Date("2022-01-04"), value: 120 },
-//   { date: new Date("2022-01-05"), value: 110 },
-//   { date: new Date("2022-01-06"), value: 130 },
-//   { date: new Date("2022-01-07"), value: 120 },
-// ];
-
-// const ASSET_ALLOCATION_FIXTURE = [
-//   {
-//     ticker: "BTC",
-//     name: "Bitcoin",
-//     weight: 0.2,
-//     performance: 0.03,
-//   },
-//   {
-//     ticker: "XRP",
-//     name: "Ripple",
-//     weight: 0.1,
-//     performance: 0.01,
-//   },
-//   {
-//     ticker: "ETH",
-//     name: "Ethereum",
-//     weight: 0.1,
-//     performance: -0.03,
-//   },
-//   {
-//     ticker: "USDT",
-//     name: "USD Theter",
-//     weight: 0.6,
-//     performance: 0.01,
-//   },
-// ];
-
 function getCurrentPeriodPerformance(
   dataframe: TStrategyPerformanceDataframe,
-  riskLevel: "Low Risk" | "Medium Risk" | "High Risk"
+  riskLevel: TRiskLevel["type"]
 ): { from: Date; to: Date; value: number } {
   const firstItem = dataframe[0];
   const lastItem = dataframe[dataframe.length - 1];
@@ -192,9 +156,9 @@ function getCurrentPeriodPerformance(
 
   // by default returns value accessor for Low Risk Performance
   const valueAccessor: (it: TStrategyPerfromanceItem) => number =
-    riskLevel === "High Risk"
+    riskLevel === "HIGH_RISK"
       ? (it) => it.HIGH_RISK
-      : riskLevel === "Medium Risk"
+      : riskLevel === "MEDIUM_RISK"
       ? (it) => it.MEDIUM_RISK
       : (it) => it.LOW_RISK;
 
@@ -217,9 +181,46 @@ export const loader: LoaderFunction = async ({ request, params }) => {
   if (!strategy) {
     throw new Response("Not Found", { status: 404 });
   }
+
+  // parse & simplify the response
+  const arrayOfRiskLevels = strategy.riskLevels.map(
+    ({ riskLevel }) => riskLevel
+  );
+
   return json<LoaderData>({
-    strategy,
+    strategy: { ...strategy, riskLevels: arrayOfRiskLevels },
   });
+};
+
+export const action: ActionFunction = async ({ request }) => {
+  const userId = await requireUserId(request);
+
+  const form = await request.formData();
+
+  const strategyId = form.get("strategyId");
+  const riskLevelId = form.get("riskLevelId");
+  const investmentAmount = Number(form.get("investmentAmount"));
+
+  // we do this type check to be extra sure and to make TypeScript happy
+  // we'll explore validation next!
+  if (
+    typeof strategyId !== "string" ||
+    typeof riskLevelId !== "string" ||
+    typeof investmentAmount !== "number"
+  ) {
+    throw new Error(`Form not submitted correctly.`);
+  }
+
+  const newUserPortfolio = await createUserPortfolio({
+    userId,
+    strategyId,
+    riskLevelId,
+    investmentAmount,
+  });
+
+  return redirect(
+    `/portal?newPortfolioStrategy=${newUserPortfolio.strategyId}`
+  );
 };
 
 export default function PortfolioDetailsPage() {
@@ -234,12 +235,12 @@ export default function PortfolioDetailsPage() {
 
   // TODO useMemo
   const currentRiskLevelOverview = data.strategy.riskLevels.find(
-    (it) => it.id === currentRiskLevel
+    (riskLevel) => riskLevel.id === currentRiskLevel
   );
 
   // TODO useMemo
   const currentHoveredRiskLevelOverview = hovered
-    ? data.strategy.riskLevels.find((it) => it.id === hovered)
+    ? data.strategy.riskLevels.find((riskLevel) => riskLevel.id === hovered)
     : null;
 
   // strategy confirmation modal state
@@ -249,7 +250,7 @@ export default function PortfolioDetailsPage() {
   const currentPeriodPerformance = currentRiskLevelOverview
     ? getCurrentPeriodPerformance(
         PERFORMANCE_DATAFRAME,
-        currentRiskLevelOverview.name
+        currentRiskLevelOverview.type
       )
     : null;
 
@@ -278,7 +279,7 @@ export default function PortfolioDetailsPage() {
           <ModalExample
             open={open}
             setOpen={setOpen}
-            strategy={{ name: data.strategy.name }}
+            strategy={data.strategy}
             strategyRiskLevelOverview={currentRiskLevelOverview}
           />
         )}
@@ -317,10 +318,10 @@ export default function PortfolioDetailsPage() {
             {currentRiskLevelOverview ? (
               <MultiPerformanceChart
                 data={PERFORMANCE_DATAFRAME}
-                activeStrategy={currentRiskLevelOverview.name}
+                activeStrategy={currentRiskLevelOverview.type}
                 hoveredStrategy={
                   currentHoveredRiskLevelOverview
-                    ? currentHoveredRiskLevelOverview.name
+                    ? currentHoveredRiskLevelOverview.type
                     : null
                 }
               />
@@ -338,7 +339,7 @@ export default function PortfolioDetailsPage() {
             {currentRiskLevelOverview ? (
               <StrategyAssetAllocationPieChart
                 allocation={getStrategyAssetAllocation({
-                  riskLevel: currentRiskLevelOverview.name,
+                  riskLevel: currentRiskLevelOverview.type,
                 })}
               />
             ) : null}
@@ -416,7 +417,7 @@ function RiskLevelButton({
 type TModalExampleProps = {
   open: boolean;
   setOpen: (newOpen: boolean) => void;
-  strategy: Pick<TStrategy, "name">;
+  strategy: Strategy;
   strategyRiskLevelOverview: Pick<TRiskLevel, "id" | "name" | "description">;
 };
 
@@ -427,6 +428,7 @@ function ModalExample({
   strategyRiskLevelOverview,
 }: TModalExampleProps) {
   const cancelButtonRef = useRef(null);
+  const [currentNumber, setCurrentNumber] = useState(0);
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -476,59 +478,96 @@ function ModalExample({
                       How much would you like to invest?
                     </Dialog.Title>
                   </div>
-                  <div>
-                    <div className="mt-10">
-                      <label
-                        htmlFor="price"
-                        className="block text-sm font-medium text-gray-900"
-                      >
-                        Investment Amount
-                      </label>
-                      <div className="relative mt-1 rounded-md shadow-sm">
-                        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                          <span className="text-gray-900 sm:text-sm">€</span>
+                </div>
+
+                <div className="mt-10">
+                  <form method="post">
+                    <div>
+                      <input
+                        type="hidden"
+                        name="strategyId"
+                        value={strategy.id}
+                      />
+                      <input
+                        type="hidden"
+                        name="riskLevelId"
+                        value={strategyRiskLevelOverview.id}
+                      />
+
+                      <div className="flex justify-center">
+                        <div className="w-full">
+                          <label
+                            htmlFor="investmentAmountNumber"
+                            className="mb-1 inline-block text-sm font-medium text-gray-900"
+                          >
+                            Investment Amount
+                          </label>
+                          <input
+                            type="number"
+                            name="investmentAmount"
+                            className="
+        form-control
+        m-0
+        block
+        w-full
+        rounded
+        border
+        border-solid
+        border-gray-300
+        bg-white bg-clip-padding
+        px-3 py-1.5 text-base
+        font-normal
+        text-gray-700
+        transition
+        ease-in-out
+        focus:border-blue-600 focus:bg-white focus:text-gray-700 focus:outline-none
+      "
+                            id="investmentAmountNumber"
+                            placeholder="Amount in Euro"
+                            onChange={(event) => {
+                              const number = Number(event.target.value);
+                              setCurrentNumber(number);
+                            }}
+                          />
+
+                          <div className="mt-1 text-xs text-gray-500">
+                            max. 2,580.89 € available
+                          </div>
                         </div>
-                        <input
-                          type="text"
-                          name="price"
-                          id="price"
-                          className="block w-full rounded border-gray-300 pl-7 pr-12 placeholder-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                          placeholder="1,000.00"
-                        />
-                      </div>
-                      <div className="mt-1 text-xs text-gray-500">
-                        max. 2,580.89 € available
                       </div>
                     </div>
-                  </div>
 
-                  <div className="mt-8 text-gray-900">
-                    I want to invest{" "}
-                    <span className="font-semibold">1,000.00 €</span> in the{" "}
-                    <span className="font-semibold">{strategy.name}</span>{" "}
-                    strategy with a risk level of:{" "}
-                    <span className="font-semibold">
-                      {strategyRiskLevelOverview.name}
-                    </span>
-                    .
-                  </div>
-                </div>
-                <div className="mt-6 sm:mt-8 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
-                  <button
-                    type="button"
-                    className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
-                    onClick={() => setOpen(false)}
-                  >
-                    Yes, Invest Now
-                  </button>
-                  <button
-                    type="button"
-                    className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
-                    onClick={() => setOpen(false)}
-                    ref={cancelButtonRef}
-                  >
-                    Cancel
-                  </button>
+                    <div className="mt-6 text-gray-900">
+                      I want to invest{" "}
+                      <span className="font-semibold">{currentNumber} €</span>{" "}
+                      in the{" "}
+                      <span className="font-semibold">{strategy.name}</span>{" "}
+                      strategy with a risk level of:{" "}
+                      <span className="font-semibold">
+                        {strategyRiskLevelOverview.name}
+                      </span>
+                      .
+                    </div>
+
+                    <div>
+                      <div className="mt-6 sm:mt-8 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                        <button
+                          type="submit"
+                          className="inline-flex w-full justify-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-base font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-2 sm:text-sm"
+                        >
+                          Yes, Invest Now
+                        </button>
+                        <button
+                          type="button"
+                          className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
+                          onClick={() => setOpen(false)}
+                          ref={cancelButtonRef}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
                 </div>
               </Dialog.Panel>
             </Transition.Child>

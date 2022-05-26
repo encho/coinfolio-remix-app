@@ -8,7 +8,6 @@ import wrapComponent from "./wrapComponent";
 
 type TDataItem = {
   date: Date;
-  // value: number;
   LOW_RISK: number;
   MEDIUM_RISK: number;
   HIGH_RISK: number;
@@ -16,8 +15,8 @@ type TDataItem = {
 
 type TSmallPerformanceChartProps = {
   data: Array<TDataItem>;
-  activeStrategy: "Low Risk" | "Medium Risk" | "High Risk";
-  hoveredStrategy: "Low Risk" | "Medium Risk" | "High Risk" | null;
+  activeStrategy: "LOW_RISK" | "MEDIUM_RISK" | "HIGH_RISK";
+  hoveredStrategy: "LOW_RISK" | "MEDIUM_RISK" | "HIGH_RISK" | null;
   height?: number;
   width?: number;
 };
@@ -35,8 +34,6 @@ export const MultiPerformanceChart = wrapComponent(
     width = 200,
     height = 100,
   }: TSmallPerformanceChartProps) => {
-    console.log(data);
-
     // scales
     const dateScale = useMemo(
       () =>
@@ -56,23 +53,23 @@ export const MultiPerformanceChart = wrapComponent(
     const maxHighRiskValue = max(data, getHighRiskValue) as number;
 
     const lowRiskColor =
-      activeStrategy === "Low Risk"
+      activeStrategy === "LOW_RISK"
         ? "var(--color-blue-500)"
-        : hoveredStrategy === "Low Risk"
+        : hoveredStrategy === "LOW_RISK"
         ? "var(--color-gray-350)"
         : "var(--color-gray-200)";
 
     const mediumRiskColor =
-      activeStrategy === "Medium Risk"
+      activeStrategy === "MEDIUM_RISK"
         ? "var(--color-blue-500)"
-        : hoveredStrategy === "Medium Risk"
+        : hoveredStrategy === "MEDIUM_RISK"
         ? "var(--color-gray-350)"
         : "var(--color-gray-200)";
 
     const highRiskColor =
-      activeStrategy === "High Risk"
+      activeStrategy === "HIGH_RISK"
         ? "var(--color-blue-500)"
-        : hoveredStrategy === "High Risk"
+        : hoveredStrategy === "HIGH_RISK"
         ? "var(--color-gray-350)"
         : "var(--color-gray-200)";
 
@@ -97,7 +94,7 @@ export const MultiPerformanceChart = wrapComponent(
       [data, height]
     );
 
-    const lastItem = data[data.length - 1];
+    // const lastItem = data[data.length - 1];
 
     return (
       <svg width={width} height={height} className="overflow-visible">

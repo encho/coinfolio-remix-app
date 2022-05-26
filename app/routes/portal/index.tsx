@@ -5,8 +5,14 @@ import numeral from "numeral";
 
 import {
   getUserExpandedPortfolios,
-  getUserPortfolios,
+  // getUserPortfolios,
 } from "~/models/portfolio.server";
+
+import {
+  getUserPortfolios,
+  // getUserPortfolios,
+} from "~/models/portfolio2.server";
+
 import { requireUserId } from "~/session.server";
 import { PageTitle, Heading1, SectionTitle } from "~/components/Typography";
 import PortfoliosCards from "~/components/PortfoliosCards";
@@ -17,16 +23,19 @@ import PieChart from "~/components/PieFixtureChart";
 import DashboardTabs from "~/components/DashboardTabs";
 
 import type { TExpandedPortfolio } from "~/models/portfolio.server";
+import type { ExpandedPortfolio } from "~/models/portfolio2.server";
 
 type LoaderData = {
   portfolios: Array<TExpandedPortfolio>;
   performanceSeries: Array<{ date: Date; value: number }>;
+  portfolios2: Array<ExpandedPortfolio>;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request);
 
   const portfolios = await getUserExpandedPortfolios({ userId });
+  const portfolios2 = await getUserPortfolios({ userId });
 
   const performanceSeries = [
     { date: new Date("2022-01-01"), value: 100 },
@@ -41,8 +50,12 @@ export const loader: LoaderFunction = async ({ request }) => {
   if (!portfolios) {
     throw new Response("Not Found", { status: 404 });
   }
+  if (!portfolios2) {
+    throw new Response("Not Found", { status: 404 });
+  }
   return json<LoaderData>({
     portfolios,
+    portfolios2,
     performanceSeries,
   });
 };
@@ -127,6 +140,10 @@ export default function PortalIndexPage() {
           </div>
         </div>
 
+        {/* <div className="bg-orange">
+          {JSON.stringify(data.portfolios2, undefined, 2)}
+        </div> */}
+
         {/* grid based layout */}
         <div className="grid w-full grid-flow-col grid-cols-[1fr_240px] grid-rows-[auto_240px_0px] gap-x-24">
           <div className="flex justify-between align-baseline">
@@ -153,7 +170,7 @@ export default function PortalIndexPage() {
         {/* Coinfolio Cards Section */}
         <div className="mt-10xxxx">
           <SectionTitle>Strategies</SectionTitle>
-          <PortfoliosCards data={data.portfolios} />
+          <PortfoliosCards data={data.portfolios2} />
         </div>
       </div>
     </div>

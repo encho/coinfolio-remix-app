@@ -1,15 +1,19 @@
 import { Link } from "@remix-run/react";
 import { PlusIcon } from "@heroicons/react/solid";
-import { RefreshIcon } from "@heroicons/react/outline";
+// import { RefreshIcon } from "@heroicons/react/outline";
 
-import { getStrategyPerformanceSeries } from "~/fixtures/strategyPerformanceSeries";
+import {
+  // getStrategyPerformanceSeries,
+  getStrategyPerformanceSeriesFromIndex,
+} from "~/fixtures/strategyPerformanceSeries";
 
 import type { TExpandedPortfolio } from "~/models/portfolio.server";
+import type { ExpandedPortfolio } from "~/models/portfolio2.server";
 import { SparklineChart } from "./SparklineChart";
 import { TRiskLevel } from "~/models/riskLevel.server";
 
 type TPortfoliosCards = {
-  data: Array<TExpandedPortfolio>;
+  data: Array<ExpandedPortfolio>;
 };
 
 export default function PortfoliosCards({ data }: TPortfoliosCards) {
@@ -23,14 +27,15 @@ export default function PortfoliosCards({ data }: TPortfoliosCards) {
   );
 }
 
-function PortfolioTile({ strategy, riskLevel }: TExpandedPortfolio) {
+function PortfolioTile({ strategy, riskLevel }: ExpandedPortfolio) {
   const cardStyles =
     "rounded border border-gray-200 transition bg-white shadow-sm px-6 py-5 hover:border-gray-350";
   // const focusStyles = "focus-within:ring-blue-500 focus-within:ring-offset-2";
 
-  const performanceSeries = getStrategyPerformanceSeries({
-    strategyId: strategy.id,
-  });
+  // const performanceSeries = getStrategyPerformanceSeries({
+  //   strategyId: strategy.id,
+  // });
+  const performanceSeries = getStrategyPerformanceSeriesFromIndex(0);
   return (
     <Link
       to={`./portfolios/${strategy.id}`}
@@ -95,21 +100,13 @@ function AddNewPortfolioTile() {
 }
 
 function RiskLevelBars(props: TRiskLevel) {
-  // const firstBarColor = "bg-green-500";
-  // const secondBarColor =
-  //   props.name === "Medium Risk" || props.name === "High Risk"
-  //     ? "bg-yellow-500"
-  //     : "bg-gray-200";
-  // const thirdBarColor =
-  //   props.name === "High Risk" ? "bg-red-500" : "bg-gray-200";
-
   const firstBarColor = "bg-blue-500";
   const secondBarColor =
-    props.name === "Medium Risk" || props.name === "High Risk"
+    props.type === "MEDIUM_RISK" || props.type === "HIGH_RISK"
       ? "bg-blue-500"
       : "bg-gray-200";
   const thirdBarColor =
-    props.name === "High Risk" ? "bg-blue-500" : "bg-gray-200";
+    props.type === "HIGH_RISK" ? "bg-blue-500" : "bg-gray-200";
   return (
     <div className="bg-yellow-200x flex gap-[3px] align-middle">
       <div className={`h-[5px] w-4 self-center ${firstBarColor}`}></div>

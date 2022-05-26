@@ -143,7 +143,6 @@ export async function getStrategyFromSlug({
     throw Error();
   }
 
-  console.log(riskLevels);
   const strategyPromise: Promise<null | TStrategy> = new Promise((resolve) => {
     setTimeout(() => {
       const strategy = strategiesDB.find((it) => it.slug === slug);

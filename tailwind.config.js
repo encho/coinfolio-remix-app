@@ -11,8 +11,6 @@ const themeColors = withTheme({
   purple: colors.violet,
 });
 
-console.log(themeColors);
-
 module.exports = {
   content: ["./app/**/*.{ts,tsx,jsx,js}"],
   theme: {
