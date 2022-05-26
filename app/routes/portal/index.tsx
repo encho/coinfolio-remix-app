@@ -1,7 +1,7 @@
 import type { LoaderFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { json } from "@remix-run/node";
-import numeral from "numeral";
+// import numeral from "numeral";
 
 import {
   getUserExpandedPortfolios,
@@ -63,11 +63,15 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function PortalIndexPage() {
   const data = useLoaderData<LoaderData>();
 
+  const [searchParams] = useSearchParams();
+  const newPortfolioStrategy = searchParams.get("newPortfolioStrategy");
+
   const parsedPerformanceSeries = data.performanceSeries.map((it) => ({
     ...it,
     date: new Date(it.date),
   }));
 
+  // TODO make consistent
   const coins = [
     {
       symbol: "ADA",
@@ -140,10 +144,6 @@ export default function PortalIndexPage() {
           </div>
         </div>
 
-        {/* <div className="bg-orange">
-          {JSON.stringify(data.portfolios2, undefined, 2)}
-        </div> */}
-
         {/* grid based layout */}
         <div className="grid w-full grid-flow-col grid-cols-[1fr_240px] grid-rows-[auto_240px_0px] gap-x-24">
           <div className="flex justify-between align-baseline">
@@ -168,46 +168,14 @@ export default function PortalIndexPage() {
         </div>
 
         {/* Coinfolio Cards Section */}
-        <div className="mt-10xxxx">
+        <div>
           <SectionTitle>Strategies</SectionTitle>
-          <PortfoliosCards data={data.portfolios2} />
+          <PortfoliosCards
+            data={data.portfolios2}
+            newStrategyId={newPortfolioStrategy || ""}
+          />
         </div>
       </div>
     </div>
   );
 }
-// type TPortfolioAbsoluteReturnProps = {
-//   currency: "EUR";
-//   amount: number;
-// };
-
-// function PortfolioAbsoluteReturn({
-//   currency,
-//   amount,
-// }: TPortfolioAbsoluteReturnProps) {
-//   const formattedAbsoluteAmount = numeral(Math.abs(amount)).format("0,0.00");
-//   const currencySymbols = {
-//     EUR: "€",
-//   };
-
-//   const currencySymbol = currencySymbols[currency];
-
-//   const sign = amount === 0 ? "" : amount < 0 ? "-" : "+";
-//   // const colorClass =
-//   //   amount === 0
-//   //     ? "text-neue-charts-neutral-text"
-//   //     : amount < 0
-//   //     ? "text-neue-charts-negative-text"
-//   //     : "text-neue-charts-positive-text";
-
-//   return (
-//     <div>
-//       {/* <div className={`text-xl font-bold leading-none ${colorClass}`}> */}
-//       <div className={"mb-1 text-xl font-bold leading-none"}>
-//         {sign}
-//         {formattedAbsoluteAmount} {currencySymbol}
-//       </div>
-//       <div>Absolute Return</div>
-//     </div>
-//   );
-// }

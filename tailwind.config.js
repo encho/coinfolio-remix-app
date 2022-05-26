@@ -14,7 +14,27 @@ const themeColors = withTheme({
 module.exports = {
   content: ["./app/**/*.{ts,tsx,jsx,js}"],
   theme: {
-    extend: {},
+    extend: {
+      keyframes: {
+        newStrategy: {
+          "0%": {
+            borderColor: "var(--color-yellow-500)",
+            backgroundColor: "var(--color-yellow-200)",
+          },
+          "40%": {
+            borderColor: "var(--color-yellow-300)",
+            backgroundColor: "var(--color-yellow-100)",
+          },
+          "100%": {
+            borderColor: "var(--color-gray-200)",
+            backgroundColor: "var(--color-white)",
+          },
+        },
+      },
+      animation: {
+        newStrategy: "newStrategy 5s ease-out",
+      },
+    },
     colors: themeColors,
     fontFamily: fontFamily,
     fontWeight: fontWeight,

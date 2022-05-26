@@ -12,6 +12,10 @@ async function seed() {
     // no worries if it doesn't exist yet
   });
 
+  await prisma.user.deleteMany({}).catch(() => {
+    // no worries if it doesn't exist yet
+  });
+
   await prisma.riskLevelsOnStrategies.deleteMany({}).catch(() => {
     // no worries if it doesn't exist yet
   });
@@ -203,7 +207,7 @@ async function seed() {
       name: "G10 Equal Weighted",
       description:
         "Equally weighted Cryptocurrency Index composed of the 10 largest cryptocurrencies.",
-      slug: "G10-vola-weighted",
+      slug: "G10-equal-weighted",
       category: "CRYPTO_MARKET_BETA",
     },
   });
@@ -259,11 +263,11 @@ async function seed() {
         strategyId: strategyBitcoin.id,
         riskLevelId: highRiskLevel.id,
       },
-      {
-        userId: user.id,
-        strategyId: strategyRipple.id,
-        riskLevelId: lowRiskLevel.id,
-      },
+      // {
+      //   userId: user.id,
+      //   strategyId: strategyRipple.id,
+      //   riskLevelId: lowRiskLevel.id,
+      // },
     ],
   });
 

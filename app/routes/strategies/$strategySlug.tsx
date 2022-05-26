@@ -3,7 +3,7 @@ import { json } from "@remix-run/node";
 import { Fragment, useState, useRef } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { CashIcon } from "@heroicons/react/outline";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, Form } from "@remix-run/react";
 import invariant from "tiny-invariant";
 import numeral from "numeral";
 import type { ActionFunction } from "@remix-run/node";
@@ -245,7 +245,7 @@ export default function PortfolioDetailsPage() {
     : null;
 
   // strategy confirmation modal state
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
 
   // TODO do we need null check here?
   const currentPeriodPerformance = currentRiskLevelOverview
@@ -482,7 +482,11 @@ function ModalExample({
                 </div>
 
                 <div className="mt-10">
-                  <form method="post">
+                  <Form method="post">
+                    <div>
+                      <input type="hidden" autoFocus />
+                    </div>
+
                     <div>
                       <input
                         type="hidden"
@@ -565,7 +569,7 @@ function ModalExample({
                         </button>
                         <button
                           type="button"
-                          className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:col-start-1 sm:mt-0 sm:text-sm"
+                          className="mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-base font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none sm:col-start-1 sm:mt-0 sm:text-sm"
                           onClick={() => setOpen(false)}
                           ref={cancelButtonRef}
                         >
@@ -573,7 +577,7 @@ function ModalExample({
                         </button>
                       </div>
                     </div>
-                  </form>
+                  </Form>
                 </div>
               </Dialog.Panel>
             </Transition.Child>
