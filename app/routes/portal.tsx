@@ -1,6 +1,4 @@
-import { NavLink, Outlet } from "@remix-run/react";
-
-/* This example requires Tailwind CSS v2.0+ */
+import { NavLink, Outlet, Form } from "@remix-run/react";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import {
@@ -12,7 +10,6 @@ import {
   MailIcon,
   GiftIcon,
   ChatAlt2Icon,
-  // ChartPieIcon,
 } from "@heroicons/react/outline";
 
 const navigation = [
@@ -229,36 +226,30 @@ export default function Example() {
                 ))}
               </nav>
             </div>
-            <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
-              <NavLink
-                end
-                // key={}
-                to="/logout"
-                className={({ isActive }) =>
-                  classNames(
-                    isActive
-                      ? "bg-gray-100 text-gray-900"
-                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900",
-                    "group flex w-full items-center rounded-md px-2 py-2 text-sm font-medium"
-                  )
-                }
+            <div>
+              <Form
+                action="/logout"
+                method="post"
+                className="flex flex-shrink-0 border-t border-gray-200 p-4"
               >
-                {({ isActive }) => (
-                  <Fragment>
-                    <LogoutIcon
-                      className={classNames(
-                        isActive
-                          ? "text-gray-500"
-                          : "text-gray-400 group-hover:text-gray-500",
-                        "mr-3 h-6 w-6 flex-shrink-0"
-                      )}
-                      aria-hidden="true"
-                    />
-                    {/* {item.name} */}
-                    Logout
-                  </Fragment>
-                )}
-              </NavLink>
+                <button
+                  type="submit"
+                  className={
+                    "group flex w-full items-center rounded-md px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }
+                >
+                  <LogoutIcon
+                    className={classNames(
+                      false
+                        ? "text-gray-500"
+                        : "text-gray-400 group-hover:text-gray-500",
+                      "mr-3 h-6 w-6 flex-shrink-0"
+                    )}
+                    aria-hidden="true"
+                  />
+                  Logout
+                </button>
+              </Form>
             </div>
           </div>
         </div>
