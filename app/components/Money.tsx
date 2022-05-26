@@ -35,3 +35,14 @@ export function MonetaryValueLarge({ amount, currency }: TMonetaryValue) {
     </div>
   );
 }
+
+export function formatMoney({ amount, currency }: TMonetaryValue) {
+  const formattedAmount = numeral(amount).format("0,0.00");
+  const currencySymbols = {
+    EUR: "€",
+  };
+
+  const currencySymbol = currencySymbols[currency];
+
+  return `${formattedAmount} ${currencySymbol}`;
+}

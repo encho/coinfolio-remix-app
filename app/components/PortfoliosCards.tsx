@@ -14,33 +14,43 @@ import { TRiskLevel } from "~/models/riskLevel.server";
 
 type TPortfoliosCards = {
   data: Array<ExpandedPortfolio>;
+  newStrategyId: string;
 };
 
-export default function PortfoliosCards({ data }: TPortfoliosCards) {
+export default function PortfoliosCards({
+  data,
+  newStrategyId,
+}: TPortfoliosCards) {
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3">
       {data.map((portfolioItem) => (
-        <PortfolioTile key={portfolioItem.strategyId} {...portfolioItem} />
+        <PortfolioTile
+          key={portfolioItem.strategyId}
+          {...portfolioItem}
+          isNew={portfolioItem.strategyId === newStrategyId}
+        />
       ))}
       <AddNewPortfolioTile />
     </div>
   );
 }
 
-function PortfolioTile({ strategy, riskLevel }: ExpandedPortfolio) {
+function PortfolioTile({
+  strategy,
+  riskLevel,
+  isNew,
+}: ExpandedPortfolio & { isNew: boolean }) {
   const cardStyles =
     "rounded border border-gray-200 transition bg-white shadow-sm px-6 py-5 hover:border-gray-350";
-  // const focusStyles = "focus-within:ring-blue-500 focus-within:ring-offset-2";
 
-  // const performanceSeries = getStrategyPerformanceSeries({
-  //   strategyId: strategy.id,
-  // });
+  const newAnimation = isNew ? "animate-newStrategy" : "";
+
   const performanceSeries = getStrategyPerformanceSeriesFromIndex(0);
   return (
     <Link
       to={`./portfolios/${strategy.id}`}
       prefetch="intent"
-      className={`${cardStyles} min-w-0 flex-1`}
+      className={`${cardStyles} min-w-0 flex-1 ${newAnimation}`}
     >
       <div className="flex flex-col gap-2">
         <div className="flex justify-between align-baseline">
@@ -63,7 +73,7 @@ function PortfolioTile({ strategy, riskLevel }: ExpandedPortfolio) {
         </div>
 
         <div className="flex justify-between">
-          <div className="bg-yellow-300xxx">
+          <div>
             <div className="text-xl font-normal text-gray-900">2,300.43 €</div>
             <div className="text-sm text-gray-900">+300.88 €</div>
           </div>
