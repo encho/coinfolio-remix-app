@@ -65,7 +65,8 @@ const PieChart = ({ height = 200, coins }: TPieChartProps) => {
             <>
               <Text
                 textAnchor="middle"
-                className="fill-black text-2xl font-normal"
+                className="text-2xl font-normal"
+                fill={active.color}
                 dy={-7}
               >
                 {formatMoney({
