@@ -69,31 +69,34 @@ export const SparklineChart = wrapComponent(
           pointerEvents="none"
         />
 
-        <LinePath
-          stroke={"var(--color_charts_data_1of1)"}
-          strokeWidth={2.5}
-          data={data}
-          x={(d) => dateScale(getDate(d)) ?? 0}
-          y={(d) => valueScale(getValue(d)) ?? 0}
-          curve={curveMonotoneX}
-        />
-
-        <circle
-          cx={dateScale(getDate(lastItem))}
-          cy={valueScale(getValue(lastItem))}
-          r={6}
-          fill={"var(--color_charts_data_1of1)"}
-          fillOpacity={0.3}
-          stroke="transparent"
-        />
-        <circle
-          cx={dateScale(getDate(lastItem))}
-          cy={valueScale(getValue(lastItem))}
-          r={3}
-          fill={"var(--color_charts_data_1of1)"}
-          fillOpacity={1}
-          stroke="transparent"
-        />
+        {data.length > 1 ? (
+          <g>
+            <LinePath
+              stroke={"var(--color_charts_data_1of1)"}
+              strokeWidth={2.5}
+              data={data}
+              x={(d) => dateScale(getDate(d)) ?? 0}
+              y={(d) => valueScale(getValue(d)) ?? 0}
+              curve={curveMonotoneX}
+            />
+            <circle
+              cx={dateScale(getDate(lastItem))}
+              cy={valueScale(getValue(lastItem))}
+              r={6}
+              fill={"var(--color_charts_data_1of1)"}
+              fillOpacity={0.3}
+              stroke="transparent"
+            />
+            <circle
+              cx={dateScale(getDate(lastItem))}
+              cy={valueScale(getValue(lastItem))}
+              r={3}
+              fill={"var(--color_charts_data_1of1)"}
+              fillOpacity={1}
+              stroke="transparent"
+            />
+          </g>
+        ) : null}
       </svg>
     );
   }

@@ -202,12 +202,12 @@ async function seed() {
     ],
   });
 
-  const strategyG10Equal = await prisma.strategy.create({
+  const strategyG4Equal = await prisma.strategy.create({
     data: {
-      name: "G10 Equal Weighted",
+      name: "G4 Equal Weighted",
       description:
-        "Equally weighted Cryptocurrency Index composed of the 10 largest cryptocurrencies.",
-      slug: "G10-equal-weighted",
+        "Equally weighted Cryptocurrency Index composed of the 4 largest cryptocurrencies.",
+      slug: "G4-equal-weighted",
       category: "CRYPTO_MARKET_BETA",
     },
   });
@@ -215,26 +215,26 @@ async function seed() {
   await prisma.riskLevelsOnStrategies.createMany({
     data: [
       {
-        strategyId: strategyG10Equal.id,
+        strategyId: strategyG4Equal.id,
         riskLevelId: lowRiskLevel.id,
       },
       {
-        strategyId: strategyG10Equal.id,
+        strategyId: strategyG4Equal.id,
         riskLevelId: mediumRiskLevel.id,
       },
       {
-        strategyId: strategyG10Equal.id,
+        strategyId: strategyG4Equal.id,
         riskLevelId: highRiskLevel.id,
       },
     ],
   });
 
-  const strategyG10Vola = await prisma.strategy.create({
+  const strategyG4Vola = await prisma.strategy.create({
     data: {
-      name: "G10 Volatility Weighted",
+      name: "G4 Volatility Weighted",
       description:
-        "Volatility weighted Cryptocurrency Index composed of the 10 largest cryptocurrencies.",
-      slug: "G10-vola-weighted",
+        "Volatility weighted Cryptocurrency Index composed of the 4 largest cryptocurrencies.",
+      slug: "G4-vola-weighted",
       category: "CRYPTO_MARKET_BETA",
     },
   });
@@ -242,15 +242,15 @@ async function seed() {
   await prisma.riskLevelsOnStrategies.createMany({
     data: [
       {
-        strategyId: strategyG10Vola.id,
+        strategyId: strategyG4Vola.id,
         riskLevelId: lowRiskLevel.id,
       },
       {
-        strategyId: strategyG10Vola.id,
+        strategyId: strategyG4Vola.id,
         riskLevelId: mediumRiskLevel.id,
       },
       {
-        strategyId: strategyG10Vola.id,
+        strategyId: strategyG4Vola.id,
         riskLevelId: highRiskLevel.id,
       },
     ],

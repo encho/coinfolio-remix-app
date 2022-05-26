@@ -58,7 +58,8 @@ const RETURNS_FIXTURE = [
 const RISKY_ASSET_ALLOCATION_FIXTURE = [
   { symbol: "BTC", weight: 0.5, color: "var(--color-orange-500)" },
   { symbol: "ETH", weight: 0.25, color: "var(--color-cyan-500)" },
-  { symbol: "XRP", weight: 0.25, color: "var(--color-yellow-500)" },
+  { symbol: "BNB", weight: 0.25, color: "var(--color-yellow-500)" },
+  { symbol: "XRP", weight: 0.25, color: "var(--color-purple-500)" },
 ];
 
 type TStrategyAssetAllocation = Array<TCoinAllocation>;
@@ -247,7 +248,7 @@ export default function PortfolioDetailsPage() {
     : null;
 
   // strategy confirmation modal state
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   // TODO do we need null check here?
   const currentPeriodPerformance = currentRiskLevelOverview

@@ -21,17 +21,32 @@ import {
   aggregatePerformanceSeries,
   getUserPortfolioPerformanceSeries,
   getCashFixture,
+  getUserPortfolioAssetAllocation,
+  aggregateAssetAllocations,
+  percentageToRealAssetAllocation,
 } from "~/fixtures/userPortfolioData";
 
 import type { ExpandedPortfolio } from "~/models/portfolio2.server";
 
-type ExpandedPortfolioWithPerformanceSeries = ExpandedPortfolio & {
-  performanceSeries: Array<{ date: Date; value: number }>;
+type ExpandedPortfolioWithPerformanceSeriesAndAssetAllocation =
+  ExpandedPortfolio & {
+    performanceSeries: Array<{ date: Date; value: number }>;
+    // TODO this is a hack as the performance will be driven by absolute (not percentage) asset allocations!!
+    assetAllocation: Array<{ currency: string; percentage: number }>;
+  };
+
+type TRealAssetAllocationItem = {
+  symbol: string;
+  color: string;
+  amount: number;
+  inUSD: number;
 };
 
 type LoaderData = {
   performanceSeries: Array<{ date: Date; value: number }>;
-  portfolios: Array<ExpandedPortfolioWithPerformanceSeries>;
+  assetAllocation: Array<{ currency: string; percentage: number }>;
+  realAssetAllocation: Array<TRealAssetAllocationItem>;
+  portfolios: Array<ExpandedPortfolioWithPerformanceSeriesAndAssetAllocation>;
   cashFixture: number;
   totalPortfolioValue: number;
 };
@@ -54,37 +69,58 @@ export const loader: LoaderFunction = async ({ request }) => {
     throw new Response("Not Found", { status: 404 });
   }
 
-  const portfoliosWithPerformanceSeries = portfolios.map((portfolio) => {
-    const isNew = portfolio.strategyId === newPortfolioStrategy;
-    const performanceSeries = isNew
-      ? [{ date: new Date("2022-01-10"), value: investmentAmount }]
-      : getUserPortfolioPerformanceSeries({
-          userId,
-          strategyId: portfolio.strategyId,
-        });
+  const portfoliosWithPerformanceSeriesAndAssetAllocation = portfolios.map(
+    (portfolio) => {
+      const isNew = portfolio.strategyId === newPortfolioStrategy;
+      const performanceSeries = isNew
+        ? [{ date: new Date("2022-01-10"), value: investmentAmount }]
+        : getUserPortfolioPerformanceSeries({
+            userId,
+            strategyId: portfolio.strategyId,
+          });
 
-    return {
-      ...portfolio,
-      performanceSeries,
-    };
-  });
+      const assetAllocation = getUserPortfolioAssetAllocation({
+        strategy: portfolio.strategy,
+      });
 
-  const allPerformanceSeries = portfoliosWithPerformanceSeries.map(
-    ({ performanceSeries }) => performanceSeries
+      return {
+        ...portfolio,
+        performanceSeries,
+        assetAllocation,
+      };
+    }
   );
+
+  const allPerformanceSeries =
+    portfoliosWithPerformanceSeriesAndAssetAllocation.map(
+      ({ performanceSeries }) => performanceSeries
+    );
+
+  const allAssetAllocations =
+    portfoliosWithPerformanceSeriesAndAssetAllocation.map(
+      ({ assetAllocation }) => assetAllocation
+    );
 
   const aggregatedPerformanceSeries = aggregatePerformanceSeries(
     allPerformanceSeries.filter((series) => series.length > 1)
   );
 
+  const aggregatedAssetAllocation =
+    aggregateAssetAllocations(allAssetAllocations);
+
   const lastValue =
     aggregatedPerformanceSeries[aggregatedPerformanceSeries.length - 1].value;
 
   return json<LoaderData>({
-    portfolios: portfoliosWithPerformanceSeries,
+    portfolios: portfoliosWithPerformanceSeriesAndAssetAllocation,
     performanceSeries: aggregatedPerformanceSeries,
     cashFixture: CASH_FIXTURE - investmentAmount,
     totalPortfolioValue: lastValue + CASH_FIXTURE,
+    assetAllocation: aggregatedAssetAllocation,
+    realAssetAllocation: percentageToRealAssetAllocation(
+      aggregatedAssetAllocation,
+      lastValue
+    ),
   });
 };
 
@@ -110,49 +146,15 @@ export default function PortalIndexPage() {
     return { ...portfolio, performanceSeries: parsedPerformanceSeries };
   });
 
-  // TODO make consistent
-  const coins = [
-    {
-      symbol: "ADA",
-      amount: 200,
-      color: "var(--color-cyan-500)",
-      inUSD: 1.48,
-    },
-    {
-      symbol: "SOL",
-      amount: 5,
-      color: "var(--color-yellow-500)",
-      inUSD: 37.6,
-    },
-    {
-      symbol: "BTC",
-      amount: 0.005,
-      color: "var(--color-violet-500)",
-      inUSD: 37363,
-    },
-    {
-      symbol: "QQQ",
-      amount: 0.005,
-      color: "var(--color-orange-500)",
-      inUSD: 37363,
-    },
-    {
-      symbol: "AAA",
-      amount: 0.005,
-      color: "var(--color-fuchsia-500)",
-      inUSD: 37363,
-    },
-    {
-      symbol: "DEI",
-      amount: 12.3,
-      color: "var(--color-blue-500)",
-      inUSD: 40,
-    },
-  ];
+  const coins = data.realAssetAllocation;
 
   return (
     <div>
       <PageTitle>Good morning</PageTitle>
+
+      {/* <div className="bg-orange-500">
+        {JSON.stringify(data.assetAllocation, undefined, 2)}
+      </div> */}
 
       <div className="mb-12">
         <DashboardTabs />
