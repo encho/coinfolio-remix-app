@@ -17,6 +17,7 @@ import { createUserPortfolio } from "~/models/portfolio2.server";
 import { requireUserId } from "~/session.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
 import PeriodPicker from "~/components/PeriodPicker";
+import { formatMoney } from "~/components/Money";
 import StrategyAssetAllocationPieChart from "~/components/StrategyAssetAllocationPieChart";
 import { MultiPerformanceChart } from "~/components/MultiPerformanceChart";
 
@@ -539,7 +540,12 @@ function ModalExample({
 
                     <div className="mt-6 text-gray-900">
                       I want to invest{" "}
-                      <span className="font-semibold">{currentNumber} €</span>{" "}
+                      <span className="font-semibold">
+                        {formatMoney({
+                          amount: currentNumber,
+                          currency: "EUR",
+                        })}
+                      </span>{" "}
                       in the{" "}
                       <span className="font-semibold">{strategy.name}</span>{" "}
                       strategy with a risk level of:{" "}
