@@ -46,3 +46,10 @@ export function formatMoney({ amount, currency }: TMonetaryValue) {
 
   return `${formattedAmount} ${currencySymbol}`;
 }
+
+export function formatMoneyWithSign({ amount, currency }: TMonetaryValue) {
+  const formattedMoney = formatMoney({ amount, currency });
+  const sign = amount <= 0 ? "" : "+";
+
+  return `${sign}${formattedMoney}`;
+}

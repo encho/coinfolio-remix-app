@@ -1,18 +1,14 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
 import { json } from "@remix-run/node";
-// import numeral from "numeral";
 
-import {
-  getUserExpandedPortfolios,
-  // getUserPortfolios,
-} from "~/models/portfolio.server";
+// TODO deprecate
+// import {
+//   // getUserExpandedPortfolios,
+//   // getUserPortfolios,
+// } from "~/models/portfolio.server";
 
-import {
-  getUserPortfolios,
-  // getUserPortfolios,
-} from "~/models/portfolio2.server";
-
+import { getUserPortfolios } from "~/models/portfolio2.server";
 import { requireUserId } from "~/session.server";
 import { PageTitle, Heading1, SectionTitle } from "~/components/Typography";
 import PortfoliosCards from "~/components/PortfoliosCards";
@@ -21,42 +17,74 @@ import { MonetaryValueLarge, MonetaryValueSmall } from "~/components/Money";
 import { SmallPerformanceChart } from "~/components/SmallPerformanceChart";
 import PieChart from "~/components/PieFixtureChart";
 import DashboardTabs from "~/components/DashboardTabs";
+import {
+  aggregatePerformanceSeries,
+  getUserPortfolioPerformanceSeries,
+  getCashFixture,
+} from "~/fixtures/userPortfolioData";
 
-import type { TExpandedPortfolio } from "~/models/portfolio.server";
 import type { ExpandedPortfolio } from "~/models/portfolio2.server";
 
-type LoaderData = {
-  portfolios: Array<TExpandedPortfolio>;
+type ExpandedPortfolioWithPerformanceSeries = ExpandedPortfolio & {
   performanceSeries: Array<{ date: Date; value: number }>;
-  portfolios2: Array<ExpandedPortfolio>;
+};
+
+type LoaderData = {
+  performanceSeries: Array<{ date: Date; value: number }>;
+  portfolios: Array<ExpandedPortfolioWithPerformanceSeries>;
+  cashFixture: number;
+  totalPortfolioValue: number;
 };
 
 export const loader: LoaderFunction = async ({ request }) => {
   const userId = await requireUserId(request);
 
-  const portfolios = await getUserExpandedPortfolios({ userId });
-  const portfolios2 = await getUserPortfolios({ userId });
+  const CASH_FIXTURE = getCashFixture();
 
-  const performanceSeries = [
-    { date: new Date("2022-01-01"), value: 100 },
-    { date: new Date("2022-01-02"), value: 110 },
-    { date: new Date("2022-01-03"), value: 105 },
-    { date: new Date("2022-01-04"), value: 120 },
-    { date: new Date("2022-01-05"), value: 110 },
-    { date: new Date("2022-01-06"), value: 130 },
-    { date: new Date("2022-01-07"), value: 120 },
-  ];
+  const url = new URL(request.url);
+  const newPortfolioStrategy =
+    url.searchParams.get("newPortfolioStrategy") || "";
+  const investmentAmount = Number(
+    url.searchParams.get("investmentAmount") || 0
+  );
+
+  const portfolios = await getUserPortfolios({ userId });
 
   if (!portfolios) {
     throw new Response("Not Found", { status: 404 });
   }
-  if (!portfolios2) {
-    throw new Response("Not Found", { status: 404 });
-  }
+
+  const portfoliosWithPerformanceSeries = portfolios.map((portfolio) => {
+    const isNew = portfolio.strategyId === newPortfolioStrategy;
+    const performanceSeries = isNew
+      ? [{ date: new Date("2022-01-10"), value: investmentAmount }]
+      : getUserPortfolioPerformanceSeries({
+          userId,
+          strategyId: portfolio.strategyId,
+        });
+
+    return {
+      ...portfolio,
+      performanceSeries,
+    };
+  });
+
+  const allPerformanceSeries = portfoliosWithPerformanceSeries.map(
+    ({ performanceSeries }) => performanceSeries
+  );
+
+  const aggregatedPerformanceSeries = aggregatePerformanceSeries(
+    allPerformanceSeries.filter((series) => series.length > 1)
+  );
+
+  const lastValue =
+    aggregatedPerformanceSeries[aggregatedPerformanceSeries.length - 1].value;
+
   return json<LoaderData>({
-    portfolios,
-    portfolios2,
-    performanceSeries,
+    portfolios: portfoliosWithPerformanceSeries,
+    performanceSeries: aggregatedPerformanceSeries,
+    cashFixture: CASH_FIXTURE - investmentAmount,
+    totalPortfolioValue: lastValue + CASH_FIXTURE,
   });
 };
 
@@ -70,6 +98,17 @@ export default function PortalIndexPage() {
     ...it,
     date: new Date(it.date),
   }));
+
+  const parsedPortfolios = data.portfolios.map((portfolio) => {
+    const parsedPerformanceSeries = portfolio.performanceSeries.map(
+      (it: { date: Date; value: number }) => ({
+        ...it,
+        date: new Date(it.date),
+      })
+    );
+
+    return { ...portfolio, performanceSeries: parsedPerformanceSeries };
+  });
 
   // TODO make consistent
   const coins = [
@@ -124,12 +163,16 @@ export default function PortalIndexPage() {
           <SectionTitle>Total Portfolio Value</SectionTitle>
           {/* TODO remove this design white space hack once we have capsize trim */}
           <div className="-mt-1">
-            <MonetaryValueLarge currency="EUR" amount={123.33} />
+            <MonetaryValueLarge
+              currency="EUR"
+              amount={data.totalPortfolioValue}
+            />
           </div>
           <div className="mt-3">
             <div className="flex gap-3">
               <div>
-                <MonetaryValueSmall currency="EUR" amount={23.11} /> available
+                <MonetaryValueSmall currency="EUR" amount={data.cashFixture} />{" "}
+                available
               </div>
               {/* TODO make better layout this is a hack! */}
               <div className="-mt-[2px]">
@@ -171,7 +214,7 @@ export default function PortalIndexPage() {
         <div>
           <SectionTitle>Strategies</SectionTitle>
           <PortfoliosCards
-            data={data.portfolios2}
+            data={parsedPortfolios}
             newStrategyId={newPortfolioStrategy || ""}
           />
         </div>

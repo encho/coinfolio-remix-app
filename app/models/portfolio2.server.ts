@@ -41,3 +41,17 @@ export function createUserPortfolio({
     },
   });
 }
+
+// export function getUserPortfolioAA({
+//   userId,
+//   strategyId,
+// }: {
+//   userId: User["id"];
+//   strategyId: Strategy["id"];
+// }): Array<{ amount: number; currency: string }> {
+//   return [
+//     { amount: 1000, currency: "BTC" },
+//     { amount: 500, currency: "ETH" },
+//     { amount: 200, currency: "Ripple" },
+//   ];
+// }

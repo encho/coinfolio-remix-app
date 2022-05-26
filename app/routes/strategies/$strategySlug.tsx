@@ -21,6 +21,8 @@ import { formatMoney } from "~/components/Money";
 import StrategyAssetAllocationPieChart from "~/components/StrategyAssetAllocationPieChart";
 import { MultiPerformanceChart } from "~/components/MultiPerformanceChart";
 
+import { getCashFixture } from "~/fixtures/userPortfolioData";
+
 // TODO import from server modules not prisma directly!
 import type { RiskLevel } from "@prisma/client";
 
@@ -220,7 +222,7 @@ export const action: ActionFunction = async ({ request }) => {
   });
 
   return redirect(
-    `/portal?newPortfolioStrategy=${newUserPortfolio.strategyId}`
+    `/portal?newPortfolioStrategy=${newUserPortfolio.strategyId}&investmentAmount=${investmentAmount}`
   );
 };
 
@@ -536,7 +538,10 @@ function ModalExample({
                           />
 
                           <div className="mt-1 text-xs text-gray-500">
-                            max. 2,580.89 € available
+                            {`max. ${formatMoney({
+                              amount: getCashFixture(),
+                              currency: "EUR",
+                            })} available`}
                           </div>
                         </div>
                       </div>
