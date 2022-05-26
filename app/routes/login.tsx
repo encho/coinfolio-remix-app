@@ -92,12 +92,22 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-full flex-col justify-center">
+      <img
+        className="mb-2 h-[40px] w-auto"
+        src="https://coinfolio.s3.eu-central-1.amazonaws.com/logos/coinfolio-capital-logo-cockpit.svg"
+        alt="Coinfolio Capital"
+      />
+
       <div className="mx-auto w-full max-w-md px-8">
         <Form method="post" className="space-y-6">
+          <div className="max-h-0 max-w-0 overflow-hidden">
+            <input autoFocus />
+          </div>
+
           <div>
             <label
               htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-900"
             >
               Email address
             </label>
@@ -112,7 +122,7 @@ export default function LoginPage() {
                 autoComplete="email"
                 aria-invalid={actionData?.errors?.email ? true : undefined}
                 aria-describedby="email-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded border border-gray-300 px-2 py-1 text-lg focus-within:ring-1 focus-within:ring-blue-500"
               />
               {actionData?.errors?.email && (
                 <div className="pt-1 text-red-700" id="email-error">
@@ -125,7 +135,7 @@ export default function LoginPage() {
           <div>
             <label
               htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium text-gray-900"
             >
               Password
             </label>
@@ -138,7 +148,7 @@ export default function LoginPage() {
                 autoComplete="current-password"
                 aria-invalid={actionData?.errors?.password ? true : undefined}
                 aria-describedby="password-error"
-                className="w-full rounded border border-gray-500 px-2 py-1 text-lg"
+                className="w-full rounded border border-gray-300 px-2 py-1 text-lg focus-within:ring-1 focus-within:ring-blue-500"
               />
               {actionData?.errors?.password && (
                 <div className="pt-1 text-red-700" id="password-error">
@@ -170,7 +180,7 @@ export default function LoginPage() {
                 Remember me
               </label>
             </div>
-            <div className="text-center text-sm text-gray-500">
+            <div className="text-center text-sm text-gray-400">
               Don't have an account?{" "}
               <Link
                 className="text-blue-500 underline"
