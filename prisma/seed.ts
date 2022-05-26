@@ -1,14 +1,14 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { getStrategies } from "~/models/strategy.server";
 
 const prisma = new PrismaClient();
 
 async function seed() {
-  const email = "max@mustermann.de";
-
   // cleanup the existing database
-  await prisma.user.delete({ where: { email } }).catch(() => {
+  // await prisma.user.delete({ where: { email } }).catch(() => {
+  //   // no worries if it doesn't exist yet
+  // });
+  await prisma.user.deleteMany({}).catch(() => {
     // no worries if it doesn't exist yet
   });
 
@@ -22,7 +22,11 @@ async function seed() {
   await prisma.riskLevel.deleteMany({}).catch(() => {
     // no worries if it doesn't exist yet
   });
+  await prisma.portfolio.deleteMany({}).catch(() => {
+    // no worries if it doesn't exist yet
+  });
 
+  const email = "max@mustermann.de";
   const hashedPassword = await bcrypt.hash("coinfolio", 10);
 
   const user = await prisma.user.create({
@@ -244,6 +248,21 @@ async function seed() {
       {
         strategyId: strategyG10Vola.id,
         riskLevelId: highRiskLevel.id,
+      },
+    ],
+  });
+
+  await prisma.portfolio.createMany({
+    data: [
+      {
+        userId: user.id,
+        strategyId: strategyBitcoin.id,
+        riskLevelId: highRiskLevel.id,
+      },
+      {
+        userId: user.id,
+        strategyId: strategyRipple.id,
+        riskLevelId: lowRiskLevel.id,
       },
     ],
   });

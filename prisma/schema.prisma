@@ -14,8 +14,9 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  password Password?
-  notes    Note[]
+  password   Password?
+  notes      Note[]
+  portfolios Portfolio[]
 }
 
 model Password {
@@ -43,6 +44,7 @@ model RiskLevel {
   name        String
   description String
   strategies  RiskLevelsOnStrategies[]
+  portfolios  Portfolio[]
 }
 
 enum RiskLevelType {
@@ -58,6 +60,7 @@ model Strategy {
   slug        String
   category    StrategyCategoryType     @default(SINGLE_COIN)
   riskLevels  RiskLevelsOnStrategies[]
+  portfolios  Portfolio[]
 }
 
 enum StrategyCategoryType {
@@ -73,4 +76,15 @@ model RiskLevelsOnStrategies {
   assignedAt  DateTime  @default(now())
 
   @@id([strategyId, riskLevelId])
+}
+
+model Portfolio {
+  userId      String
+  strategyId  String
+  riskLevelId String
+  strategy    Strategy  @relation(fields: [strategyId], references: [id])
+  riskLevel   RiskLevel @relation(fields: [riskLevelId], references: [id])
+  user        User      @relation(fields: [userId], references: [id])
+
+  @@id([userId, strategyId], name: "userStrategy")
 }

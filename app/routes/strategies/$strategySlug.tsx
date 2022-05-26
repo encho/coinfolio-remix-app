@@ -12,7 +12,7 @@ import { redirect } from "@remix-run/node";
 import { Container, Header } from "~/components/NewPortfolio";
 import { getStrategyFromSlug } from "~/models/strategy2.server";
 import { TRiskLevel } from "~/models/riskLevel.server";
-import { createUserPortfolio } from "~/models/portfolio.server";
+import { createUserPortfolio } from "~/models/portfolio2.server";
 
 import { requireUserId } from "~/session.server";
 import { PageTitle, SectionTitle } from "~/components/Typography";
@@ -211,16 +211,16 @@ export const action: ActionFunction = async ({ request }) => {
     throw new Error(`Form not submitted correctly.`);
   }
 
-  // TODO integrate with database:
-  // const userPortfolio = await db.userPortfolio.create({ data: fields });
-  const newUserPortfolio = createUserPortfolio({
+  const newUserPortfolio = await createUserPortfolio({
     userId,
     strategyId,
     riskLevelId,
     investmentAmount,
   });
 
-  return redirect(`/portal?newUserPortfolio=${newUserPortfolio.id}`);
+  return redirect(
+    `/portal?newPortfolioStrategy=${newUserPortfolio.strategyId}`
+  );
 };
 
 export default function PortfolioDetailsPage() {
@@ -279,7 +279,7 @@ export default function PortfolioDetailsPage() {
           <ModalExample
             open={open}
             setOpen={setOpen}
-            strategy={{ name: data.strategy.name }}
+            strategy={data.strategy}
             strategyRiskLevelOverview={currentRiskLevelOverview}
           />
         )}
@@ -417,7 +417,7 @@ function RiskLevelButton({
 type TModalExampleProps = {
   open: boolean;
   setOpen: (newOpen: boolean) => void;
-  strategy: Pick<Strategy, "name">;
+  strategy: Strategy;
   strategyRiskLevelOverview: Pick<TRiskLevel, "id" | "name" | "description">;
 };
 
@@ -486,12 +486,12 @@ function ModalExample({
                       <input
                         type="hidden"
                         name="strategyId"
-                        value="MY_GREAT_STRATEGY_ID"
+                        value={strategy.id}
                       />
                       <input
                         type="hidden"
                         name="riskLevelId"
-                        value="MY_GREAT_RISK_LEVEL_ID"
+                        value={strategyRiskLevelOverview.id}
                       />
 
                       <div className="flex justify-center">
