@@ -263,11 +263,11 @@ async function seed() {
         strategyId: strategyBitcoin.id,
         riskLevelId: highRiskLevel.id,
       },
-      // {
-      //   userId: user.id,
-      //   strategyId: strategyRipple.id,
-      //   riskLevelId: lowRiskLevel.id,
-      // },
+      {
+        userId: user.id,
+        strategyId: strategyG4Equal.id,
+        riskLevelId: lowRiskLevel.id,
+      },
     ],
   });
 

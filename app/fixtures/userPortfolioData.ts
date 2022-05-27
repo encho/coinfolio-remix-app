@@ -14,7 +14,8 @@ export function getUserPortfolioReturnsSeries({
   var rng = seedrandom(`${userId}-${strategyId}`);
 
   const generateReturn = () => {
-    return (rng() - 0.5) / 50;
+    // return (rng() - 0.5) / 50;
+    return (rng() - 0.4) / 50;
   };
 
   return [
@@ -28,6 +29,21 @@ export function getUserPortfolioReturnsSeries({
     { date: new Date("2022-01-08"), value: generateReturn() },
     { date: new Date("2022-01-09"), value: generateReturn() },
     { date: new Date("2022-01-10"), value: generateReturn() },
+    { date: new Date("2022-01-11"), value: generateReturn() },
+    { date: new Date("2022-01-12"), value: generateReturn() },
+    { date: new Date("2022-01-13"), value: generateReturn() },
+    { date: new Date("2022-01-14"), value: generateReturn() },
+    { date: new Date("2022-01-15"), value: generateReturn() },
+    { date: new Date("2022-01-16"), value: generateReturn() },
+    { date: new Date("2022-01-17"), value: generateReturn() },
+    { date: new Date("2022-01-18"), value: generateReturn() },
+    { date: new Date("2022-01-19"), value: generateReturn() },
+    { date: new Date("2022-01-20"), value: generateReturn() },
+    { date: new Date("2022-01-21"), value: generateReturn() },
+    { date: new Date("2022-01-22"), value: generateReturn() },
+    { date: new Date("2022-01-23"), value: generateReturn() },
+    { date: new Date("2022-01-24"), value: generateReturn() },
+    { date: new Date("2022-01-25"), value: generateReturn() },
   ];
 }
 
