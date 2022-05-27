@@ -46,3 +46,21 @@ export function formatMoney({ amount, currency }: TMonetaryValue) {
 
   return `${formattedAmount} ${currencySymbol}`;
 }
+
+export function formatMoneyWithSign({ amount, currency }: TMonetaryValue) {
+  const formattedMoney = formatMoney({ amount, currency });
+  const sign = amount <= 0 ? "" : "+";
+
+  return `${sign}${formattedMoney}`;
+}
+
+export function formatPercentage({
+  amount,
+  decimals = 2,
+}: {
+  amount: number;
+  decimals?: number;
+}) {
+  const formattedAmount = numeral(amount).format("0.00%");
+  return formattedAmount;
+}

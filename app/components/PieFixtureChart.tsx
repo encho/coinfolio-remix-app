@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Pie } from "@visx/shape";
 import { Group } from "@visx/group";
 import { Text } from "@visx/text";
+import { formatMoney, formatPercentage } from "./Money";
 
 import wrapComponent from "./wrapComponent";
 
@@ -22,6 +23,11 @@ const PieChart = ({ height = 200, coins }: TPieChartProps) => {
   const [active, setActive] = useState<TCoin | null>(null);
   const width = height;
   const half = width / 2;
+
+  const totalAmount = coins.reduce(
+    (acc, coin) => acc + coin.amount * coin.inUSD,
+    0
+  );
 
   return (
     <main>
@@ -59,10 +65,14 @@ const PieChart = ({ height = 200, coins }: TPieChartProps) => {
             <>
               <Text
                 textAnchor="middle"
-                className="fill-black text-2xl font-normal"
+                className="text-2xl font-normal"
+                fill={active.color}
                 dy={-7}
               >
-                {`${Math.floor(active.amount * active.inUSD)} €`}
+                {formatMoney({
+                  amount: active.amount * active.inUSD,
+                  currency: "EUR",
+                })}
               </Text>
 
               <Text
@@ -71,7 +81,9 @@ const PieChart = ({ height = 200, coins }: TPieChartProps) => {
                 fill={active.color}
                 dy={20}
               >
-                {`${active.amount} ${active.symbol} (20%)`}
+                {`${formatPercentage({
+                  amount: (active.amount * active.inUSD) / totalAmount,
+                })} ${active.symbol} `}
               </Text>
             </>
           ) : (
@@ -81,9 +93,10 @@ const PieChart = ({ height = 200, coins }: TPieChartProps) => {
                 className="fill-black text-2xl font-normal"
                 dy={-7}
               >
-                {`${Math.floor(
-                  coins.reduce((acc, coin) => acc + coin.amount * coin.inUSD, 0)
-                )} €`}
+                {formatMoney({
+                  amount: totalAmount,
+                  currency: "EUR",
+                })}
               </Text>
 
               <Text textAnchor="middle" className="fill-black text-sm" dy={20}>

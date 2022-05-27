@@ -1,19 +1,24 @@
 import { Link } from "@remix-run/react";
 import { PlusIcon } from "@heroicons/react/solid";
-// import { RefreshIcon } from "@heroicons/react/outline";
 
-import {
-  // getStrategyPerformanceSeries,
-  getStrategyPerformanceSeriesFromIndex,
-} from "~/fixtures/strategyPerformanceSeries";
+// TODO eventually deprecate?
+// import {
+//   // getStrategyPerformanceSeries,
+//   getStrategyPerformanceSeriesFromIndex,
+// } from "~/fixtures/strategyPerformanceSeries";
 
-import type { TExpandedPortfolio } from "~/models/portfolio.server";
+// import type { TExpandedPortfolio } from "~/models/portfolio.server";
 import type { ExpandedPortfolio } from "~/models/portfolio2.server";
 import { SparklineChart } from "./SparklineChart";
 import { TRiskLevel } from "~/models/riskLevel.server";
+import { formatMoney, formatMoneyWithSign } from "~/components/Money";
 
 type TPortfoliosCards = {
-  data: Array<ExpandedPortfolio>;
+  data: Array<
+    ExpandedPortfolio & {
+      performanceSeries: Array<{ date: Date; value: number }>;
+    }
+  >;
   newStrategyId: string;
 };
 
@@ -38,14 +43,21 @@ export default function PortfoliosCards({
 function PortfolioTile({
   strategy,
   riskLevel,
+  performanceSeries,
   isNew,
-}: ExpandedPortfolio & { isNew: boolean }) {
+}: ExpandedPortfolio & {
+  isNew: boolean;
+  performanceSeries: Array<{ date: Date; value: number }>;
+}) {
   const cardStyles =
     "rounded border border-gray-200 transition bg-white shadow-sm px-6 py-5 hover:border-gray-350";
 
   const newAnimation = isNew ? "animate-newStrategy" : "";
 
-  const performanceSeries = getStrategyPerformanceSeriesFromIndex(0);
+  const startValue = performanceSeries[0].value;
+  const currentValue = performanceSeries[performanceSeries.length - 1].value;
+  const differenceValue = currentValue - startValue;
+
   return (
     <Link
       to={`./portfolios/${strategy.id}`}
@@ -74,8 +86,16 @@ function PortfolioTile({
 
         <div className="flex justify-between">
           <div>
-            <div className="text-xl font-normal text-gray-900">2,300.43 €</div>
-            <div className="text-sm text-gray-900">+300.88 €</div>
+            <div className="text-xl font-normal text-gray-900">
+              {formatMoney({ amount: currentValue, currency: "EUR" })}
+            </div>
+
+            <div className="text-sm text-gray-900">
+              {formatMoneyWithSign({
+                amount: differenceValue,
+                currency: "EUR",
+              })}
+            </div>
           </div>
           <div className="h-12 w-40 py-2">
             <div className="h-full bg-gray-50">

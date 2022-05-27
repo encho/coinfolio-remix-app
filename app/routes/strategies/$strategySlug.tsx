@@ -21,6 +21,8 @@ import { formatMoney } from "~/components/Money";
 import StrategyAssetAllocationPieChart from "~/components/StrategyAssetAllocationPieChart";
 import { MultiPerformanceChart } from "~/components/MultiPerformanceChart";
 
+import { getCashFixture } from "~/fixtures/userPortfolioData";
+
 // TODO import from server modules not prisma directly!
 import type { RiskLevel } from "@prisma/client";
 
@@ -54,9 +56,10 @@ const RETURNS_FIXTURE = [
 ];
 
 const RISKY_ASSET_ALLOCATION_FIXTURE = [
-  { symbol: "BTC", weight: 0.5, color: "var(--color-orange-500)" },
+  { symbol: "BTC", weight: 0.25, color: "var(--color-orange-500)" },
   { symbol: "ETH", weight: 0.25, color: "var(--color-cyan-500)" },
-  { symbol: "XRP", weight: 0.25, color: "var(--color-yellow-500)" },
+  { symbol: "BNB", weight: 0.25, color: "var(--color-yellow-500)" },
+  { symbol: "XRP", weight: 0.25, color: "var(--color-purple-500)" },
 ];
 
 type TStrategyAssetAllocation = Array<TCoinAllocation>;
@@ -220,7 +223,7 @@ export const action: ActionFunction = async ({ request }) => {
   });
 
   return redirect(
-    `/portal?newPortfolioStrategy=${newUserPortfolio.strategyId}`
+    `/portal?newPortfolioStrategy=${newUserPortfolio.strategyId}&investmentAmount=${investmentAmount}`
   );
 };
 
@@ -245,7 +248,7 @@ export default function PortfolioDetailsPage() {
     : null;
 
   // strategy confirmation modal state
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
 
   // TODO do we need null check here?
   const currentPeriodPerformance = currentRiskLevelOverview
@@ -536,7 +539,10 @@ function ModalExample({
                           />
 
                           <div className="mt-1 text-xs text-gray-500">
-                            max. 2,580.89 € available
+                            {`max. ${formatMoney({
+                              amount: getCashFixture(),
+                              currency: "EUR",
+                            })} available`}
                           </div>
                         </div>
                       </div>
